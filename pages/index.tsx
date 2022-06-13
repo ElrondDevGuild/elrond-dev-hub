@@ -1,6 +1,12 @@
+import Navbar from '../components/Navbar';
+
 import type { NextPage } from "next";
 const Home: NextPage = () => {
-  return <div className="text-4xl">elrond dev hub</div>;
+  return (
+    <div>
+      <Navbar />
+    </div>
+  );
 };
 
 export default Home;
