@@ -37,7 +37,7 @@ export default function Navbar() {
                   </div>
                 </Link>
               </div>
-              <div className="sm:w-2/4 hidden sm:block">
+              <div className="sm:w-2/4 hidden sm:block px-8">
                 <SearchBar />
               </div>
               <div className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
