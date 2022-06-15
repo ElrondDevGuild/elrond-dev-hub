@@ -16,7 +16,7 @@ const items = [
 
 export default function SocialIcons() {
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-4 sm:space-x-5">
       {items.map((item, index) => (
         <a href={item.href} key={index} target="_blank" rel="noreferrer">
           <item.icon className={`text-xl text-primary dark:text-primary-dark`} />

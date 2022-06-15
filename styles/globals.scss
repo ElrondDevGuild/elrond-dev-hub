@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  @apply bg-secondary;
+
+  @media (prefers-color-scheme: dark) {
+    @apply bg-secondary-dark;
+  }
+}
+
+.main-content-height {
+  @screen md {
+    height: calc(100vh - 6rem - 1px);
+  }
+}
