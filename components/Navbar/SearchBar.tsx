@@ -9,7 +9,7 @@ export default function SearchBar() {
         </div>
         <input
           type="text"
-          className="block w-full pl-10 sm:text-sm border-theme-border dark:border-theme-border-dark rounded-md bg-transparent text-theme-text dark:text-theme-text-dark placeholder:text-theme-text placeholder:dark:text-theme-text-dark"
+          className="block w-full pl-10 sm:text-sm border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-transparent text-theme-text dark:text-theme-text-dark placeholder:text-theme-text placeholder:dark:text-theme-text-dark"
           placeholder="Search..."
         />
       </div>

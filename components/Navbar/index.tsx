@@ -19,7 +19,7 @@ export default function Navbar() {
   return (
     <Disclosure
       as="nav"
-      className="bg-white dark:bg-secondary-dark border-b border-theme-border dark:border-theme-border-dark "
+      className="bg-white dark:bg-secondary-dark border-b-0.5 border-theme-border dark:border-theme-border-dark "
     >
       {({ open }) => (
         <>

@@ -31,6 +31,9 @@ module.exports = {
           },
         },
       },
+      borderWidth: {
+        0.5: "0.5px",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],
