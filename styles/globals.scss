@@ -12,7 +12,7 @@ body {
 }
 
 .main-content-height {
-  @screen md {
+  @screen sm {
     height: calc(100vh - 6rem - 1px);
   }
 }

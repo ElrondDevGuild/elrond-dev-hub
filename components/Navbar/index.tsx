@@ -23,8 +23,8 @@ export default function Navbar() {
     >
       {({ open }) => (
         <>
-          <div className="sm:px-0 px-6">
-            <div className="flex items-center justify-between h-14 sm:h-24 max-w-screen-2xl mx-auto">
+          <div className="px-8">
+            <div className="flex items-center justify-between h-14 sm:h-24 max-w-screen-xl mx-auto">
               <div className="sm:w-1/4">
                 <Link href={homePath}>
                   <div className="flex-shrink-0 cursor-pointer">
