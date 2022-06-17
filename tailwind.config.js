@@ -16,6 +16,10 @@ module.exports = {
             lighter: "#12143F",
           },
         },
+        scrollbar: "#FFFFFF",
+        "scrollbar-thumb": "#DCE3F1",
+        "scrollbar-dark": "#12143F",
+        "scrollbar-dark-thumb": "#4A4F9F",
         theme: {
           border: {
             DEFAULT: "#DCE3F1",
@@ -36,5 +40,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  variants: {
+    scrollbar: ["dark"],
+  },
+  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
 };

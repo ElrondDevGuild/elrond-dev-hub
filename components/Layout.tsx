@@ -76,8 +76,8 @@ export default function Layout({ children }: any) {
     <div>
       <Navbar />
       <div className="px-8">
-        <div className="max-w-screen-xl mx-auto flex main-content-height">
-          <div className="w-2/12 sm:w-1/4 md:w-3/12 lg:w-2/12 hidden sm:block py-10 border-r-0.5 border-theme-border dark:border-theme-border-dark">
+        <div className="max-w-screen-xl mx-auto flex">
+          <div className="w-2/12 sm:w-1/4 md:w-3/12 lg:w-2/12 hidden sm:block py-10 border-r-0.5 border-theme-border dark:border-theme-border-dark main-content-height overflow-y-auto scrollbar-thin scrollbar-thumb-scrollbar-thumb scrollbar-track-scrollbar dark:scrollbar-thumb-scrollbar-dark-thumb dark:scrollbar-track-scrollbar-dark">
             <div className="mb-8">
               <LinksGroup {...menuSection} />
             </div>
@@ -91,7 +91,9 @@ export default function Layout({ children }: any) {
               <LinksGroup {...categoriesSection} />
             </div>
           </div>
-          <main className="w-full sm:w-3/4 md:w-9/12 lg:w-7/12 sm:pl-8 lg:px-8 py-10">{children}</main>
+          <main className="w-full sm:w-3/4 md:w-9/12 lg:w-7/12 sm:pl-8 lg:px-8 py-10 main-content-height overflow-y-auto scrollbar-thin scrollbar-thumb-scrollbar-thumb scrollbar-track-scrollbar dark:scrollbar-thumb-scrollbar-dark-thumb dark:scrollbar-track-scrollbar-dark">
+            {children}
+          </main>
           <div className="hidden w-3/12 lg:block py-10">
             <div className="p-6 bg-theme-title  dark:bg-secondary-dark-lighter rounded-md">
               <p className="font-semibold text-xl text-white dark:text-theme-title-dark mb-5">
