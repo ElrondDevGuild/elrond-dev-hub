@@ -10,10 +10,13 @@
     "seed": "tsc --project ./seeds  && node ./seeds/dist/seeds/simple-seeder.js && rm -r ./seeds/dist"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.4",
+    "@tailwindcss/forms": "^0.5.2",
     "@supabase/supabase-js": "^1.35.3",
     "next": "12.1.6",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "react-icons": "^4.4.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.2.0",
