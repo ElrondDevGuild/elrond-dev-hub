@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "es2016",
+    "sourceMap": false,
+    "outDir": "./dist",
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": ["../seeds/**/*.ts"]
+}
