@@ -4,9 +4,14 @@ export type MediaResource = {
     title: string;
     author: string;
     description: string;
-    curator_address?: string;
+    curator_address: string;
+    image_url: string | null;
     published_at: string | null;
     created_at?: string;
+    deleted_at?: string | null;
+    synced_at?: string | null;
+
+
 };
 
 export type Category = {
