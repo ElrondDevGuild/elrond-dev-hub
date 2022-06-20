@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-import { homePath } from '../../utils/routes';
+import { homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import Logo from '../shared/Logo';
 import SocialIcons from '../shared/SocialIcons';
@@ -43,7 +43,8 @@ export default function Navbar() {
               <div className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
                 {/* Profile dropdown */}
                 <SocialIcons />
-                <Button label="+ Add Resource" />
+
+                <Button label="+ Add Resource" href={submitPath} />
               </div>
               {/* <div className="-mr-2 flex sm:hidden">
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-white">
@@ -74,7 +75,8 @@ export default function Navbar() {
             </div>
             <div className="pt-4 pb-3 border-t border-transparent-green flex justify-center">
               <SocialIcons />
-              <Button label="+ Add Resource" />
+
+              <Button label="+ Add Resource" href={submitPath} />
             </div>
           </Disclosure.Panel>
         </>
