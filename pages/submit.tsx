@@ -2,6 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import Layout from '../components/Layout';
 import Input from '../components/shared/form/Input';
+import Select from '../components/shared/form/Select';
 import Textarea from '../components/shared/form/Textarea';
 
 interface ISubmitResource {
@@ -24,7 +25,7 @@ export default function Submit() {
 
   return (
     <Layout hideRightBar={true}>
-      <div className="bg-white dark:bg-secondary-dark-lighter p-6 text-theme-text dark:text-theme-text-dark rounded-md">
+      <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
         <div className="flex flex-col">
           <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
             Submit new content
@@ -52,6 +53,8 @@ export default function Submit() {
                 placeholder="My awesome description"
                 options={{ required: true }}
               />
+
+              <Select name="category" options={{ required: true }} label="Category" />
             </form>
           </FormProvider>
         </div>
