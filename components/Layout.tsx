@@ -15,7 +15,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
     if (hideRightBar) {
       return {
         leftColumn: "hidden sm:block sm:w-1/4 md:w-3/12 lg:w-2/12",
-        centerColumn: "w-full sm:w-3/4 md:w-9/12 lg:w-10/12 sm:pl-8",
+        centerColumn: "w-full sm:w-3/4 md:w-9/12 lg:w-10/12 sm:px-8",
         rightColum: "hidden",
       };
     }
