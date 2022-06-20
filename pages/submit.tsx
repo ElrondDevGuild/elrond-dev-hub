@@ -1,6 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 
 import Layout from '../components/Layout';
+import Button from '../components/shared/Button';
 import Input from '../components/shared/form/Input';
 import Select from '../components/shared/form/Select';
 import Textarea from '../components/shared/form/Textarea';
@@ -38,23 +39,55 @@ export default function Submit() {
 
         <div className="mt-10">
           <FormProvider {...formMethods}>
-            <form onSubmit={handleSubmit(submitResource)} className="lg:gap-x-12 xl:gap-x-16">
-              <Input
-                label="Title"
-                name="title"
-                placeholder="My awesome article"
-                type="text"
-                options={{ required: true }}
-              />
+            <form onSubmit={handleSubmit(submitResource)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <Input
+                  label="Title"
+                  name="title"
+                  placeholder="My awesome article"
+                  type="text"
+                  options={{ required: true }}
+                />
+              </div>
 
-              <Textarea
-                label="Description"
-                name="description"
-                placeholder="My awesome description"
-                options={{ required: true }}
-              />
+              <div>
+                <Input
+                  label="Content URL"
+                  name="url"
+                  placeholder="https://exmaple.com"
+                  type="url"
+                  options={{ required: true }}
+                />
+              </div>
 
-              <Select name="category" options={{ required: true }} label="Category" />
+              <div>
+                <Input label="Author" name="author" placeholder="John Doe" type="text" options={{ required: true }} />
+              </div>
+
+              <div>
+                <Input label="Wallet address" name="wallet" placeholder="erd123..." type="text" />
+              </div>
+
+              <div className="md:col-span-2">
+                <Textarea
+                  label="Description"
+                  name="description"
+                  placeholder="My awesome description"
+                  options={{ required: true }}
+                />
+              </div>
+
+              <div>
+                <Select name="category" options={{ required: true }} label="Category" />
+              </div>
+
+              <div>
+                <Input label="tags" name="tags" placeholder="elrond,blockchain" type="text" />
+              </div>
+
+              <div>
+                <Button label="Submit" />
+              </div>
             </form>
           </FormProvider>
         </div>
