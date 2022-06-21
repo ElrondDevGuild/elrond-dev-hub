@@ -16,3 +16,10 @@ body {
     height: calc(100vh - 6rem - 1px);
   }
 }
+
+a {
+  @apply transition-opacity ease-in-out;
+  &:hover {
+    @apply opacity-75;
+  }
+}

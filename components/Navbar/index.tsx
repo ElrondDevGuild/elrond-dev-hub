@@ -1,11 +1,13 @@
 import { Disclosure } from '@headlessui/react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 
-import { homePath } from '../../utils/routes';
+import { homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import Logo from '../shared/Logo';
 import SocialIcons from '../shared/SocialIcons';
+import Leftbar from './LeftBar';
 import SearchBar from './SearchBar';
 
 const navbar = [
@@ -43,38 +45,26 @@ export default function Navbar() {
               <div className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
                 {/* Profile dropdown */}
                 <SocialIcons />
-                <Button label="+ Add Resource" />
+
+                <Button label="+ Add Resource" href={submitPath} />
+
+                <div className="-mr-2 flex sm:hidden">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md text-primary dark:text-primary-dark">
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <AiOutlineClose className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <AiOutlineMenu className="block h-6 w-6" aria-hidden="true" />
+                    )}
+                  </Disclosure.Button>
+                </div>
               </div>
-              {/* <div className="-mr-2 flex sm:hidden">
-                <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-white">
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <AiOutlineClose className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <AiOutlineMenu className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div> */}
             </div>
           </div>
 
-          <Disclosure.Panel className="sm:hidden px-8">
-            <div className="pt-2 pb-3 space-y-1">
-              {navbar.map(({ label, href }, index) => (
-                <Disclosure.Button
-                  as="div"
-                  className="text-gray-100 px-2 py-2 rounded-md text-sm font-medium uppercase cursor-pointer"
-                  key={index}
-                >
-                  <Link href={href} key={index}>
-                    {label}
-                  </Link>
-                </Disclosure.Button>
-              ))}
-            </div>
-            <div className="pt-4 pb-3 border-t border-transparent-green flex justify-center">
-              <SocialIcons />
-              <Button label="+ Add Resource" />
+          <Disclosure.Panel className="sm:hidden px-8 absolute w-full h-full bg-secondary dark:bg-secondary-dark bg-opacity-60 dark:bg-opacity-60">
+            <div className="bg-secondary dark:bg-secondary-dark h-full w-4/5">
+              <Leftbar />
             </div>
           </Disclosure.Panel>
         </>
