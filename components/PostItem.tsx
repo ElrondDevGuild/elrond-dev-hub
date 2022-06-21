@@ -29,10 +29,13 @@ export default function PostItem({ post }: { post: IPostItem }) {
 
   return (
     <div className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
-      <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark">
+      <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark relative">
         <a href={post.url} target="_blank" rel="noreferrer">
           <img src={post.image} alt={post.title} className="object-cover h-64 w-full object-center rounded-t-md" />
         </a>
+        <div className="absolute top-0 left-0 bg-primary dark:bg-primary-dark text-secondary dark:text-secondary-dark py-1 px-2 rounded-sm font-semibold uppercase text-xs m-5">
+          {post.category}
+        </div>
       </div>
       <div className="py-7 px-8">
         <div className="text-theme-title dark:text-theme-title-dark mb-2">By {post.author}</div>
