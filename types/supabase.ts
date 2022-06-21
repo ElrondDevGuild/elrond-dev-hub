@@ -6,12 +6,12 @@ export type MediaResource = {
     description: string;
     curator_address: string;
     image_url: string | null;
+    resource_url: string;
     published_at: string | null;
     created_at?: string;
     deleted_at?: string | null;
     synced_at?: string | null;
-
-
+    tags?: Tag[];
 };
 
 export type Category = {

@@ -24,7 +24,9 @@ const createResource = (categoryId: number): Omit<MediaResource, "id" | "created
         description: faker.hacker.phrase(),
         published_at: publishedOptions[Math.floor(Math.random() * publishedOptions.length)],
         curator_address: null,
-        image_url: null
+        image_url: faker.image.cats(),
+        resource_url: faker.internet.url(),
+        
     };
 };
 
