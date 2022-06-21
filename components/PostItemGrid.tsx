@@ -51,7 +51,7 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
             <FiTwitter className="text-2xl sm:text-xl" />
           </div>
         </a>
-        <a className="flex-1 cursor-pointer"></a>
+        <a className="flex-1 cursor-pointer">
           <div
             className={`flex items-center justify-center cursor-pointer ${
               copyClicked && "pointer-events-none text-primary dark:text-primary-dark"
