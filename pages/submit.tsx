@@ -1,10 +1,14 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import {FormProvider, useForm} from 'react-hook-form';
 
 import Layout from '../components/Layout';
 import Button from '../components/shared/Button';
 import Input from '../components/shared/form/Input';
 import Select from '../components/shared/form/Select';
 import Textarea from '../components/shared/form/Textarea';
+import {useEffect, useState} from "react";
+import {Category} from "../types/supabase";
+import {IOption} from "../components/shared/form/SelectElement";
+import {api} from "../utils/api";
 
 interface ISubmitResource {
   title: string;
@@ -18,17 +22,30 @@ interface ISubmitResource {
 
 export default function Submit() {
   const formMethods = useForm<ISubmitResource>();
-  const { handleSubmit, setValue } = formMethods;
+  const [categories, setCategories] = useState<Array<IOption>>([]);
+  const {handleSubmit, setValue} = formMethods;
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const {data} = await api.get("categories");
+        setCategories(data.map((category: Category) => ({id: category.id, name: category.title})));
+      } catch (e) {}
+    };
+
+    fetchCategories();
+
+  }, []);
 
   const submitResource = (formData: ISubmitResource) => {
     console.log(formData);
   };
 
   return (
-    <Layout hideRightBar={true}>
-      <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
-        <div className="flex flex-col">
-          <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
+      <Layout hideRightBar={true}>
+        <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
+          <div className="flex flex-col">
+            <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
             Submit new content
           </h1>
           <p className="max-w-xl">
@@ -78,7 +95,12 @@ export default function Submit() {
               </div>
 
               <div>
-                <Select name="category" options={{ required: true }} label="Category" />
+                <Select
+                    name="category_id"
+                    options={{required: true}}
+                    label="Category"
+                    selectOptions={categories}
+                />
               </div>
 
               <div>

@@ -8,25 +8,15 @@ import SelectElement, { IOption } from './SelectElement';
  * https://react-hook-form.com/api/useformcontext
  */
 
-const people: IOption[] = [
-  { id: "1", name: "Wade Cooper" },
-  { id: "11", name: "Arlene Mccoy" },
-  { id: "2", name: "Devon Webb" },
-  { id: "3", name: "Tom Cook" },
-  { id: "4", name: "Tanya Fox" },
-  { id: "5", name: "Hellen Schmidt" },
-  { id: "6", name: "Caroline Schultz" },
-  { id: "7", name: "Mason Heaney" },
-  { id: "8", name: "Claudie Smitham" },
-];
 
 interface IInput {
   label: string;
   name: string;
+  selectOptions: IOption[];
   options?: any;
 }
 
-export default function Select({ name, options = {}, label }: IInput) {
+export default function Select({ name, options = {}, label, selectOptions }: IInput) {
   const {
     setValue,
     formState: { errors },
@@ -48,7 +38,7 @@ export default function Select({ name, options = {}, label }: IInput) {
         {label}
       </label>
 
-      <SelectElement options={people} onChange={onSelectChange} />
+      <SelectElement options={selectOptions} onChange={onSelectChange} />
       {!!errors[name] && (
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
           <AiFillExclamationCircle className="h-5 w-5 text-red-500" aria-hidden="true" />
