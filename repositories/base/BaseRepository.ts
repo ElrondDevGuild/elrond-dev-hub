@@ -4,11 +4,12 @@ import {SupabaseQueryBuilder} from "@supabase/supabase-js/dist/module/lib/Supaba
 import {PostgrestFilterBuilder} from "@supabase/postgrest-js";
 
 
-
 interface InsertOptions {
     returning?: "minimal" | "representation";
     count?: null | "exact" | "planned" | "estimated";
 }
+
+const DEFAULT_PAGE_SIZE = 20;
 
 export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     protected readonly _table: SupabaseQueryBuilder<T>;
@@ -60,5 +61,15 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
 
     all(columns?: string): PostgrestFilterBuilder<T> {
         return this._table.select(columns);
+    }
+
+    static computePageRange({page, size}: { page?: number, size?: number }) {
+        const limit = size ? +size : DEFAULT_PAGE_SIZE;
+        const from = page ? page * limit : 0;
+
+        return {
+            from,
+            to: from + limit - 1
+        }
     }
 }

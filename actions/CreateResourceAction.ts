@@ -24,7 +24,6 @@ export default class CreateResourceAction extends BaseAction {
     async rules(): Promise<Joi.Schema> {
         const categoryRepo = new CategoryRepository();
         const categories = await categoryRepo.getIds();
-        console.log(categories);
 
         return Joi.object({
             title: Joi.string().required(),

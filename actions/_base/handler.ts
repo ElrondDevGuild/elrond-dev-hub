@@ -33,13 +33,13 @@ export const handler = (handler: ApiMethodHandler) => {
             // Validate request
             const rules = await Promise.resolve(action.rules());
             if (null !== rules) {
-                Joi.attempt(req.body, rules, {
+                Joi.attempt({...req.body, ...req.query}, rules, {
                     abortEarly: false,
                     allowUnknown: true
                 });
             }
 
-            const result = await Promise.resolve(action.handle(req, res));
+            const result = await Promise.resolve(action.handle(req));
 
             return res.status(result.getStatus()).json(result.getBody());
 
