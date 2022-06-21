@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import Navbar from './Navbar';
 import Leftbar from './Navbar/LeftBar';
+import SearchBar from './Navbar/SearchBar';
 import Button from './shared/Button';
 
 interface IColumnClasses {
@@ -36,7 +37,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
             <Leftbar />
           </div>
           <main
-            className={`${columnClasses.centerColumn} py-10 main-content-height overflow-y-auto scrollbar-thin scrollbar-thumb-scrollbar-thumb scrollbar-track-scrollbar dark:scrollbar-thumb-scrollbar-dark-thumb dark:scrollbar-track-scrollbar-dark`}
+            className={`${columnClasses.centerColumn} pb-32 pt-10 sm:pb-10 main-content-height overflow-y-auto scrollbar-thin scrollbar-thumb-scrollbar-thumb scrollbar-track-scrollbar dark:scrollbar-thumb-scrollbar-dark-thumb dark:scrollbar-track-scrollbar-dark`}
           >
             {children}
           </main>
@@ -49,6 +50,10 @@ export default function Layout({ hideRightBar = false, children }: any) {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="sm:hidden fixed bottom-0 left-0 w-full px-8 py-4 bg-secondary dark:bg-secondary-dark shadow-sm">
+        <SearchBar />
       </div>
     </div>
   );

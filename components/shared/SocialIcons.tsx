@@ -1,16 +1,15 @@
-import { AiFillGithub } from 'react-icons/ai';
-import { ImBook } from 'react-icons/im';
+import { FiBook, FiGithub } from 'react-icons/fi';
 
 const items = [
   {
     label: "Github",
     href: "https://github.com/ElrondDevGuild",
-    icon: AiFillGithub,
+    icon: FiGithub,
   },
   {
     label: "Docs",
     href: "https://elrond-dev-guild.gitbook.io/scrolls/",
-    icon: ImBook,
+    icon: FiBook,
   },
 ];
 

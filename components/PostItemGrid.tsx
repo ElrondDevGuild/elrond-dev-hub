@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { BiLink } from 'react-icons/bi';
-import { FiTwitter } from 'react-icons/fi';
-import { HiOutlineDocumentText } from 'react-icons/hi';
+import { FiBook, FiLink, FiTwitter } from 'react-icons/fi';
 
 const copyToClipboard = (text: string) => {
   if (navigator?.clipboard?.writeText) navigator.clipboard.writeText(text);
@@ -45,20 +43,24 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
       <div className="flex text-theme-text dark:text-theme-text-dark py-5 border-t-0.5 border-theme-border dark:border-theme-border-dark divide-x-0.5 divide-theme-border dark:divide-theme-border-dark">
         <a href={post.url} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
           <div className="flex items-center justify-center">
-            <HiOutlineDocumentText className="mr-1 text-2xl sm:text-xl" />
+            <FiBook className="text-2xl sm:text-xl" />
           </div>
         </a>
-        <div className="flex-1 flex items-center justify-center">
-          <FiTwitter className="mr-1 text-2xl sm:text-xl" />
-        </div>
-        <div
-          className={`flex-1 flex items-center justify-center cursor-pointer ${
-            copyClicked && "pointer-events-none text-primary dark:text-primary-dark"
-          }`}
-          onClick={onCopyClicked}
-        >
-          <BiLink className="mr-1  text-2xl sm:text-xl" />
-        </div>
+        <a href="#" className="flex-1 cursor-pointer">
+          <div className="flex items-center justify-center">
+            <FiTwitter className="text-2xl sm:text-xl" />
+          </div>
+        </a>
+        <a className="flex-1 cursor-pointer">
+          <div
+            className={`flex items-center justify-center cursor-pointer ${
+              copyClicked && "pointer-events-none text-primary dark:text-primary-dark"
+            }`}
+            onClick={onCopyClicked}
+          >
+            <FiLink className="text-2xl sm:text-xl" />
+          </div>
+        </a>
       </div>
     </div>
   );

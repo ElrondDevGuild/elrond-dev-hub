@@ -58,7 +58,7 @@ export default function Textarea({
           id={id}
           className={classNames(
             !!errors[name] ? "text-red-900" : "",
-            "bg-white dark:bg-secondary-dark-lighter flex-1 block w-full focus:outline-none text-theme-text dark:text-theme-text-dark border-0 focus-within:ring-0 bg-transparent autofill:bg-transparent font-medium text-sm"
+            "bg-white dark:bg-secondary-dark-lighter flex-1 block w-full focus:outline-none text-theme-text dark:text-theme-text-dark border-0 focus-within:ring-0 autofill:bg-transparent font-medium text-sm"
           )}
           placeholder={placeholder}
           autoComplete={autocomplete}

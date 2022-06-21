@@ -34,7 +34,7 @@ export default function LinksGroup({ title, links }: ILinksGroupProps) {
             <LinkWrapper link={link} key={index}>
               <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark my-4">
                 <span className="pr-2">
-                  <link.icon className="text-base" />
+                  <link.icon className="text-lg" />
                 </span>
                 {link.label}
               </li>

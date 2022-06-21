@@ -1,6 +1,4 @@
-import { AiOutlineFolder } from 'react-icons/ai';
-import { FiExternalLink } from 'react-icons/fi';
-import { IoPeopleOutline } from 'react-icons/io5';
+import { FiCheckSquare, FiExternalLink, FiFolder, FiHome, FiMail, FiMessageSquare } from 'react-icons/fi';
 
 import { submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
@@ -9,19 +7,28 @@ import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
 const menuSection: ILinksGroupProps = {
   links: [
     {
-      label: "Menu 1",
+      label: "Library",
       url: "https://elrondgiants.com",
-      icon: IoPeopleOutline,
+      icon: FiHome,
+      openInNewTab: true,
     },
     {
-      label: "Menu 2",
+      label: "Community",
       url: "https://elrondgiants.com",
-      icon: FiExternalLink,
+      icon: FiMessageSquare,
+      openInNewTab: true,
     },
     {
-      label: "Menu 3",
+      label: "Newsletter",
       url: "https://elrondgiants.com",
-      icon: FiExternalLink,
+      icon: FiMail,
+      openInNewTab: true,
+    },
+    {
+      label: "Bounties",
+      url: "https://elrondgiants.com",
+      icon: FiCheckSquare,
+      openInNewTab: true,
     },
   ],
 };
@@ -56,17 +63,17 @@ const categoriesSection: ILinksGroupProps = {
     {
       label: "Cateogry 1",
       url: "https://elrondgiants.com",
-      icon: AiOutlineFolder,
+      icon: FiFolder,
     },
     {
       label: "Category 2",
       url: "https://elrondgiants.com",
-      icon: AiOutlineFolder,
+      icon: FiFolder,
     },
     {
       label: "Category 3",
       url: "https://elrondgiants.com",
-      icon: AiOutlineFolder,
+      icon: FiFolder,
     },
   ],
 };
