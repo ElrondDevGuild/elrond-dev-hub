@@ -1,4 +1,4 @@
-export default class Response {
+export default class ApiResponse {
     private _body: any;
     private _status: number;
     private _headers: [];

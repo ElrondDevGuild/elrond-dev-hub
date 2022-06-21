@@ -1,6 +1,7 @@
 import {IRead, IWrite} from '../../types/repository';
 import {PostgrestResponse, PostgrestSingleResponse} from '@supabase/supabase-js';
 import {SupabaseQueryBuilder} from "@supabase/supabase-js/dist/module/lib/SupabaseQueryBuilder";
+import {PostgrestFilterBuilder} from "@supabase/postgrest-js";
 
 
 
@@ -55,5 +56,9 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
         if (!this._idField) throw new Error("Unique ID not provided.");
 
         return this._table.select("*").eq(this._idField, id).single();
+    }
+
+    all(columns?: string): PostgrestFilterBuilder<T> {
+        return this._table.select(columns);
     }
 }

@@ -1,6 +1,6 @@
 import BaseAction from "./_base/BaseAction";
 import {NextApiRequest, NextApiResponse} from "next";
-import Response from "./_base/Response";
+import ApiResponse from "./_base/ApiResponse";
 import Joi from "joi";
 import {CategoryRepository} from "../repositories/CategoryRepository";
 import {ResourceRepository} from "../repositories/ResourceRepository";
@@ -9,7 +9,7 @@ import {TagRepository} from "../repositories/TagRepository";
 import {ResourceTagRepository} from "../repositories/ResourceTagRepository";
 
 export default class CreateResourceAction extends BaseAction {
-    async handle(req: NextApiRequest): Promise<Response> {
+    async handle(req: NextApiRequest): Promise<ApiResponse> {
         const {body} = req;
         const tags = body.tags;
         delete body.tags;
@@ -18,7 +18,7 @@ export default class CreateResourceAction extends BaseAction {
         const resourceWithTags = await this.setResourceTags(resource, tags);
 
 
-        return new Response().body(resourceWithTags).status(201);
+        return new ApiResponse().body(resourceWithTags).status(201);
     }
 
     async rules(): Promise<Joi.Schema> {
