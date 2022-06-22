@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <Disclosure
       as="nav"
-      className="bg-white dark:bg-secondary-dark border-b-0.5 border-theme-border dark:border-theme-border-dark "
+      className="bg-white dark:bg-secondary-dark border-b-0.5 border-theme-border dark:border-theme-border-dark"
     >
       {({ open }) => (
         <>
@@ -55,7 +55,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Disclosure.Panel className="sm:hidden px-8 absolute w-full h-full bg-secondary dark:bg-secondary-dark bg-opacity-60 dark:bg-opacity-60 z-10 flex justify-end">
+          <Disclosure.Panel className="sm:hidden absolute w-full h-full bg-secondary dark:bg-secondary-dark bg-opacity-60 dark:bg-opacity-60 z-20 flex justify-end">
             <div className="bg-secondary dark:bg-secondary-dark h-full w-4/5 p-8">
               <Leftbar />
             </div>

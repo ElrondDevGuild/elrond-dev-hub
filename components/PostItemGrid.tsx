@@ -30,9 +30,9 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
           <img src={post.image} alt={post.title} className="object-cover h-36 w-full object-center rounded-t-md" />
         </a>
       </div>
-      <div className="px-8 py-6">
-        <div className="text-theme-title dark:text-theme-title-dark mb-2">By {post.author}</div>
-        <div className="font-semibold text-xl text-theme-title dark:text-theme-title-dark">
+      <div className="p-4 md:px-8 md:py-6">
+        <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">By {post.author}</div>
+        <div className="font-semibold text-theme-title dark:text-theme-title-dark text-base  sm:text-xl">
           <a href={post.url} target="_blank" rel="noreferrer">
             {post.title}
           </a>
