@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { NextApiRequest } from 'next';
+import slugify from 'slugify';
 
 import { CategoryRepository } from '../repositories/CategoryRepository';
 import { ResourceRepository } from '../repositories/ResourceRepository';
@@ -18,6 +19,10 @@ export default class CreateResourceAction extends BaseAction {
 
     const resource = await this.createResource(body);
     const resourceWithTags = await this.setResourceTags(resource, tags);
+
+    // Generate and save slug
+    const slug = slugify(`${body.title} ${resource.id}`);
+    // TODO: save slug to DB
 
     // Generate thumbnail image
     this.generateThumbnailImage(resource);
