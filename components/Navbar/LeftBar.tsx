@@ -1,6 +1,9 @@
-import { FiCheckSquare, FiExternalLink, FiFolder, FiHome, FiMail, FiMessageSquare } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiHome, FiMail } from 'react-icons/fi';
 
-import { submitPath } from '../../utils/routes';
+import { Category } from '../../types/supabase';
+import { api } from '../../utils/api';
+import { categoryPath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
 
@@ -13,22 +16,25 @@ const menuSection: ILinksGroupProps = {
       openInNewTab: true,
     },
     {
-      label: "Community",
-      url: "https://elrondgiants.com",
-      icon: FiMessageSquare,
-      openInNewTab: true,
-    },
-    {
       label: "Newsletter",
-      url: "https://elrondgiants.com",
+      url: "#",
       icon: FiMail,
       openInNewTab: true,
+      disabled: true,
     },
     {
       label: "Bounties",
-      url: "https://elrondgiants.com",
+      url: "#",
       icon: FiCheckSquare,
       openInNewTab: true,
+      disabled: true,
+    },
+    {
+      label: "Jobs",
+      url: "#",
+      icon: FiBriefcase,
+      openInNewTab: true,
+      disabled: true,
     },
   ],
 };
@@ -37,48 +43,34 @@ const firstSection: ILinksGroupProps = {
   title: "Reference",
   links: [
     {
-      label: "Reference 1",
-      url: "https://elrondgiants.com",
+      label: "Elrond Docs",
+      url: "https://docs.elrond.com/",
       icon: FiExternalLink,
       openInNewTab: true,
-    },
-    {
-      label: "Reference 2",
-      url: "https://elrondgiants.com",
-      icon: FiExternalLink,
-      openInNewTab: true,
-    },
-    {
-      label: "Reference 3",
-      url: "https://elrondgiants.com",
-      icon: FiExternalLink,
-      openInNewTab: true,
-    },
-  ],
-};
-
-const categoriesSection: ILinksGroupProps = {
-  title: "Categories",
-  links: [
-    {
-      label: "Cateogry 1",
-      url: "https://elrondgiants.com",
-      icon: FiFolder,
-    },
-    {
-      label: "Category 2",
-      url: "https://elrondgiants.com",
-      icon: FiFolder,
-    },
-    {
-      label: "Category 3",
-      url: "https://elrondgiants.com",
-      icon: FiFolder,
     },
   ],
 };
 
 export default function Leftbar() {
+  const [categoriesSection, setCategoriesSection] = useState<ILinksGroupProps | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await api.get("categories");
+      const links = data?.map((category: Category) => {
+        return {
+          label: category.title,
+          url: categoryPath(category),
+          icon: FiFolder,
+        };
+      });
+      setCategoriesSection({
+        title: "Categories",
+        links,
+      });
+    })();
+  }, []);
+
   return (
     <>
       <div className="mb-8">
@@ -90,9 +82,11 @@ export default function Leftbar() {
       <div className="mb-8">
         <LinksGroup {...firstSection} />
       </div>
-      <div className="mb-8">
-        <LinksGroup {...categoriesSection} />
-      </div>
+      {categoriesSection && (
+        <div className="mb-8">
+          <LinksGroup {...categoriesSection} />
+        </div>
+      )}
     </>
   );
 }

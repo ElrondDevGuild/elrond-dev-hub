@@ -1,15 +1,17 @@
-import {FormProvider, useForm} from 'react-hook-form';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import Layout from '../components/Layout';
 import Button from '../components/shared/Button';
 import Input from '../components/shared/form/Input';
 import Select from '../components/shared/form/Select';
+import { IOption } from '../components/shared/form/SelectElement';
 import Textarea from '../components/shared/form/Textarea';
-import {useEffect, useState} from "react";
-import {Category} from "../types/supabase";
-import {IOption} from "../components/shared/form/SelectElement";
-import {api} from "../utils/api";
-import axios from "axios";
+import { Category } from '../types/supabase';
+import { api } from '../utils/api';
+import { thankYouPath } from '../utils/routes';
 
 interface ISubmitResource {
   title: string;
@@ -24,19 +26,19 @@ interface ISubmitResource {
 export default function Submit() {
   const formMethods = useForm<ISubmitResource>();
   const [categories, setCategories] = useState<Array<IOption>>([]);
-  const {handleSubmit, setValue} = formMethods;
+  const { handleSubmit, setValue } = formMethods;
   const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const {data} = await api.get("categories");
-        setCategories(data.map((category: Category) => ({id: category.id, name: category.title})));
+        const { data } = await api.get("categories");
+        setCategories(data.map((category: Category) => ({ id: category.id, name: category.title })));
       } catch (e) {}
     };
 
     fetchCategories();
-
   }, []);
 
   const submitResource = async (formData: ISubmitResource) => {
@@ -44,10 +46,10 @@ export default function Submit() {
 
     try {
       setSubmitting(true);
-      const {data} = await api.post('resources', {...formData, tags});
-      alert(`Your content titled "${data.title}" was submitted for review`);
+      const { data } = await api.post("resources", { ...formData, tags });
       formMethods.reset();
 
+      router.push(thankYouPath);
     } catch (e) {
       let errMessage: string;
       if (axios.isAxiosError(e) && e.response?.status === 422) {
@@ -57,19 +59,18 @@ export default function Submit() {
         errMessage = "Something went wrong. Please try again in a few moments";
       }
       alert(errMessage);
-    }finally {
+    } finally {
       setSubmitting(false);
     }
-
   };
 
   return (
-      <Layout hideRightBar={true}>
-        <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
-          <div className="flex flex-col">
-            <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
-              Submit new content
-            </h1>
+    <Layout hideRightBar={true}>
+      <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
+        <div className="flex flex-col">
+          <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
+            Submit new content
+          </h1>
           <p className="max-w-xl">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto adipisci sit, consequatur ab nostrum,
             aperiam eaque unde debitis ipsam officiis labore quo laborum voluptatibus ducimus.
@@ -91,11 +92,11 @@ export default function Submit() {
 
               <div>
                 <Input
-                    label="Content URL"
-                    name="resource_url"
-                    placeholder="https://exmaple.com"
-                    type="url"
-                    options={{ required: true }}
+                  label="Content URL"
+                  name="resource_url"
+                  placeholder="https://exmaple.com"
+                  type="url"
+                  options={{ required: true }}
                 />
               </div>
 
@@ -104,27 +105,21 @@ export default function Submit() {
               </div>
 
               <div>
-                <Input label="Wallet address" name="curator_address" placeholder="erd123..."
-                       type="text"/>
+                <Input label="Wallet address" name="curator_address" placeholder="erd123..." type="text" />
               </div>
 
               <div className="md:col-span-2">
                 <Textarea
-                    label="Description"
-                    name="description"
-                    placeholder="My awesome description"
-                    options={{required: true, maxLength: 256, minLength: 30}}
+                  label="Description"
+                  name="description"
+                  placeholder="My awesome description"
+                  options={{ required: true, maxLength: 256, minLength: 30 }}
                 />
                 <span className="text-xs text-gray-400">30-256 characters</span>
               </div>
 
               <div>
-                <Select
-                    name="category_id"
-                    options={{required: true}}
-                    label="Category"
-                    selectOptions={categories}
-                />
+                <Select name="category_id" options={{ required: true }} label="Category" selectOptions={categories} />
               </div>
 
               <div>
@@ -132,7 +127,7 @@ export default function Submit() {
               </div>
 
               <div>
-                <Button label="Submit" disabled={submitting} />
+                <Button label={submitting ? "Loading..." : "Submit"} disabled={submitting} />
               </div>
             </form>
           </FormProvider>

@@ -10,13 +10,6 @@ import SocialIcons from '../shared/SocialIcons';
 import Leftbar from './LeftBar';
 import SearchBar from './SearchBar';
 
-const navbar = [
-  {
-    label: "home",
-    href: homePath,
-  },
-];
-
 export default function Navbar() {
   return (
     <Disclosure
@@ -62,8 +55,8 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Disclosure.Panel className="sm:hidden px-8 absolute w-full h-full bg-secondary dark:bg-secondary-dark bg-opacity-60 dark:bg-opacity-60">
-            <div className="bg-secondary dark:bg-secondary-dark h-full w-4/5">
+          <Disclosure.Panel className="sm:hidden px-8 absolute w-full h-full bg-secondary dark:bg-secondary-dark bg-opacity-60 dark:bg-opacity-60 z-10 flex justify-end">
+            <div className="bg-secondary dark:bg-secondary-dark h-full w-4/5 p-8">
               <Leftbar />
             </div>
           </Disclosure.Panel>

@@ -1,9 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FiBook, FiLink, FiTwitter } from 'react-icons/fi';
 
-const copyToClipboard = (text: string) => {
-  if (navigator?.clipboard?.writeText) navigator.clipboard.writeText(text);
-};
+import { copyLinkToClipboard, getRefUrl, getShareOnTwitterUrl } from '../utils/post-item';
 
 export interface IPostItem {
   title: string;
@@ -20,12 +18,22 @@ export default function PostItem({ post }: { post: IPostItem }) {
 
   const onCopyClicked = () => {
     setCopyClicked(true);
-    copyToClipboard(post.url);
+    copyLinkToClipboard(post.url);
 
     setTimeout(() => {
       setCopyClicked(false);
     }, 1000);
   };
+
+  const twitterShareUrl = useMemo(() => {
+    if (post?.url) return getShareOnTwitterUrl(post);
+    return "";
+  }, [post]);
+
+  const readArticleUrl = useMemo(() => {
+    if (post?.url) return getRefUrl(post.url);
+    return "";
+  }, [post?.url]);
 
   return (
     <div className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
@@ -48,12 +56,12 @@ export default function PostItem({ post }: { post: IPostItem }) {
         {post?.tags && <div className="text-sm text-primary dark:text-primary-dark">{post.tags}</div>}
       </div>
       <div className="flex text-theme-text dark:text-theme-text-dark py-5 border-t-0.5 border-theme-border dark:border-theme-border-dark divide-x-0.5 divide-theme-border dark:divide-theme-border-dark">
-        <a href={post.url} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
+        <a href={readArticleUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
           <div className="flex items-center justify-center">
             <FiBook className="mr-2 text-2xl sm:text-xl" /> <span className="hidden md:block">Read article</span>
           </div>
         </a>
-        <a href="#" className="flex-1 cursor-pointer">
+        <a href={twitterShareUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
           <div className="flex items-center justify-center">
             <FiTwitter className="mr-2 text-2xl sm:text-xl" /> <span className="hidden md:block">Share on Twitter</span>
           </div>

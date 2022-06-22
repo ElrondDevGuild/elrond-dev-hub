@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { FiBook, FiLink, FiTwitter } from 'react-icons/fi';
 
-const copyToClipboard = (text: string) => {
-  if (navigator?.clipboard?.writeText) navigator.clipboard.writeText(text);
-};
+import { copyLinkToClipboard } from '../utils/post-item';
 
 export interface IPostItemGrid {
   title: string;
@@ -18,7 +16,7 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
 
   const onCopyClicked = () => {
     setCopyClicked(true);
-    copyToClipboard(post.url);
+    copyLinkToClipboard(post.url);
 
     setTimeout(() => {
       setCopyClicked(false);
