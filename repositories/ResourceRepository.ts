@@ -9,11 +9,12 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
         super(table, "id");
     }
 
-    async paginate({page, size, categories, tags}: {
+    async paginate({page, size, categories, tags, published}: {
         page?: number,
         size?: number,
         categories?: number[],
-        tags?: number[]
+        tags?: number[],
+        published?: boolean
     } = {}) {
         const {from, to} = ResourceRepository.computePageRange({page, size});
 
@@ -22,7 +23,10 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
             tags(id, title),
             category:category_id(id, title),
             resource_tag!inner(tag_id)
-        `).range(from, to);
+        `)
+            .is("deleted_at",  null)
+            .order("published_at", {ascending: false})
+            .range(from, to);
 
         if (categories?.length) {
             query = query.in("category_id", categories);
@@ -31,6 +35,10 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
         if (tags?.length) {
             // @ts-ignore
             query = query.in("resource_tag.tag_id", tags);
+        }
+
+        if (published) {
+            query = query.not("published_at", "is", null);
         }
 
         const {data, error} = await query;

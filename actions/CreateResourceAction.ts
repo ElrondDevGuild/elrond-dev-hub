@@ -17,6 +17,8 @@ export default class CreateResourceAction extends BaseAction {
         const resource = await this.createResource(body);
         const resourceWithTags = await this.setResourceTags(resource, tags);
 
+        // todo: generate thumbnail image
+
         return new ApiResponse().body(resourceWithTags).status(201);
     }
 
@@ -24,6 +26,7 @@ export default class CreateResourceAction extends BaseAction {
         const categoryRepo = new CategoryRepository();
         const categories = await categoryRepo.getIds();
 
+        // todo: validate unique url
         return Joi.object({
             title: Joi.string().required(),
             author: Joi.string().required(),
