@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.6.4",
-    "@tailwindcss/forms": "^0.5.2",
     "@supabase/supabase-js": "^1.35.3",
+    "@tailwindcss/forms": "^0.5.2",
+    "jimp": "^0.16.1",
     "next": "12.1.6",
+    "open-graph-scraper": "^4.11.1",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-hook-form": "^7.32.2",
