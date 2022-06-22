@@ -1,5 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: '/api/',
+  baseURL: "/api/",
+});
+
+export const serverApi = axios.create({
+  baseURL: `${process.env.VERCEL_URL}/api`,
 });
