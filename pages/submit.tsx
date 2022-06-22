@@ -9,6 +9,7 @@ import {useEffect, useState} from "react";
 import {Category} from "../types/supabase";
 import {IOption} from "../components/shared/form/SelectElement";
 import {api} from "../utils/api";
+import axios from "axios";
 
 interface ISubmitResource {
   title: string;
@@ -24,6 +25,7 @@ export default function Submit() {
   const formMethods = useForm<ISubmitResource>();
   const [categories, setCategories] = useState<Array<IOption>>([]);
   const {handleSubmit, setValue} = formMethods;
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -37,8 +39,28 @@ export default function Submit() {
 
   }, []);
 
-  const submitResource = (formData: ISubmitResource) => {
-    console.log(formData);
+  const submitResource = async (formData: ISubmitResource) => {
+    const tags = formData.tags?.split(",");
+
+    try {
+      setSubmitting(true);
+      const {data} = await api.post('resources', {...formData, tags});
+      alert(`Your content titled "${data.title}" was submitted for review`);
+      formMethods.reset();
+
+    } catch (e) {
+      let errMessage: string;
+      if (axios.isAxiosError(e) && e.response?.status === 422) {
+        // @ts-ignore
+        errMessage = e.response.data.error;
+      } else {
+        errMessage = "Something went wrong. Please try again in a few moments";
+      }
+      alert(errMessage);
+    }finally {
+      setSubmitting(false);
+    }
+
   };
 
   return (
@@ -46,8 +68,8 @@ export default function Submit() {
         <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
           <div className="flex flex-col">
             <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
-            Submit new content
-          </h1>
+              Submit new content
+            </h1>
           <p className="max-w-xl">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto adipisci sit, consequatur ab nostrum,
             aperiam eaque unde debitis ipsam officiis labore quo laborum voluptatibus ducimus.
@@ -69,11 +91,11 @@ export default function Submit() {
 
               <div>
                 <Input
-                  label="Content URL"
-                  name="url"
-                  placeholder="https://exmaple.com"
-                  type="url"
-                  options={{ required: true }}
+                    label="Content URL"
+                    name="resource_url"
+                    placeholder="https://exmaple.com"
+                    type="url"
+                    options={{ required: true }}
                 />
               </div>
 
@@ -82,16 +104,18 @@ export default function Submit() {
               </div>
 
               <div>
-                <Input label="Wallet address" name="wallet" placeholder="erd123..." type="text" />
+                <Input label="Wallet address" name="curator_address" placeholder="erd123..."
+                       type="text"/>
               </div>
 
               <div className="md:col-span-2">
                 <Textarea
-                  label="Description"
-                  name="description"
-                  placeholder="My awesome description"
-                  options={{ required: true }}
+                    label="Description"
+                    name="description"
+                    placeholder="My awesome description"
+                    options={{required: true, maxLength: 256, minLength: 30}}
                 />
+                <span className="text-xs text-gray-400">30-256 characters</span>
               </div>
 
               <div>
@@ -108,7 +132,7 @@ export default function Submit() {
               </div>
 
               <div>
-                <Button label="Submit" />
+                <Button label="Submit" disabled={submitting} />
               </div>
             </form>
           </FormProvider>
