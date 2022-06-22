@@ -8,4 +8,11 @@ export class CategoryRepository extends BaseRepository<Category> {
         const table = supabaseAdmin.from<Category>(CATEGORIES_TABLE);
         super(table, "id");
     }
+
+    async getIds(): Promise<number[]> {
+        const {data, error} = await this._table.select('id');
+        if (error) {throw new Error(error.message);}
+
+        return data?.map(item => item.id);
+    }
 }
