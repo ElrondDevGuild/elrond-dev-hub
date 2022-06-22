@@ -14,8 +14,7 @@ type ApiMethodHandler = {
 
 export const handler = (handler: ApiMethodHandler) => {
     return async (req: NextApiRequest, res: NextApiResponse) => {
-        // @ts-ignore
-        const method: HttpMethod = req.method.toLowerCase();
+        const method: HttpMethod = <HttpMethod>req.method?.toLowerCase();
         if (!handler[method]) {
             const allowedMethods = Object.keys(handler)
                 .filter(method => ['get', 'post', 'put', 'patch', 'delete'].includes(method))

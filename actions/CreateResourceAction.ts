@@ -17,6 +17,7 @@ export default class CreateResourceAction extends BaseAction {
         const resource = await this.createResource(body);
         const resourceWithTags = await this.setResourceTags(resource, tags);
 
+        // todo: generate thumbnail image
 
         return new ApiResponse().body(resourceWithTags).status(201);
     }
@@ -25,17 +26,17 @@ export default class CreateResourceAction extends BaseAction {
         const categoryRepo = new CategoryRepository();
         const categories = await categoryRepo.getIds();
 
+        // todo: validate unique url
         return Joi.object({
             title: Joi.string().required(),
             author: Joi.string().required(),
-            description: Joi.string().required().max(256),
+            description: Joi.string().required().min(30).max(256),
             category_id: Joi.number().required().valid(...categories).messages({
                 "any.only": "Invalid Category"
             }),
             resource_url: Joi.string().uri().required(),
-            curator_address: Joi.string().optional(),
-            tags: Joi.array().items(Joi.string()),
-
+            tags: Joi.array().items(Joi.string().optional().allow('')),
+            curator_address: Joi.string().optional().allow('', null)
         }).required();
 
     }

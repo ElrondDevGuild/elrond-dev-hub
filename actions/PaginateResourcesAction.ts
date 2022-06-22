@@ -8,8 +8,10 @@ import {ResourceRepository} from "../repositories/ResourceRepository";
 export default class PaginateResourcesAction extends BaseAction {
     async handle(req: NextApiRequest): Promise<ApiResponse> {
         const {page, page_size: size, categories, tags} = req.query;
-        // @ts-ignore
-        const resources = await new ResourceRepository().paginate({page, size, categories, tags});
+
+        const resources = await new ResourceRepository()
+            // @ts-ignore
+            .paginate({page, size, categories, tags, published: true});
 
         return new ApiResponse({body: resources})
     }
