@@ -3,14 +3,20 @@ import { FiBook, FiLink, FiTwitter } from 'react-icons/fi';
 
 import { copyLinkToClipboard, getRefUrl, getShareOnTwitterUrl } from '../utils/post-item';
 
-export interface IPostItem {
+interface IPostItemTag {
+  id: number;
   title: string;
-  image: string;
-  url: string;
+}
+
+export interface IPostItem {
+  id: number;
+  title: string;
+  image_url: string;
+  resource_url: string;
   category: string;
   description: string;
   author: string;
-  tags?: string[];
+  tags?: IPostItemTag[];
 }
 
 export default function PostItem({ post }: { post: IPostItem }) {
@@ -18,7 +24,7 @@ export default function PostItem({ post }: { post: IPostItem }) {
 
   const onCopyClicked = () => {
     setCopyClicked(true);
-    copyLinkToClipboard(post.url);
+    copyLinkToClipboard(post.resource_url);
 
     setTimeout(() => {
       setCopyClicked(false);
@@ -26,21 +32,21 @@ export default function PostItem({ post }: { post: IPostItem }) {
   };
 
   const twitterShareUrl = useMemo(() => {
-    if (post?.url) return getShareOnTwitterUrl(post);
+    if (post?.resource_url) return getShareOnTwitterUrl(post);
     return "";
   }, [post]);
 
   const readArticleUrl = useMemo(() => {
-    if (post?.url) return getRefUrl(post.url);
+    if (post?.resource_url) return getRefUrl(post.resource_url);
     return "";
-  }, [post?.url]);
+  }, [post?.resource_url]);
 
   return (
     <div className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
       <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark relative">
-        <a href={post.url} target="_blank" rel="noreferrer">
+        <a href={readArticleUrl} target="_blank" rel="noreferrer">
           <img
-            src={post.image}
+            src={post.image_url}
             alt={post.title}
             className="object-cover h-44 md:h-64 w-full object-center rounded-t-md"
           />
@@ -52,12 +58,12 @@ export default function PostItem({ post }: { post: IPostItem }) {
       <div className="md:py-7 md:px-8 py-3 px-4">
         <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">By {post.author}</div>
         <div className="font-semibold text-base sm:text-2xl text-theme-title dark:text-theme-title-dark mb-3">
-          <a href={post.url} target="_blank" rel="noreferrer">
+          <a href={readArticleUrl} target="_blank" rel="noreferrer">
             {post.title}
           </a>
         </div>
         <p className="text-theme-text dark:text-theme-text-dark mb-4 text-xs sm:text-base">{post.description}</p>
-        {post?.tags && <div className="text-xs sm:text-sm text-primary dark:text-primary-dark">{post.tags}</div>}
+        {/* {post?.tags && <div className="text-xs sm:text-sm text-primary dark:text-primary-dark">{post.tags}</div>} */}
       </div>
       <div className="flex text-theme-text dark:text-theme-text-dark py-5 border-t-0.5 border-theme-border dark:border-theme-border-dark divide-x-0.5 divide-theme-border dark:divide-theme-border-dark">
         <a href={readArticleUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
