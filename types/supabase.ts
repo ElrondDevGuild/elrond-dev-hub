@@ -8,6 +8,7 @@ export type MediaResource = {
     image_url: string | null;
     resource_url: string;
     published_at: string | null;
+    slug: string | null;
     created_at?: string;
     deleted_at?: string | null;
     synced_at?: string | null;

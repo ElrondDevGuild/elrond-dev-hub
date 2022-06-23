@@ -1,7 +1,5 @@
 import Joi from 'joi';
 import { NextApiRequest } from 'next';
-import slugify from 'slugify';
-
 import { CategoryRepository } from '../repositories/CategoryRepository';
 import { ResourceRepository } from '../repositories/ResourceRepository';
 import { ResourceTagRepository } from '../repositories/ResourceTagRepository';
@@ -10,24 +8,22 @@ import { MediaResource } from '../types/supabase';
 import { serverApi } from '../utils/api';
 import ApiResponse from './_base/ApiResponse';
 import BaseAction from './_base/BaseAction';
+import {createSlug} from "../utils/slugify";
 
 export default class CreateResourceAction extends BaseAction {
   async handle(req: NextApiRequest): Promise<ApiResponse> {
-    const { body } = req;
+    const {body} = req;
     const tags = body.tags;
     delete body.tags;
 
     const resource = await this.createResource(body);
     const resourceWithTags = await this.setResourceTags(resource, tags);
-
-    // Generate and save slug
-    const slug = slugify(`${body.title} ${resource.id}`);
-    // TODO: save slug to DB
+    const slug = await this.setSlug(resourceWithTags);
 
     // Generate thumbnail image
     this.generateThumbnailImage(resource);
 
-    return new ApiResponse().body(resourceWithTags).status(201);
+    return new ApiResponse().body({...resourceWithTags, slug}).status(201);
   }
 
   async rules(): Promise<Joi.Schema> {
@@ -67,6 +63,18 @@ export default class CreateResourceAction extends BaseAction {
     const allTags = await tagsRepo.createNotExisting(tags);
 
     return resourceTagsRepo.assignResourceTags(resource, allTags);
+  }
+
+  private async setSlug(resource: MediaResource): Promise<string> {
+    const resourceRepo = new ResourceRepository();
+    // Generate and save slug
+    const slug = createSlug(resource);
+    const {error} = await resourceRepo.update(resource.id, {slug});
+    if (error) {
+      throw error;
+    }
+
+    return slug;
   }
 
   private async generateThumbnailImage(resource: MediaResource) {

@@ -5,6 +5,7 @@ import {faker} from '@faker-js/faker';
 import {CategoryRepository} from "../repositories/CategoryRepository";
 import {TagRepository} from "../repositories/TagRepository";
 import {ResourceTagRepository} from "../repositories/ResourceTagRepository";
+import {createSlug} from "../utils/slugify";
 
 
 const createCategories = (qty: number = 1): Array<Partial<Category>> => {
@@ -26,7 +27,7 @@ const createResource = (categoryId: number): Omit<MediaResource, "id" | "created
         curator_address: null,
         image_url: faker.image.cats(),
         resource_url: faker.internet.url(),
-        
+        slug: null
     };
 };
 
@@ -60,7 +61,10 @@ const seedTags = async (qty: number = 1): Promise<Array<Tag>> => {
 };
 
 const seedResource = async (categoryId: number): Promise<MediaResource> => {
-    const {data} = await new ResourceRepository().create(createResource(categoryId));
+    const repo = new ResourceRepository();
+    const {data} = await repo.create(createResource(categoryId));
+    const slug = createSlug(data);
+    await repo.update(data.id, {slug});
 
     return data;
 };
