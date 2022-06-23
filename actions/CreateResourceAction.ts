@@ -22,7 +22,7 @@ export default class CreateResourceAction extends BaseAction {
 
     // Generate and save slug
     const slug = slugify(`${body.title} ${resource.id}`);
-    // TODO: save slug to DB
+    await this.addSlugToResource(resource, slug);
 
     // Generate thumbnail image
     this.generateThumbnailImage(resource);
@@ -74,5 +74,10 @@ export default class CreateResourceAction extends BaseAction {
       resource_id: resource.id,
       resource_url: resource.resource_url,
     });
+  }
+
+  private async addSlugToResource(resource: MediaResource, slug: string) {
+    const resourceRepo = new ResourceRepository();
+    await resourceRepo.update(resource.id, { slug });
   }
 }
