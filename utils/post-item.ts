@@ -15,7 +15,7 @@ export const copyLinkToClipboard = (url: string) => {
 };
 
 export const getShareOnTwitterUrl = (post: IPostItemGrid | IPostItem) => {
-  const url = encodeURIComponent(getRefUrl(post.url) + "\n\n");
+  const url = encodeURIComponent(getRefUrl(post.resource_url) + "\n\n");
   const text = `${post.title}\n`;
   return `https://twitter.com/intent/tweet?url=${url}&hashtags=Elrond,ElrondNetwork,ElrondDevGuild,ElrondDevHub,ElrondDevs&text=${encodeURIComponent(
     text

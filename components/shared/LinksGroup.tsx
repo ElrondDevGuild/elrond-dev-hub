@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BiChevronRight } from 'react-icons/bi';
 
 export interface ILink {
   label: string;
@@ -35,11 +36,12 @@ export default function LinksGroup({ title, links }: ILinksGroupProps) {
         {links?.map((link, index) => {
           return (
             <LinkWrapper link={link} key={index}>
-              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark my-4 cursor-pointer">
+              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark my-4 cursor-pointer relative">
                 <span className="pr-2">
                   <link.icon className="text-lg" />
                 </span>
                 {link.label}
+                <BiChevronRight className="absolute right-0 sm:hidden" />
               </li>
             </LinkWrapper>
           );
