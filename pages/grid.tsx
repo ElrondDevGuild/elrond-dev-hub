@@ -3,10 +3,10 @@ import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
 
 const dummyPost: IPostItemGrid = {
   title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia, suscipit.",
-  image: "https://picsum.photos/682/350",
+  image_url: "https://picsum.photos/682/350",
   category: "Category1",
   author: "John Doe",
-  url: "https://elrondgiants.com",
+  resource_url: "https://elrondgiants.com",
 };
 
 export default function Grid() {

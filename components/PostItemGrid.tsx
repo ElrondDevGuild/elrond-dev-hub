@@ -9,6 +9,7 @@ export interface IPostItemGrid {
   resource_url: string;
   category: string;
   author: string;
+  slug: string;
 }
 
 export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
@@ -40,7 +41,7 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
           <img src={post.image_url} alt={post.title} className="object-cover h-36 w-full object-center rounded-t-md" />
         </a>
       </div>
-      <div className="p-4 md:px-8 md:py-6">
+      <div className="p-4 md:px-8 md:py-6 flex-grow">
         <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">By {post.author}</div>
         <div className="font-semibold text-theme-title dark:text-theme-title-dark text-base  sm:text-xl">
           <a href={readArticleUrl} target="_blank" rel="noreferrer">
