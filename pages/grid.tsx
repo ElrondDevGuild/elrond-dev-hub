@@ -7,6 +7,7 @@ const dummyPost: IPostItemGrid = {
   category: "Category1",
   author: "John Doe",
   resource_url: "https://elrondgiants.com",
+  slug: "lorem-ipsum-dolor-sit-amet-consectetur-adipisicing-elit-quia-suscipit"
 };
 
 export default function Grid() {
