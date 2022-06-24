@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Layout from '../components/Layout';
 import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
 import Pagination from '../components/shared/Pagination';
+import { Category } from '../types/supabase';
 import { api } from '../utils/api';
 
 const pageSize = 12;
@@ -19,6 +20,11 @@ const fetchItems = async (page: number, category: string) => {
   return data;
 };
 
+const fetchCategories = async () => {
+  const { data } = await api.get("categories");
+  return data;
+};
+
 export default function List() {
   const router = useRouter();
   const [posts, setPosts] = useState<IPostItemGrid[]>([]);
@@ -26,6 +32,22 @@ export default function List() {
   const [currentPage, setCurrentPage] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const categories = await fetchCategories();
+      setCategories(categories);
+    })();
+  }, []);
+
+  const categoryLabel = useMemo(() => {
+    if (categories?.length && category) {
+      // @ts-ignore
+      return categories.find((e: Category) => e.id === parseInt(category))?.title;
+    }
+    return "";
+  }, [category, categories]);
 
   const search = async () => {
     if (category) {
@@ -75,9 +97,12 @@ export default function List() {
 
   return (
     <Layout hideRightBar={true}>
+      <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
+        Search results for category: {categoryLabel}
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post: IPostItemGrid) => {
-          return <PostItemGrid post={post} key={post.id} />;
+        {posts.map((post: IPostItemGrid, index) => {
+          return <PostItemGrid post={post} key={index} />;
         })}
       </div>
       <div className={`mt-8 ${loading && "pointer-events-none opacity-75"}`}>
