@@ -14,12 +14,14 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
     page,
     size,
     categories,
+    category,
     tags,
     published,
   }: {
     page?: number;
     size?: number;
     categories?: number[];
+    category?: number;
     tags?: number[];
     published?: boolean;
   } = {}) {
@@ -40,6 +42,10 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
 
     if (categories?.length) {
       query = query.in("category_id", categories);
+    }
+
+    if (category) {
+      query = query.eq("category_id", category);
     }
 
     if (tags?.length) {

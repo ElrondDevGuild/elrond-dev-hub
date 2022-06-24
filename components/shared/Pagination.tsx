@@ -9,6 +9,9 @@ interface IPaginationProps {
 }
 
 export default function Pagination({ onPrevious, onNext, hasPrevious, hasNext }: IPaginationProps) {
+  if (!hasNext && !hasPrevious) {
+    return null;
+  }
   return (
     <nav className="border-t border-theme-border dark:border-theme-border-dark px-4 flex items-center justify-between sm:px-0">
       {hasPrevious && (

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import Layout from '../components/Layout';
 import PostItem, { IPostItem } from '../components/PostItem';
+import Loader from '../components/shared/Loader';
 import Pagination from '../components/shared/Pagination';
 import { api } from '../utils/api';
 
@@ -73,6 +74,14 @@ const Home: NextPage = () => {
   const onNext = async () => {
     loadItems(page + 1);
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <Loader />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

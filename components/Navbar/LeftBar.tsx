@@ -56,18 +56,21 @@ export default function Leftbar() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await api.get("categories");
-      const links = data?.map((category: Category) => {
-        return {
-          label: category.title,
-          url: categoryPath(category),
-          icon: FiFolder,
-        };
-      });
-      setCategoriesSection({
-        title: "Categories",
-        links,
-      });
+      try {
+        const { data } = await api.get("categories");
+        const links = data?.map((category: Category) => {
+          return {
+            label: category.title,
+            url: categoryPath(category),
+            icon: FiFolder,
+          };
+        });
+        setCategoriesSection({
+          title: "Categories",
+          links,
+        });
+      } finally {
+      }
     })();
   }, []);
 
