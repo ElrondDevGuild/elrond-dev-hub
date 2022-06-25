@@ -48,6 +48,18 @@ const firstSection: ILinksGroupProps = {
       icon: FiExternalLink,
       openInNewTab: true,
     },
+    {
+      label: "erdjs",
+      url: "https://docs.elrond.com/sdk-and-tools/erdjs/erdjs/",
+      icon: FiExternalLink,
+      openInNewTab: true,
+    },
+    {
+      label: "erdpy",
+      url: "https://docs.elrond.com/sdk-and-tools/erdpy/erdpy/",
+      icon: FiExternalLink,
+      openInNewTab: true,
+    },
   ],
 };
 

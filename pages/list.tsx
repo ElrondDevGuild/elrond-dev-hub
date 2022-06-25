@@ -1,13 +1,15 @@
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 
 import Layout from '../components/Layout';
 import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
+import Loader from '../components/shared/Loader';
 import Pagination from '../components/shared/Pagination';
 import { Category } from '../types/supabase';
 import { api } from '../utils/api';
 
-const pageSize = 12;
+const pageSize = 1;
 
 const fetchItems = async (page: number, category: string) => {
   const { data } = await api.get("resources", {
@@ -32,6 +34,7 @@ export default function List() {
   const [currentPage, setCurrentPage] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -50,9 +53,23 @@ export default function List() {
   }, [category, categories]);
 
   const search = async () => {
+    setLoading(true);
     if (category) {
-      const items = await fetchItems(currentPage, category);
-      setPosts(items);
+      try {
+        const items = await fetchItems(currentPage, category);
+        setPosts(items);
+
+        // Check if we have a next apge
+        const nextPage = await fetchItems(currentPage + 1, category);
+        if (nextPage?.length) {
+          setHasNext(true);
+        } else {
+          setHasNext(false);
+        }
+      } finally {
+        setLoading(false);
+        setInitialLoad(false);
+      }
     }
   };
 
@@ -95,8 +112,20 @@ export default function List() {
     }
   }, [category]);
 
+  if (initialLoad) {
+    return (
+      <Layout hideRightBar={true}>
+        <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark">
+          Search results for category: {categoryLabel}
+        </p>
+        <Loader />
+      </Layout>
+    );
+  }
+
   return (
     <Layout hideRightBar={true}>
+      <NextSeo title={categoryLabel} />
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
         Search results for category: {categoryLabel}
       </p>
@@ -106,7 +135,13 @@ export default function List() {
         })}
       </div>
       <div className={`mt-8 ${loading && "pointer-events-none opacity-75"}`}>
-        <Pagination hasNext={hasNext} hasPrevious={hasPrevious} onPrevious={onPrevious} onNext={onNext} />
+        <Pagination
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          onPrevious={onPrevious}
+          onNext={onNext}
+          page={currentPage}
+        />
       </div>
     </Layout>
   );

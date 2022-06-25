@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import Layout from '../components/Layout';
 import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
+import Loader from '../components/shared/Loader';
 import Pagination from '../components/shared/Pagination';
 import { algolia } from '../utils/search';
 
@@ -13,6 +14,7 @@ export default function Search() {
   const [currentPage, setCurrentPage] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const search = async (query: string) => {
     try {
@@ -24,6 +26,7 @@ export default function Search() {
       setPosts(hits as unknown as IPostItemGrid[]);
     } finally {
       setLoading(false);
+      setInitialLoad(false);
     }
   };
 
@@ -40,6 +43,7 @@ export default function Search() {
   }, [currentPage]);
 
   useEffect(() => {
+    setInitialLoad(true);
     const { q } = router.query;
     if (q) {
       (async () => {
@@ -59,6 +63,17 @@ export default function Search() {
     }
   }, [currentPage]);
 
+  if (initialLoad) {
+    return (
+      <Layout hideRightBar={true}>
+        <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark">
+          Search results for: &quot;{query}&quot;
+        </p>
+        <Loader />
+      </Layout>
+    );
+  }
+
   return (
     <Layout hideRightBar={true}>
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
@@ -70,7 +85,13 @@ export default function Search() {
         })}
       </div>
       <div className={`mt-8 ${loading && "pointer-events-none opacity-75"}`}>
-        <Pagination hasNext={hasNext} hasPrevious={hasPrevious} onPrevious={onPrevious} onNext={onNext} />
+        <Pagination
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          onPrevious={onPrevious}
+          onNext={onNext}
+          page={currentPage}
+        />
       </div>
     </Layout>
   );

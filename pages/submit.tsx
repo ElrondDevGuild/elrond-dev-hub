@@ -66,7 +66,7 @@ export default function Submit() {
 
   return (
     <Layout hideRightBar={true}>
-      <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
+      <div className="lg:px-16 text-theme-text dark:text-theme-text-dark rounded-md">
         <div className="flex flex-col">
           <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
             Submit new content
