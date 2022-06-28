@@ -9,7 +9,7 @@ import Pagination from '../components/shared/Pagination';
 import { Category } from '../types/supabase';
 import { api } from '../utils/api';
 
-const pageSize = 1;
+const pageSize = 12;
 
 const fetchItems = async (page: number, category: string) => {
   const { data } = await api.get("resources", {

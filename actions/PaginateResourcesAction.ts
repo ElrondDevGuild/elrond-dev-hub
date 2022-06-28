@@ -14,7 +14,7 @@ export default class PaginateResourcesAction extends BaseAction {
       // @ts-ignore
       .paginate({ page, size, categories, category, tags, published: true });
 
-    return new ApiResponse({ body: resources });
+    return new ApiResponse({ body: resources }).cache(900, 1800);
   }
 
   async rules(): Promise<Joi.Schema> {

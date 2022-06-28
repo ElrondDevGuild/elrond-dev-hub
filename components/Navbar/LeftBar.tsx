@@ -3,7 +3,7 @@ import { FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiHome, FiMail } 
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
-import { categoryPath, submitPath } from '../../utils/routes';
+import { categoryPath, homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
 
@@ -11,9 +11,8 @@ const menuSection: ILinksGroupProps = {
   links: [
     {
       label: "Library",
-      url: "https://elrondgiants.com",
+      url: homePath,
       icon: FiHome,
-      openInNewTab: true,
     },
     {
       label: "Newsletter",
@@ -57,6 +56,12 @@ const firstSection: ILinksGroupProps = {
     {
       label: "erdpy",
       url: "https://docs.elrond.com/sdk-and-tools/erdpy/erdpy/",
+      icon: FiExternalLink,
+      openInNewTab: true,
+    },
+    {
+      label: "Validator Node",
+      url: "https://docs.elrond.com/validators/system-requirements/",
       icon: FiExternalLink,
       openInNewTab: true,
     },

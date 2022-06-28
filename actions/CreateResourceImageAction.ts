@@ -14,11 +14,17 @@ export default class CreateResourceImageAction extends BaseAction {
     const {
       body: { resource_url, resource_id },
     } = req;
+    let imageKey;
     const imageUrl = await this.getOgImage(resource_url);
-    const imageBuffer = await this.processImage(imageUrl);
-    const imageKey = await this.uploadImageToStorage(resource_id, imageBuffer);
-    if (imageKey) {
-      await this.updateResourceImageUrl(resource_id, imageKey);
+    try {
+      const imageBuffer = await this.processImage(imageUrl);
+      imageKey = await this.uploadImageToStorage(resource_id, imageBuffer);
+    } catch (e) {
+      imageKey = imageUrl;
+    } finally {
+      if (imageKey) {
+        await this.updateResourceImageUrl(resource_id, imageKey);
+      }
     }
 
     return new ApiResponse().body({ imageKey }).status(201);

@@ -1,45 +1,61 @@
 export default class ApiResponse {
-    private _body: any;
-    private _status: number;
-    private _headers: [];
+  private _body: any;
+  private _status: number;
+  private _headers: [];
+  private _cacheHeader: string | null;
 
-    constructor({body, status, headers}: {
-        body?: any;
-        status?: number;
-        headers?: [];
-    } = {}) {
-        this._body = body ?? null;
-        this._status = status ?? 200;
-        this._headers = headers ?? [];
-    }
+  constructor({
+    body,
+    status,
+    headers,
+  }: {
+    body?: any;
+    status?: number;
+    headers?: [];
+  } = {}) {
+    this._body = body ?? null;
+    this._status = status ?? 200;
+    this._headers = headers ?? [];
+    this._cacheHeader = null;
+  }
 
-    body(value: any) {
-        this._body = value;
+  body(value: any) {
+    this._body = value;
 
-        return this;
-    }
+    return this;
+  }
 
-    status(value: number) {
-        this._status = value;
+  status(value: number) {
+    this._status = value;
 
-        return this;
-    }
+    return this;
+  }
 
-    headers(value: []) {
-        this._headers.push(...value);
+  headers(value: []) {
+    this._headers.push(...value);
 
-        return this;
-    }
+    return this;
+  }
 
-    getBody() {
-        return this._body;
-    }
+  cache(maxAge: number, staleWhileRevalidate: number) {
+    this._cacheHeader = `public, s-maxage=${maxAge}, stale-while-revalidate=${staleWhileRevalidate}`;
 
-    getStatus(): number {
-        return this._status;
-    }
+    return this;
+  }
 
-    getHeaders(): [] {
-        return this._headers;
-    }
-};
+  getBody() {
+    return this._body;
+  }
+
+  getStatus(): number {
+    return this._status;
+  }
+
+  getHeaders(): [] {
+    return this._headers;
+  }
+
+  getCache() {
+    return this._cacheHeader;
+  }
+}
