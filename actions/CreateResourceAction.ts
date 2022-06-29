@@ -25,14 +25,6 @@ export default class CreateResourceAction extends BaseAction {
     const resourceWithTags = await this.setResourceTags(resource, tags);
     const slug = await this.setSlug(resourceWithTags);
 
-    // Generate thumbnail image
-    try {
-      this.generateThumbnailImage(resource);
-    } catch (e) {
-      await sleep(5000);
-      this.generateThumbnailImage(resource);
-    }
-
     return new ApiResponse().body({ ...resourceWithTags, slug }).status(201);
   }
 
