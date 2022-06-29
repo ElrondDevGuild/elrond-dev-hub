@@ -14,6 +14,14 @@ function MyApp({ Component, pageProps }: AppProps) {
           type: "website",
           url: "https://www.url.ie/",
           site_name: "Elrond Dev Hub",
+          images: [
+            {
+              url: `https://egldhub.dev/facebook.jpg`,
+              width: 1200,
+              height: 630,
+              type: "image/png",
+            },
+          ],
         }}
         twitter={{
           cardType: "summary_large_image",
