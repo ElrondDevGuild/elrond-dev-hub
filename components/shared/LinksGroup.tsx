@@ -31,12 +31,12 @@ const LinkWrapper = ({ link, children }: { link: ILink; children: any }) => {
 export default function LinksGroup({ title, links }: ILinksGroupProps) {
   return (
     <div>
-      {title && <div className="uppercase text-primary dark:text-primary-dark font-semibold text-xs">{title}</div>}
-      <ul className="mt-4">
+      {title && <div className="uppercase text-primary dark:text-primary-dark font-semibold text-xs mb-4">{title}</div>}
+      <ul className="flex flex-col space-y-4">
         {links?.map((link, index) => {
           return (
             <LinkWrapper link={link} key={index}>
-              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark my-4 cursor-pointer relative">
+              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark cursor-pointer relative">
                 <span className="pr-2">
                   <link.icon className="text-lg" />
                 </span>
