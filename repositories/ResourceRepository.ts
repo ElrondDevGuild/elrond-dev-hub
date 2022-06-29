@@ -55,6 +55,7 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
 
     if (published) {
       query = query.not("published_at", "is", null);
+      query = query.not("image_url", "is", null);
     }
 
     const { data, error } = await query;
