@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           site_name: "Elrond Dev Hub",
           images: [
             {
-              url: `https://egldhub.dev/facebook.jpg`,
+              url: `https://egldhub.dev/facebook.png`,
               width: 1200,
               height: 630,
               type: "image/png",
