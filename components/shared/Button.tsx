@@ -25,7 +25,7 @@ const ButtonComponent = (btnProps: IButtonProps) => {
       className={`${btnClasses} border font-medium text-xs sm:text-sm py-2 px-4 rounded-md transition-opacity ease-in-out hover:opacity-80 flex items-center disabled:opacity-80 disabled:cursor-not-allowed`}
     >
       {btnProps.icon && (
-        <span className="pr-1">
+        <span className="pr-2">
           <btnProps.icon />
         </span>
       )}{" "}

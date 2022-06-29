@@ -8,13 +8,13 @@ import BaseAction from './_base/BaseAction';
 
 export default class PaginateResourcesAction extends BaseAction {
   async handle(req: NextApiRequest): Promise<ApiResponse> {
-    const { page, page_size: size, categories, tags } = req.query;
+    const { page, page_size: size, categories, category, tags } = req.query;
 
     const resources = await new ResourceRepository()
       // @ts-ignore
-      .paginate({ page, size, categories, tags, published: true });
+      .paginate({ page, size, categories, category, tags, published: true });
 
-    return new ApiResponse({ body: resources });
+    return new ApiResponse({ body: resources }).cache(900, 1800);
   }
 
   async rules(): Promise<Joi.Schema> {
@@ -24,6 +24,7 @@ export default class PaginateResourcesAction extends BaseAction {
     return Joi.object({
       page: Joi.number().min(0).optional(),
       page_size: Joi.number().min(1).max(50).optional(),
+      category: Joi.valid(...categories).optional(),
       categories: Joi.array()
         .items(Joi.valid(...categories))
         .messages({

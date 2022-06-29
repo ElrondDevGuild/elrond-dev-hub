@@ -3,7 +3,7 @@ import { FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiHome, FiMail } 
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
-import { categoryPath, submitPath } from '../../utils/routes';
+import { categoryPath, homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
 
@@ -11,9 +11,8 @@ const menuSection: ILinksGroupProps = {
   links: [
     {
       label: "Library",
-      url: "https://elrondgiants.com",
+      url: homePath,
       icon: FiHome,
-      openInNewTab: true,
     },
     {
       label: "Newsletter",
@@ -48,6 +47,24 @@ const firstSection: ILinksGroupProps = {
       icon: FiExternalLink,
       openInNewTab: true,
     },
+    {
+      label: "erdjs",
+      url: "https://docs.elrond.com/sdk-and-tools/erdjs/erdjs/",
+      icon: FiExternalLink,
+      openInNewTab: true,
+    },
+    {
+      label: "erdpy",
+      url: "https://docs.elrond.com/sdk-and-tools/erdpy/erdpy/",
+      icon: FiExternalLink,
+      openInNewTab: true,
+    },
+    {
+      label: "Validator Node",
+      url: "https://docs.elrond.com/validators/system-requirements/",
+      icon: FiExternalLink,
+      openInNewTab: true,
+    },
   ],
 };
 
@@ -56,18 +73,21 @@ export default function Leftbar() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await api.get("categories");
-      const links = data?.map((category: Category) => {
-        return {
-          label: category.title,
-          url: categoryPath(category),
-          icon: FiFolder,
-        };
-      });
-      setCategoriesSection({
-        title: "Categories",
-        links,
-      });
+      try {
+        const { data } = await api.get("categories");
+        const links = data?.map((category: Category) => {
+          return {
+            label: category.title,
+            url: categoryPath(category),
+            icon: FiFolder,
+          };
+        });
+        setCategoriesSection({
+          title: "Categories",
+          links,
+        });
+      } finally {
+      }
     })();
   }, []);
 

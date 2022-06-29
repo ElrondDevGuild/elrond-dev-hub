@@ -42,7 +42,9 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
         </a>
       </div>
       <div className="p-4 md:px-8 md:py-6 flex-grow">
-        <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">By {post.author}</div>
+        <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">
+          By <span className="text-primary dark:text-primary-dark">{post.author}</span>
+        </div>
         <div className="font-semibold text-theme-title dark:text-theme-title-dark text-base  sm:text-xl">
           <a href={readArticleUrl} target="_blank" rel="noreferrer">
             {post.title}

@@ -66,7 +66,7 @@ export default function Submit() {
 
   return (
     <Layout hideRightBar={true}>
-      <div className="px-16 text-theme-text dark:text-theme-text-dark rounded-md">
+      <div className="lg:px-16 text-theme-text dark:text-theme-text-dark rounded-md">
         <div className="flex flex-col">
           <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
             Submit new content
@@ -82,17 +82,7 @@ export default function Submit() {
             <form onSubmit={handleSubmit(submitResource)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <Input
-                  label="Title"
-                  name="title"
-                  placeholder="My awesome article"
-                  type="text"
-                  options={{ required: true }}
-                />
-              </div>
-
-              <div>
-                <Input
-                  label="Content URL"
+                  label="Content URL*"
                   name="resource_url"
                   placeholder="https://exmaple.com"
                   type="url"
@@ -101,25 +91,40 @@ export default function Submit() {
               </div>
 
               <div>
-                <Input label="Author" name="author" placeholder="John Doe" type="text" options={{ required: true }} />
+                <Input
+                  label="Title*"
+                  name="title"
+                  placeholder="My awesome resource"
+                  type="text"
+                  options={{ required: true }}
+                />
+              </div>
+
+              <div>
+                <Input label="Author*" name="author" placeholder="John Doe" type="text" options={{ required: true }} />
               </div>
 
               <div>
                 <Input label="Wallet address" name="curator_address" placeholder="erd123..." type="text" />
+                <p className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
+                  We will use this to link the resource to your account later
+                </p>
               </div>
 
               <div className="md:col-span-2">
                 <Textarea
-                  label="Description"
+                  label="Description*"
                   name="description"
                   placeholder="My awesome description"
                   options={{ required: true, maxLength: 256, minLength: 30 }}
                 />
-                <span className="text-xs text-gray-400">30-256 characters</span>
+                <span className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
+                  30-256 characters
+                </span>
               </div>
 
               <div>
-                <Select name="category_id" options={{ required: true }} label="Category" selectOptions={categories} />
+                <Select name="category_id" options={{ required: true }} label="Category*" selectOptions={categories} />
               </div>
 
               <div>
