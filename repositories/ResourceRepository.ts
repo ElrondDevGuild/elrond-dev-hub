@@ -55,7 +55,6 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
 
     if (published) {
       query = query.not("published_at", "is", null);
-      query = query.not("image_url", "is", null);
     }
 
     const { data, error } = await query;
@@ -64,7 +63,9 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
     }
 
     const finalData = data?.map((resource: MediaResource) => {
-      if (!resource?.image_url?.startsWith("http")) {
+      if (!resource?.image_url) {
+        resource.image_url = `${RESOURCE_BASE_URL}resource-images/post-placeholder.jpg`;
+      } else if (!resource?.image_url?.startsWith("http")) {
         resource.image_url = `${RESOURCE_BASE_URL}${resource.image_url}`;
       }
       return resource;

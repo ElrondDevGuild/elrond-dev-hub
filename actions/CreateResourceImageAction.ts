@@ -19,8 +19,6 @@ export default class CreateResourceImageAction extends BaseAction {
     try {
       const imageBuffer = await this.processImage(imageUrl);
       imageKey = await this.uploadImageToStorage(resource_id, imageBuffer);
-    } catch (e) {
-      imageKey = imageUrl;
     } finally {
       if (imageKey) {
         await this.updateResourceImageUrl(resource_id, imageKey);
