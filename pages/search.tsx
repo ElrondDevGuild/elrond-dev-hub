@@ -81,6 +81,16 @@ export default function Search() {
     );
   }
 
+  if (!loading && !posts?.length) {
+    return (
+      <Layout hideRightBar={true}>
+        <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark">
+          No search results for: &quot;{query}&quot;. Try and search another keywords.
+        </p>
+      </Layout>
+    );
+  }
+
   return (
     <Layout hideRightBar={true}>
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
