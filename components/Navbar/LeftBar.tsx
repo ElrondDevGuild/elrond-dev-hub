@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiHome, FiMail } from 'react-icons/fi';
+import { FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiGithub, FiHome, FiMail } from 'react-icons/fi';
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
@@ -68,6 +68,17 @@ const firstSection: ILinksGroupProps = {
   ],
 };
 
+const sourceCode: ILinksGroupProps = {
+  links: [
+    {
+      label: "Elrond's Dev Hub",
+      url: "https://github.com/ElrondDevGuild/elrond-dev-hub",
+      icon: FiGithub,
+      openInNewTab: true,
+    },
+  ],
+};
+
 export default function Leftbar() {
   const [categoriesSection, setCategoriesSection] = useState<ILinksGroupProps | null>(null);
 
@@ -107,6 +118,9 @@ export default function Leftbar() {
           <LinksGroup {...categoriesSection} />
         </div>
       )}
+      <div className="mb-8">
+        <LinksGroup {...sourceCode} />
+      </div>
     </>
   );
 }

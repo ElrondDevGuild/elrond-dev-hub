@@ -6,6 +6,7 @@ import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
 import Loader from '../components/shared/Loader';
 import Pagination from '../components/shared/Pagination';
 import { algolia } from '../utils/search';
+import { RESOURCE_BASE_URL } from '../utils/storage_buckets';
 
 export default function Search() {
   const router = useRouter();
@@ -23,7 +24,13 @@ export default function Search() {
         page: currentPage,
       });
       setHasNext(currentPage < nbPages - 1);
-      setPosts(hits as unknown as IPostItemGrid[]);
+      const results = hits?.map((e: any) => {
+        if (!e?.image_url) e.image_url = `${RESOURCE_BASE_URL}resource-images/post-placeholder.jpg`;
+        else if (!e?.image_url?.startsWith("http")) e.image_url = `${RESOURCE_BASE_URL}${e.image_url}`;
+
+        return e;
+      });
+      setPosts(results as unknown as IPostItemGrid[]);
     } finally {
       setLoading(false);
       setInitialLoad(false);

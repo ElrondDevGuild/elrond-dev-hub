@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { FiBook, FiLink, FiTwitter } from 'react-icons/fi';
 
 import { copyLinkToClipboard, getRefUrl, getShareOnTwitterUrl } from '../utils/post-item';
+import { categoryPath } from '../utils/routes';
 
 interface IPostItemTag {
   id: number;
@@ -14,6 +16,7 @@ export interface IPostItem {
   image_url: string;
   resource_url: string;
   category: string;
+  category_id: number;
   description: string;
   author: string;
   tags?: IPostItemTag[];
@@ -62,7 +65,7 @@ export default function PostItem({ post }: { post: IPostItem }) {
           />
         </a>
         <div className="absolute top-0 left-0 bg-primary dark:bg-primary-dark text-secondary dark:text-secondary-dark py-1 px-2 rounded-sm font-semibold uppercase text-xs m-5 shadow-sm">
-          {post.category}
+          <Link href={categoryPath(post.category_id)}>{post.category}</Link>
         </div>
       </div>
       <div className="md:py-7 md:px-8 py-3 px-4">
