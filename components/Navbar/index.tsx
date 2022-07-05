@@ -56,7 +56,7 @@ export default function Navbar() {
           </div>
 
           <Disclosure.Panel className="sm:hidden absolute w-full bg-secondary dark:bg-secondary-dark bg-opacity-60 dark:bg-opacity-60 z-20 flex justify-end">
-            <div className="bg-secondary dark:bg-secondary-dark w-4/5 px-8 pt-8 pb-16 h-screen overflow-y-scroll overscroll-contain">
+            <div className="bg-secondary dark:bg-secondary-dark w-4/5 px-8 pt-8 pb-32 h-screen overflow-y-scroll overscroll-contain">
               <Leftbar />
             </div>
           </Disclosure.Panel>
