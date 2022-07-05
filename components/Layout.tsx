@@ -45,7 +45,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
           <div className={`${columnClasses.rightColum} py-10`}>
             <div className="p-6 bg-theme-title  dark:bg-secondary-dark-lighter rounded-md">
               <p className="font-semibold text-xl text-white dark:text-theme-title-dark mb-5">
-                Learn development together with others - ask your questions, help people and have fun.
+                Check out the official Telegram group for Elrond developers.
               </p>
               <Button label="Join now" icon={FaTelegramPlane} href="https://t.me/ElrondDevelopers" />
             </div>
