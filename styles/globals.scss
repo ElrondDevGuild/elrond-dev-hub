@@ -4,6 +4,7 @@
 
 html,
 body {
+  font-family: "Inter", sans-serif;
   @apply bg-secondary;
 
   @media (prefers-color-scheme: dark) {

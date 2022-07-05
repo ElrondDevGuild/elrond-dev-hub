@@ -129,7 +129,7 @@ export default function List() {
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
         Search results for category: {categoryLabel}
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         {posts.map((post: IPostItemGrid, index) => {
           return <PostItemGrid post={post} key={index} />;
         })}

@@ -5,11 +5,12 @@ import { copyLinkToClipboard, getRefUrl, getShareOnTwitterUrl } from '../utils/p
 
 export interface IPostItemGrid {
   title: string;
-  image_url: string;
+  description?: string;
+  image_url?: string;
   resource_url: string;
-  category: string;
+  category?: string;
   author: string;
-  slug: string;
+  slug?: string;
 }
 
 export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
@@ -38,7 +39,7 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
     <div className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
       <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark">
         <a href={readArticleUrl} target="_blank" rel="noreferrer">
-          <img src={post.image_url} alt={post.title} className="object-cover h-36 w-full object-center rounded-t-md" />
+          <img src={post.image_url} alt={post.title} className="object-cover h-52 w-full object-center rounded-t-md" />
         </a>
       </div>
       <div className="p-4 md:px-8 md:py-6 flex-grow">
@@ -50,6 +51,9 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
             {post.title}
           </a>
         </div>
+        {post?.description && (
+          <p className="text-theme-text dark:text-theme-text-dark text-xs sm:text-base mt-3">{post.description}</p>
+        )}
       </div>
       <div className="flex text-theme-text dark:text-theme-text-dark py-5 border-t-0.5 border-theme-border dark:border-theme-border-dark divide-x-0.5 divide-theme-border dark:divide-theme-border-dark">
         <a href={readArticleUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">

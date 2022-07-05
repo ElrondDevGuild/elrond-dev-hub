@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiGithub, FiHome, FiMail } from 'react-icons/fi';
+import { FiBookOpen, FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiGithub, FiHome, FiMail } from 'react-icons/fi';
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
-import { categoryPath, homePath, submitPath } from '../../utils/routes';
+import { categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
 
@@ -16,10 +16,9 @@ const menuSection: ILinksGroupProps = {
     },
     {
       label: "Newsletter",
-      url: "#",
+      url: "https://newsletter.statescu.net/",
       icon: FiMail,
       openInNewTab: true,
-      disabled: true,
     },
     {
       label: "Bounties",
@@ -79,6 +78,16 @@ const sourceCode: ILinksGroupProps = {
   ],
 };
 
+const gettingStartedSection: ILinksGroupProps = {
+  links: [
+    {
+      label: "Getting Started",
+      url: gettingStartedPath,
+      icon: FiBookOpen,
+    },
+  ],
+};
+
 export default function Leftbar() {
   const [categoriesSection, setCategoriesSection] = useState<ILinksGroupProps | null>(null);
 
@@ -109,6 +118,9 @@ export default function Leftbar() {
       </div>
       <div className="mb-8">
         <Button label="+ Add Resource" href={submitPath} />
+      </div>
+      <div className="mb-8">
+        <LinksGroup {...gettingStartedSection} />
       </div>
       <div className="mb-8">
         <LinksGroup {...firstSection} />
