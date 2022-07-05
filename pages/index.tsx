@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -7,6 +8,7 @@ import PostItem, { IPostItem } from '../components/PostItem';
 import Loader from '../components/shared/Loader';
 import Pagination from '../components/shared/Pagination';
 import { api } from '../utils/api';
+import { homePath } from '../utils/routes';
 
 const pageSize = 6;
 
@@ -31,6 +33,7 @@ const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [page, setPage] = useState(0);
+  const router = useRouter();
 
   const hasPrevious = useMemo(() => {
     return page > 0;
@@ -65,15 +68,28 @@ const Home: NextPage = () => {
   };
 
   useEffect(() => {
-    loadItems(0);
-  }, []);
+    if (router.isReady) {
+      const _page = router.query?.page as string;
+      if (_page) {
+        try {
+          const page = parseInt(_page) - 1;
+          setPage(page);
+          loadItems(page);
+        } catch (e) {}
+      } else {
+        loadItems(0);
+      }
+    }
+  }, [router.isReady]);
 
   const onPrevious = async () => {
     loadItems(page - 1);
+    router.push(homePath, { query: { page: page - 1 + 1 } }, { shallow: true });
   };
 
   const onNext = async () => {
     loadItems(page + 1);
+    router.push(homePath, { query: { page: page + 1 + 1 } }, { shallow: true });
   };
 
   if (initialLoad) {
