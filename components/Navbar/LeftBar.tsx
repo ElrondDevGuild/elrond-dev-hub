@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react';
-import { FiBookOpen, FiBriefcase, FiCheckSquare, FiExternalLink, FiFolder, FiGithub, FiHome, FiMail } from 'react-icons/fi';
+import {
+  FiAlertCircle,
+  FiBookOpen,
+  FiBriefcase,
+  FiCheckSquare,
+  FiExternalLink,
+  FiFolder,
+  FiGithub,
+  FiHome,
+  FiMail,
+} from 'react-icons/fi';
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
@@ -70,9 +80,15 @@ const firstSection: ILinksGroupProps = {
 const sourceCode: ILinksGroupProps = {
   links: [
     {
-      label: "Elrond's Dev Hub",
+      label: "Source Code",
       url: "https://github.com/ElrondDevGuild/elrond-dev-hub",
       icon: FiGithub,
+      openInNewTab: true,
+    },
+    {
+      label: "Feedback",
+      url: "https://forms.gle/oyen4QTVpJoPgmZi8",
+      icon: FiAlertCircle,
       openInNewTab: true,
     },
   ],
