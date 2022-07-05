@@ -72,8 +72,8 @@ export default function Submit() {
             Submit new content
           </h1>
           <p className="max-w-xl">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto adipisci sit, consequatur ab nostrum,
-            aperiam eaque unde debitis ipsam officiis labore quo laborum voluptatibus ducimus.
+            Share new content with other Elrond Devs. Submissions will be manually reviewed before publishing them to
+            the platform.
           </p>
         </div>
 
