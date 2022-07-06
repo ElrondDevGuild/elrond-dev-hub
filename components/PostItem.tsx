@@ -55,7 +55,7 @@ export default function PostItem({ post }: { post: IPostItem }) {
   }, [post?.tags]);
 
   return (
-    <div className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
+    <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
       <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark relative">
         <a href={readArticleUrl} target="_blank" rel="noreferrer">
           <img
@@ -100,6 +100,6 @@ export default function PostItem({ post }: { post: IPostItem }) {
           <FiLink className="mr-2  text-2xl sm:text-xl" /> <span className="hidden md:block">Copy link</span>
         </a>
       </div>
-    </div>
+    </article>
   );
 }

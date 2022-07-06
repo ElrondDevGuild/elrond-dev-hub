@@ -36,7 +36,7 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
   }, [post?.resource_url]);
 
   return (
-    <div className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
+    <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
       <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark">
         <a href={readArticleUrl} target="_blank" rel="noreferrer">
           <img src={post.image_url} alt={post.title} className="object-cover h-52 w-full object-center rounded-t-md" />
@@ -77,6 +77,6 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
           </div>
         </a>
       </div>
-    </div>
+    </article>
   );
 }
