@@ -96,7 +96,7 @@ export default function Search() {
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
         Search results for: &quot;{query}&quot;
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {posts.map((post: IPostItemGrid) => {
           return <PostItemGrid post={post} key={post.slug} />;
         })}
