@@ -13,24 +13,29 @@ import { homePath } from '../utils/routes';
 const pageSize = 6;
 
 const fetchItems = async (page: number) => {
-  const { data } = await api.get("resources", {
+  const {
+    data: { resources, count },
+  } = await api.get("resources", {
     params: {
       page,
       page_size: pageSize,
     },
   });
 
-  return data?.map((e: any) => {
+  const _resources = resources?.map((e: any) => {
     e.tags = e?.tags?.map((e: any) => e.title);
     e.category = e?.category?.title;
     return e;
   });
+
+  return { resources: _resources, count };
 };
 
 const Home: NextPage = () => {
   const [posts, setPosts] = useState<IPostItem[]>([]);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
   const [page, setPage] = useState(0);
   const router = useRouter();
@@ -47,17 +52,11 @@ const Home: NextPage = () => {
     setLoading(true);
 
     try {
-      const postsToLoad = await fetchItems(page);
-      setPosts(postsToLoad);
+      const { resources, count } = await fetchItems(page);
+      setPosts(resources);
       setPage(page);
 
-      // Check if we have a next apge
-      const nextPage = await fetchItems(page + 1);
-      if (nextPage?.length) {
-        setHasNext(true);
-      } else {
-        setHasNext(false);
-      }
+      setTotalPages(Math.ceil(count / pageSize));
     } finally {
       setLoading(false);
       setInitialLoad(false);
@@ -66,6 +65,16 @@ const Home: NextPage = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (totalPages) {
+      if (page + 1 < totalPages) {
+        setHasNext(true);
+      } else {
+        setHasNext(false);
+      }
+    }
+  }, [totalPages, page]);
 
   useEffect(() => {
     if (router.isReady) {

@@ -8,18 +8,21 @@ import Loader from '../components/shared/Loader';
 import Pagination from '../components/shared/Pagination';
 import { Category } from '../types/supabase';
 import { api } from '../utils/api';
+import { categoryPath } from '../utils/routes';
 
 const pageSize = 12;
 
 const fetchItems = async (page: number, category: string) => {
-  const { data } = await api.get("resources", {
+  const {
+    data: { resources, count },
+  } = await api.get("resources", {
     params: {
       page,
       page_size: pageSize,
       category,
     },
   });
-  return data;
+  return { resources, count };
 };
 
 const fetchCategories = async () => {
@@ -36,6 +39,7 @@ export default function List() {
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [categories, setCategories] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -56,16 +60,9 @@ export default function List() {
     setLoading(true);
     if (category) {
       try {
-        const items = await fetchItems(currentPage, category);
-        setPosts(items);
-
-        // Check if we have a next apge
-        const nextPage = await fetchItems(currentPage + 1, category);
-        if (nextPage?.length) {
-          setHasNext(true);
-        } else {
-          setHasNext(false);
-        }
+        const { resources, count } = await fetchItems(currentPage, category);
+        setPosts(resources);
+        setTotalPages(Math.ceil(count / pageSize));
       } finally {
         setLoading(false);
         setInitialLoad(false);
@@ -73,12 +70,24 @@ export default function List() {
     }
   };
 
+  useEffect(() => {
+    if (totalPages) {
+      if (currentPage + 1 < totalPages) {
+        setHasNext(true);
+      } else {
+        setHasNext(false);
+      }
+    }
+  }, [totalPages, currentPage]);
+
   const onPrevious = async () => {
     setCurrentPage(currentPage - 1);
+    router.push(categoryPath(), { query: { page: currentPage - 1 + 1, category } }, { shallow: true });
   };
 
   const onNext = async () => {
     setCurrentPage(currentPage + 1);
+    router.push(categoryPath(), { query: { page: currentPage + 1 + 1, category } }, { shallow: true });
   };
 
   const hasPrevious = useMemo(() => {
@@ -86,13 +95,17 @@ export default function List() {
   }, [currentPage]);
 
   useEffect(() => {
-    const { category } = router.query;
+    const { category, page } = router.query;
     if (category) {
       (async () => {
         if (typeof category === "string") {
           setCategory(category);
         }
       })();
+    }
+
+    if (page) {
+      setCurrentPage(parseInt(page as string) - 1);
     }
   }, [router.isReady, router.query]);
 

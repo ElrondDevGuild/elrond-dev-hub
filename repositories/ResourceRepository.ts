@@ -34,7 +34,8 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
             tags(id, title),
             category:category_id(id, title),
             resource_tag!inner(tag_id)
-        `
+        `,
+        { count: "exact" }
       )
       .is("deleted_at", null)
       .order("published_at", { ascending: false })
@@ -57,7 +58,7 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
       query = query.not("published_at", "is", null);
     }
 
-    const { data, error } = await query;
+    const { data, error, count } = await query;
     if (error) {
       throw error;
     }
@@ -71,6 +72,6 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
       return resource;
     });
 
-    return finalData;
+    return { data: finalData, count };
   }
 }

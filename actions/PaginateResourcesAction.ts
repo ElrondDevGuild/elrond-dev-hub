@@ -10,11 +10,11 @@ export default class PaginateResourcesAction extends BaseAction {
   async handle(req: NextApiRequest): Promise<ApiResponse> {
     const { page, page_size: size, categories, category, tags } = req.query;
 
-    const resources = await new ResourceRepository()
+    const { data: resources, count } = await new ResourceRepository()
       // @ts-ignore
       .paginate({ page, size, categories, category, tags, published: true });
 
-    return new ApiResponse({ body: resources }).cache(900, 1800);
+    return new ApiResponse({ body: { resources, count } }).cache(900, 1800);
   }
 
   async rules(): Promise<Joi.Schema> {
