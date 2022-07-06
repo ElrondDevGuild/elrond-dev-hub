@@ -82,7 +82,6 @@ const Home: NextPage = () => {
       if (_page) {
         try {
           const page = parseInt(_page) - 1;
-          setPage(page);
           loadItems(page);
         } catch (e) {}
       } else {
