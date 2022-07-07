@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -93,6 +94,7 @@ export default function Search() {
 
   return (
     <Layout hideRightBar={true}>
+      <NextSeo title={query || ""} />
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
         Search results for: &quot;{query}&quot;
       </p>

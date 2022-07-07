@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -66,6 +67,7 @@ export default function Submit() {
 
   return (
     <Layout hideRightBar={true}>
+      <NextSeo title="Submit content" />
       <div className="lg:px-16 text-theme-text dark:text-theme-text-dark rounded-md">
         <div className="flex flex-col">
           <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
