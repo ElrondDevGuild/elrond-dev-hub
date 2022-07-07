@@ -9,7 +9,9 @@ import {
   FiGithub,
   FiHome,
   FiMail,
+  FiMessageCircle,
 } from 'react-icons/fi';
+import { SiPlausibleanalytics } from 'react-icons/si';
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
@@ -78,6 +80,7 @@ const firstSection: ILinksGroupProps = {
 };
 
 const sourceCode: ILinksGroupProps = {
+  title: "dev hub",
   links: [
     {
       label: "Source Code",
@@ -89,6 +92,18 @@ const sourceCode: ILinksGroupProps = {
       label: "Feedback",
       url: "https://forms.gle/oyen4QTVpJoPgmZi8",
       icon: FiAlertCircle,
+      openInNewTab: true,
+    },
+    {
+      label: "Contact",
+      url: "https://twitter.com/StatescuRazvan",
+      icon: FiMessageCircle,
+      openInNewTab: true,
+    },
+    {
+      label: "Analytics",
+      url: "https://plausible.io/egldhub.dev",
+      icon: SiPlausibleanalytics,
       openInNewTab: true,
     },
   ],
