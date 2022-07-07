@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-opacity-50;
+  @apply bg-theme-border;
+
+  @media (prefers-color-scheme: dark) {
+    @apply bg-theme-border-dark;
+  }
+}
+
 html,
 body {
   font-family: "Inter", sans-serif;

@@ -37,7 +37,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
           >
             <Leftbar />
           </div>
-          <main className={`${columnClasses.centerColumn} pb-32 pt-10 sm:pb-10 main-content-height overflow-y-auto `}>
+          <main className={`${columnClasses.centerColumn} pb-32 pt-10 sm:pb-10 main-content-height overflow-y-auto`}>
             {children}
           </main>
           <div className={`${columnClasses.rightColum} py-10 main-content-height overflow-y-auto`}>
