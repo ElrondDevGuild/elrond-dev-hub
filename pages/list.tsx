@@ -66,6 +66,7 @@ export default function List() {
       } finally {
         setLoading(false);
         setInitialLoad(false);
+        document.querySelector("main")?.scrollTo(0, 0);
       }
     }
   };

@@ -13,3 +13,9 @@ export const categoryPath = (category?: Category | number) => {
   return `/list?category=${category.id}`;
 };
 export const gettingStartedPath = "/getting-started";
+export const searchPath = (q?: string) => {
+  if (!q) {
+    return "/search";
+  }
+  return `/search?q=${q}`;
+};

@@ -23,6 +23,7 @@ export default function Search() {
       setLoading(true);
       const { hits, nbPages } = await algolia.search(query, {
         page: currentPage,
+        hitsPerPage: 12,
       });
       setHasNext(currentPage < nbPages - 1);
       const results = hits?.map((e: any) => {
@@ -35,6 +36,7 @@ export default function Search() {
     } finally {
       setLoading(false);
       setInitialLoad(false);
+      document.querySelector("main")?.scrollTo(0, 0);
     }
   };
 

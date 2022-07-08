@@ -2,15 +2,14 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { useEffect, useState } from 'react';
+import { FiPlusCircle } from 'react-icons/fi';
 
 import Layout from '../components/Layout';
 import PostItem, { IPostItem } from '../components/PostItem';
 import Loader from '../components/shared/Loader';
-import Pagination from '../components/shared/Pagination';
 import { api } from '../utils/api';
-import { homePath } from '../utils/routes';
 
-const pageSize = 6;
+const pageSize = 10;
 
 const fetchItems = async (page: number) => {
   const {
@@ -40,10 +39,6 @@ const Home: NextPage = () => {
   const [page, setPage] = useState(0);
   const router = useRouter();
 
-  const hasPrevious = useMemo(() => {
-    return page > 0;
-  }, [page]);
-
   const loadItems = async (page: number) => {
     if (loading) {
       return;
@@ -53,16 +48,13 @@ const Home: NextPage = () => {
 
     try {
       const { resources, count } = await fetchItems(page);
-      setPosts(resources);
+      setPosts((oldPosts) => [...oldPosts, ...resources]);
       setPage(page);
 
       setTotalPages(Math.ceil(count / pageSize));
     } finally {
       setLoading(false);
       setInitialLoad(false);
-      if (window) {
-        document.querySelector("main")?.scrollTo(0, 0);
-      }
     }
   };
 
@@ -77,27 +69,11 @@ const Home: NextPage = () => {
   }, [totalPages, page]);
 
   useEffect(() => {
-    if (router.isReady) {
-      const _page = router.query?.page as string;
-      if (_page) {
-        try {
-          const page = parseInt(_page) - 1;
-          loadItems(page);
-        } catch (e) {}
-      } else {
-        loadItems(0);
-      }
-    }
-  }, [router.isReady]);
-
-  const onPrevious = async () => {
-    loadItems(page - 1);
-    router.push(homePath, { query: { page: page - 1 + 1 } }, { shallow: true });
-  };
+    loadItems(0);
+  }, []);
 
   const onNext = async () => {
     loadItems(page + 1);
-    router.push(homePath, { query: { page: page + 1 + 1 } }, { shallow: true });
   };
 
   if (initialLoad) {
@@ -116,9 +92,18 @@ const Home: NextPage = () => {
         ))}
       </div>
 
-      <div className={`mt-8 ${loading && "pointer-events-none opacity-75"}`}>
+      {hasNext && (
+        <button
+          className="text-primary dark:text-primary-dark flex items-center font-semibold text-xs uppercase hover:underline mx-auto mt-12"
+          onClick={onNext}
+        >
+          <FiPlusCircle className="pr-1 text-2xl" /> Load More resources
+        </button>
+      )}
+
+      {/* <div className={`mt-8 ${loading && "pointer-events-none opacity-75"}`}>
         <Pagination hasNext={hasNext} hasPrevious={hasPrevious} onPrevious={onPrevious} onNext={onNext} page={page} />
-      </div>
+      </div> */}
     </Layout>
   );
 };
