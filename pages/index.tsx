@@ -1,5 +1,4 @@
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { useEffect, useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
@@ -37,7 +36,6 @@ const Home: NextPage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
   const [page, setPage] = useState(0);
-  const router = useRouter();
 
   const loadItems = async (page: number) => {
     if (loading) {
@@ -94,10 +92,11 @@ const Home: NextPage = () => {
 
       {hasNext && (
         <button
-          className="text-primary dark:text-primary-dark flex items-center font-semibold text-xs uppercase hover:underline mx-auto mt-12"
+          className="text-primary dark:text-primary-dark flex items-center font-semibold text-xs uppercase hover:underline mx-auto mt-12 disabled:cursor-not-allowed disabled:opacity-75"
           onClick={onNext}
+          disabled={loading}
         >
-          <FiPlusCircle className="pr-1 text-2xl" /> Load More resources
+          <FiPlusCircle className="pr-1 text-2xl" /> {loading ? "Loading..." : "Load More resources"}
         </button>
       )}
 
