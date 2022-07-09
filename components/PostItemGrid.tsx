@@ -13,7 +13,13 @@ export interface IPostItemGrid {
   slug?: string;
 }
 
-export default function PostItemGrid({ post, imageHeight = "h-52" }: { post: IPostItemGrid; imageHeight?: string }) {
+interface IPostItemGridProps {
+  post: IPostItemGrid;
+  imageHeight?: string;
+  showLinks?: boolean;
+}
+
+export default function PostItemGrid({ post, imageHeight = "h-52", showLinks = true }: IPostItemGridProps) {
   const [copyClicked, setCopyClicked] = useState(false);
 
   const onCopyClicked = () => {
@@ -59,28 +65,30 @@ export default function PostItemGrid({ post, imageHeight = "h-52" }: { post: IPo
           <p className="text-theme-text dark:text-theme-text-dark text-xs sm:text-base mt-3">{post.description}</p>
         )}
       </div>
-      <div className="flex text-theme-text dark:text-theme-text-dark py-5 border-t-0.5 border-theme-border dark:border-theme-border-dark divide-x-0.5 divide-theme-border dark:divide-theme-border-dark">
-        <a href={readArticleUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
-          <div className="flex items-center justify-center">
-            <FiBook className="text-2xl sm:text-xl" />
-          </div>
-        </a>
-        <a href={twitterShareUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
-          <div className="flex items-center justify-center">
-            <FiTwitter className="text-2xl sm:text-xl" />
-          </div>
-        </a>
-        <a className="flex-1 cursor-pointer">
-          <div
-            className={`flex items-center justify-center cursor-pointer ${
-              copyClicked && "pointer-events-none text-primary dark:text-primary-dark"
-            }`}
-            onClick={onCopyClicked}
-          >
-            <FiLink className="text-2xl sm:text-xl" />
-          </div>
-        </a>
-      </div>
+      {showLinks && (
+        <div className="flex text-theme-text dark:text-theme-text-dark py-5 border-t-0.5 border-theme-border dark:border-theme-border-dark divide-x-0.5 divide-theme-border dark:divide-theme-border-dark">
+          <a href={readArticleUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
+            <div className="flex items-center justify-center">
+              <FiBook className="text-2xl sm:text-xl" />
+            </div>
+          </a>
+          <a href={twitterShareUrl} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
+            <div className="flex items-center justify-center">
+              <FiTwitter className="text-2xl sm:text-xl" />
+            </div>
+          </a>
+          <a className="flex-1 cursor-pointer">
+            <div
+              className={`flex items-center justify-center cursor-pointer ${
+                copyClicked && "pointer-events-none text-primary dark:text-primary-dark"
+              }`}
+              onClick={onCopyClicked}
+            >
+              <FiLink className="text-2xl sm:text-xl" />
+            </div>
+          </a>
+        </div>
+      )}
     </article>
   );
 }

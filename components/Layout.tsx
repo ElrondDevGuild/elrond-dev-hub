@@ -59,6 +59,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
                   author: "EGLD Community",
                 }}
                 imageHeight="h-42"
+                showLinks={false}
               />
             </div>
 
