@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaStackOverflow } from 'react-icons/fa';
+import { FaStackOverflow, FaTelegramPlane } from 'react-icons/fa';
 import {
   FiAlertCircle,
   FiBookOpen,
@@ -116,6 +116,12 @@ const gettingStartedSection: ILinksGroupProps = {
       label: "Getting Started",
       url: gettingStartedPath,
       icon: FiBookOpen,
+    },
+    {
+      label: "Dev Group",
+      url: "https://t.me/ElrondDevelopers",
+      openInNewTab: true,
+      icon: FaTelegramPlane,
     },
     {
       label: "Ask Questions",

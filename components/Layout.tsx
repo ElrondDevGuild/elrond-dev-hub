@@ -1,11 +1,9 @@
 import { useMemo } from 'react';
-import { FaTelegramPlane } from 'react-icons/fa';
 
 import Navbar from './Navbar';
 import Leftbar from './Navbar/LeftBar';
 import SearchBar from './Navbar/SearchBar';
 import PostItemGrid from './PostItemGrid';
-import Button from './shared/Button';
 
 interface IColumnClasses {
   leftColumn: string;
@@ -42,11 +40,26 @@ export default function Layout({ hideRightBar = false, children }: any) {
             {children}
           </main>
           <div className={`${columnClasses.rightColum} py-10 main-content-height overflow-y-auto`}>
-            <div className="p-6 bg-theme-title  dark:bg-secondary-dark-lighter rounded-md">
+            {/* <div className="p-6 bg-theme-title  dark:bg-secondary-dark-lighter rounded-md">
               <p className="font-semibold text-xl text-white dark:text-theme-title-dark mb-5">
                 Check out the official Telegram group for Elrond developers.
               </p>
               <Button label="Join now" icon={FaTelegramPlane} href="https://t.me/ElrondDevelopers" />
+            </div> */}
+
+            <div>
+              <PostItemGrid
+                post={{
+                  title: "Elrond's Dev Hub launch w/ Beniamin Mincu",
+                  description:
+                    "We talked about the Dev Hub, Elrond's plan to onboard the next wave of developers and we took a lot of questions from the community.",
+                  image_url: "/hub-launch.jpg",
+                  resource_url: "https://youtu.be/C5e0oc3DWEo?t=94",
+                  author: "Razvan Statescu",
+                }}
+                imageHeight="h-42"
+                showLinks={false}
+              />
             </div>
 
             <div className="mt-10">
