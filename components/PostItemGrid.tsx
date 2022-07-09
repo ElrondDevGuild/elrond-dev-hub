@@ -13,7 +13,7 @@ export interface IPostItemGrid {
   slug?: string;
 }
 
-export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
+export default function PostItemGrid({ post, imageHeight = "h-52" }: { post: IPostItemGrid; imageHeight?: string }) {
   const [copyClicked, setCopyClicked] = useState(false);
 
   const onCopyClicked = () => {
@@ -39,7 +39,11 @@ export default function PostItemGrid({ post }: { post: IPostItemGrid }) {
     <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
       <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark">
         <a href={readArticleUrl} target="_blank" rel="noreferrer">
-          <img src={post.image_url} alt={post.title} className="object-cover h-52 w-full object-center rounded-t-md" />
+          <img
+            src={post.image_url}
+            alt={post.title}
+            className={`object-cover ${imageHeight} w-full object-center rounded-t-md`}
+          />
         </a>
       </div>
       <div className="p-4 md:px-8 md:py-6 flex-grow">

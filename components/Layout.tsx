@@ -4,6 +4,7 @@ import { FaTelegramPlane } from 'react-icons/fa';
 import Navbar from './Navbar';
 import Leftbar from './Navbar/LeftBar';
 import SearchBar from './Navbar/SearchBar';
+import PostItemGrid from './PostItemGrid';
 import Button from './shared/Button';
 
 interface IColumnClasses {
@@ -46,6 +47,19 @@ export default function Layout({ hideRightBar = false, children }: any) {
                 Check out the official Telegram group for Elrond developers.
               </p>
               <Button label="Join now" icon={FaTelegramPlane} href="https://t.me/ElrondDevelopers" />
+            </div>
+
+            <div className="mt-10">
+              <PostItemGrid
+                post={{
+                  title: "AMA with Beniamin",
+                  description: "Thursday 14th July at 14:00 UTC",
+                  image_url: "https://pbs.twimg.com/media/FXDgOEQWAAEdTpf?format=jpg&name=medium",
+                  resource_url: "https://egld.community/amas/elrond",
+                  author: "EGLD Community",
+                }}
+                imageHeight="h-42"
+              />
             </div>
 
             <div className="mt-10">
