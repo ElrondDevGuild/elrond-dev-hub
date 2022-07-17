@@ -62,7 +62,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
               />
             </div>
 
-            <div className="mt-10">
+            {/* <div className="mt-10">
               <PostItemGrid
                 post={{
                   title: "AMA with Beniamin",
@@ -74,7 +74,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
                 imageHeight="h-42"
                 showLinks={false}
               />
-            </div>
+            </div> */}
 
             <div className="mt-10">
               <a className="twitter-timeline" href="https://twitter.com/ElrondNetwork">
