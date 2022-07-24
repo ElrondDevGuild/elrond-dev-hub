@@ -1,6 +1,6 @@
 import { MediaResource } from '../types/supabase';
 import { RESOURCES_TABLE } from '../utils/dbtables';
-import { RESOURCE_BASE_URL } from '../utils/storage_buckets';
+import { getFullImageUrl } from '../utils/post-item';
 import { supabaseAdmin } from '../utils/supabase';
 import { BaseRepository } from './base/BaseRepository';
 
@@ -64,11 +64,7 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
     }
 
     const finalData = data?.map((resource: MediaResource) => {
-      if (!resource?.image_url) {
-        resource.image_url = `${RESOURCE_BASE_URL}resource-images/post-placeholder.jpg`;
-      } else if (!resource?.image_url?.startsWith("http")) {
-        resource.image_url = `${RESOURCE_BASE_URL}${resource.image_url}`;
-      }
+      resource.image_url = getFullImageUrl(resource);
       return resource;
     });
 

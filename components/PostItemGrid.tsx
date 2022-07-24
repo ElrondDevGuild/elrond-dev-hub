@@ -10,7 +10,7 @@ export interface IPostItemGrid {
   resource_url: string;
   category?: string;
   author: string;
-  slug?: string;
+  slug: string;
 }
 
 interface IPostItemGridProps {
@@ -24,7 +24,7 @@ export default function PostItemGrid({ post, imageHeight = "h-52", showLinks = t
 
   const onCopyClicked = () => {
     setCopyClicked(true);
-    copyLinkToClipboard(post.resource_url);
+    copyLinkToClipboard(post);
 
     setTimeout(() => {
       setCopyClicked(false);
