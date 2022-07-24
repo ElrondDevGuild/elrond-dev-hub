@@ -14,7 +14,8 @@ export const getRefUrl = (url: string): string => {
 };
 
 const getSharePostUrl = (post: IPostItem | IPostItemGrid | MediaResource) => {
-  return `${appOrigin}/post/${post.slug}`;
+  if (post?.slug) return `${appOrigin}/post/${post.slug}`;
+  return getRefUrl(post.resource_url);
 };
 
 export const copyLinkToClipboard = (post: IPostItem | IPostItemGrid | MediaResource) => {

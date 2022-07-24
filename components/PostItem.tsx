@@ -20,7 +20,7 @@ export interface IPostItem {
   description: string;
   author: string;
   tags?: IPostItemTag[];
-  slug: string;
+  slug?: string;
 }
 
 export default function PostItem({ post }: { post: IPostItem }) {

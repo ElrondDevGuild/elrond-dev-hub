@@ -10,7 +10,7 @@ export interface IPostItemGrid {
   resource_url: string;
   category?: string;
   author: string;
-  slug: string;
+  slug?: string;
 }
 
 interface IPostItemGridProps {
