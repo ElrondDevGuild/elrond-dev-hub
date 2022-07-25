@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data: catList } = await axios.get(`${siteUrl}/api/categories`);
   catList?.forEach((category: any) => {
     result.push({
-      loc: `/list?category=${category.id}`,
+      loc: `${siteUrl}/list?category=${category.id}`,
       changefreq: "weekly",
       priority: 0.6,
       lastmod: new Date().toISOString(),
