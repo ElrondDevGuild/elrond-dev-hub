@@ -101,8 +101,8 @@ export default function Search() {
         Search results for: &quot;{query}&quot;
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {posts.map((post: IPostItemGrid) => {
-          return <PostItemGrid post={post} key={post.slug} />;
+        {posts.map((post: IPostItemGrid, index: any) => {
+          return <PostItemGrid post={post} key={index} />;
         })}
       </div>
       <div className={`mt-8 ${loading && "pointer-events-none opacity-75"}`}>

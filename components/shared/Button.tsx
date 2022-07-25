@@ -36,6 +36,13 @@ const ButtonComponent = (btnProps: IButtonProps) => {
 
 export default function Button(btnProps: IButtonProps) {
   if (btnProps?.href) {
+    if (btnProps.href.startsWith("http")) {
+      return (
+        <a href={btnProps.href} target="_blank" rel="noreferrer">
+          <ButtonComponent {...btnProps} />
+        </a>
+      );
+    }
     return (
       <Link href={btnProps.href}>
         <a>

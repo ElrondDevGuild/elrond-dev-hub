@@ -20,6 +20,7 @@ export interface IPostItem {
   description: string;
   author: string;
   tags?: IPostItemTag[];
+  slug?: string;
 }
 
 export default function PostItem({ post }: { post: IPostItem }) {
@@ -27,7 +28,7 @@ export default function PostItem({ post }: { post: IPostItem }) {
 
   const onCopyClicked = () => {
     setCopyClicked(true);
-    copyLinkToClipboard(post.resource_url);
+    copyLinkToClipboard(post);
 
     setTimeout(() => {
       setCopyClicked(false);

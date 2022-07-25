@@ -12,7 +12,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         description="Get started with Elrond Development. Elrond is a highly scalable, fast and secure blockchain platform for distributed apps, enterprise use cases and the new internet economy."
         openGraph={{
           type: "website",
-          url: "https://www.url.ie/",
           site_name: "Elrond Dev Hub",
           images: [
             {

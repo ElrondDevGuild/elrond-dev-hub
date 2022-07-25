@@ -24,7 +24,7 @@ export default function PostItemGrid({ post, imageHeight = "h-52", showLinks = t
 
   const onCopyClicked = () => {
     setCopyClicked(true);
-    copyLinkToClipboard(post.resource_url);
+    copyLinkToClipboard(post);
 
     setTimeout(() => {
       setCopyClicked(false);
