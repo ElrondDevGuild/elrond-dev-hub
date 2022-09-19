@@ -5,9 +5,10 @@ import { CategoryRepository } from '../repositories/CategoryRepository';
 import { ResourceRepository } from '../repositories/ResourceRepository';
 import ApiResponse from './_base/ApiResponse';
 import BaseAction from './_base/BaseAction';
+import {ApiRequest} from "./_base/handler";
 
 export default class PaginateResourcesAction extends BaseAction {
-  async handle(req: NextApiRequest): Promise<ApiResponse> {
+  async handle(req: ApiRequest): Promise<ApiResponse> {
     const { page, page_size: size, categories, category, tags } = req.query;
 
     const { data: resources, count } = await new ResourceRepository()
@@ -32,5 +33,9 @@ export default class PaginateResourcesAction extends BaseAction {
         }),
       tags: Joi.array().optional(),
     });
+  }
+
+  isPrivate(): boolean {
+    return false;
   }
 }

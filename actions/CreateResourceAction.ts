@@ -1,6 +1,4 @@
 import Joi from 'joi';
-import { NextApiRequest } from 'next';
-
 import { CategoryRepository } from '../repositories/CategoryRepository';
 import { ResourceRepository } from '../repositories/ResourceRepository';
 import { ResourceTagRepository } from '../repositories/ResourceTagRepository';
@@ -10,14 +8,15 @@ import { serverApi } from '../utils/api';
 import { createSlug } from '../utils/slugify';
 import ApiResponse from './_base/ApiResponse';
 import BaseAction from './_base/BaseAction';
+import {ApiRequest} from "./_base/handler";
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 export default class CreateResourceAction extends BaseAction {
-  async handle(req: NextApiRequest): Promise<ApiResponse> {
-    const { body } = req;
+  async handle(req: ApiRequest): Promise<ApiResponse> {
+    const {body} = req;
     const tags = body.tags;
     delete body.tags;
 
@@ -25,7 +24,7 @@ export default class CreateResourceAction extends BaseAction {
     const resourceWithTags = await this.setResourceTags(resource, tags);
     const slug = await this.setSlug(resourceWithTags);
 
-    return new ApiResponse().body({ ...resourceWithTags, slug }).status(201);
+    return new ApiResponse().body({...resourceWithTags, slug}).status(201);
   }
 
   async rules(): Promise<Joi.Schema> {
@@ -84,5 +83,9 @@ export default class CreateResourceAction extends BaseAction {
       resource_id: resource.id,
       resource_url: resource.resource_url,
     });
+  }
+
+  isPrivate(): boolean {
+    return false;
   }
 }

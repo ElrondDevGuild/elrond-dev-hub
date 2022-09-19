@@ -8,9 +8,10 @@ import { RESOURCE_IMAGE_BUCKET } from '../utils/storage_buckets';
 import { supabaseAdmin } from '../utils/supabase';
 import ApiResponse from './_base/ApiResponse';
 import BaseAction from './_base/BaseAction';
+import {ApiRequest} from "./_base/handler";
 
 export default class CreateResourceImageAction extends BaseAction {
-  async handle(req: NextApiRequest): Promise<ApiResponse> {
+  async handle(req: ApiRequest): Promise<ApiResponse> {
     const {
       body: { resource_url, resource_id },
     } = req;
@@ -66,5 +67,9 @@ export default class CreateResourceImageAction extends BaseAction {
   private async updateResourceImageUrl(resource_id: number, imageUrl: string) {
     const resourceRepository = new ResourceRepository();
     return resourceRepository.update(resource_id, { image_url: imageUrl });
+  }
+
+  isPrivate(): boolean {
+    return false;
   }
 }

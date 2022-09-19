@@ -21,7 +21,7 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
         this._idField = idField;
     }
 
-    async create(item: Omit<T, 'id'>, options?: InsertOptions): Promise<PostgrestSingleResponse<T>> {
+    async create(item: Omit<T, 'id' | 'created_at'>, options?: InsertOptions): Promise<PostgrestSingleResponse<T>> {
         if (options) {
             return await this._table.insert(item as T, options).single();
         }
@@ -53,10 +53,18 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
         return !!data;
     }
 
-    findById(id: T[keyof T]): PromiseLike<PostgrestSingleResponse<T>> {
+    async findById(id: T[keyof T]): Promise<T | null> {
         if (!this._idField) throw new Error("Unique ID not provided.");
 
-        return this._table.select("*").eq(this._idField, id).single();
+        const {data, error} = await this._table.select("*")
+            .eq(this._idField, id)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
     }
 
     all(columns?: string): PostgrestFilterBuilder<T> {

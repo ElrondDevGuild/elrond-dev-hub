@@ -3,7 +3,7 @@ import {PostgrestResponse, PostgrestSingleResponse} from '@supabase/supabase-js'
 
 export interface IRead<T> {
     find?(item: T): Promise<T[]>;
-    findById?(id: T[keyof T]): PromiseLike<PostgrestSingleResponse<T>>;
+    findById?(id: T[keyof T]): Promise<T | null>;
 }
 
 
