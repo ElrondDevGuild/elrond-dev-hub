@@ -16,7 +16,7 @@ import { SiPlausibleanalytics } from 'react-icons/si';
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
-import { categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
+import { bountyPath, categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
 
@@ -28,17 +28,15 @@ const menuSection: ILinksGroupProps = {
       icon: FiHome,
     },
     {
+      label: "Bounties",
+      url: bountyPath,
+      icon: FiCheckSquare,
+    },
+    {
       label: "Newsletter",
       url: "https://newsletter.statescu.net/",
       icon: FiMail,
       openInNewTab: true,
-    },
-    {
-      label: "Bounties",
-      url: "#",
-      icon: FiCheckSquare,
-      openInNewTab: true,
-      disabled: true,
     },
     {
       label: "Jobs",
