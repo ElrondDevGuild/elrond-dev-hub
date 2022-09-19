@@ -16,7 +16,7 @@ import { SiPlausibleanalytics } from 'react-icons/si';
 
 import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
-import { bountyPath, categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
+import { categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
 import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
 
@@ -29,8 +29,9 @@ const menuSection: ILinksGroupProps = {
     },
     {
       label: "Bounties",
-      url: bountyPath,
+      url: "#",
       icon: FiCheckSquare,
+      disabled: true,
     },
     {
       label: "Newsletter",
