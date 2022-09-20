@@ -21,7 +21,7 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
         this._idField = idField;
     }
 
-    async create(item: Omit<T, 'id' | 'created_at'>, options?: InsertOptions): Promise<PostgrestSingleResponse<T>> {
+    async create(item: Partial<T>, options?: InsertOptions): Promise<PostgrestSingleResponse<T>> {
         if (options) {
             return await this._table.insert(item as T, options).single();
         }
