@@ -2,6 +2,7 @@ import '../styles/globals.scss';
 
 import { DefaultSeo } from 'next-seo';
 import { AppProps } from 'next/app';
+import {AuthContextProvider} from "../hooks/useAuth";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -16,17 +17,19 @@ function MyApp({ Component, pageProps }: AppProps) {
           images: [
             {
               url: `https://egldhub.dev/facebook.png`,
-              width: 1200,
-              height: 630,
-              type: "image/png",
+                width: 1200,
+                height: 630,
+                type: "image/png",
             },
           ],
         }}
         twitter={{
-          cardType: "summary_large_image",
+            cardType: "summary_large_image",
         }}
       />
-      <Component {...pageProps} />
+        <AuthContextProvider env={process.env.NODE_ENV === "production" ? "mainnet" : "devnet"}>
+            <Component {...pageProps} />
+        </AuthContextProvider>
     </>
   );
 }

@@ -9,8 +9,21 @@ export default class UserRepository extends BaseRepository<User> {
         super(table, "id");
     }
 
+    async findByWallet(wallet: string): Promise<User | null> {
+        const {data, error} = await this._table.select("*")
+            .eq("wallet", wallet)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
+
+    }
+
     async findOrCreate(wallet: string): Promise<User> {
-        const user = await this.findById(wallet);
+        const user = await this.findByWallet(wallet);
         if (user) {
             return user;
         }

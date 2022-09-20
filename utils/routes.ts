@@ -3,6 +3,7 @@ import { Category } from '../types/supabase';
 export const homePath = "/";
 export const submitPath = "/submit";
 export const thankYouPath = "/thank-you";
+export const authPath = '/auth';
 export const categoryPath = (category?: Category | number) => {
   if (!category) {
     return "/list";

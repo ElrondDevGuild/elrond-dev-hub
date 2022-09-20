@@ -91,7 +91,7 @@ const resolveUser = async (req: NextApiRequest): Promise<User | null> => {
         // @ts-ignore
         const decoded = jwt.verify(token, process.env.AUTH_SECRET_KEY);
 
-        return await userRepo.findById(decoded.user.wallet);
+        return await userRepo.findByWallet(decoded.user.wallet);
     } catch (e) {
         return null;
     }
