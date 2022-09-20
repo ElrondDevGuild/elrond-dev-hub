@@ -28,17 +28,16 @@ const menuSection: ILinksGroupProps = {
       icon: FiHome,
     },
     {
+      label: "Bounties",
+      url: "#",
+      icon: FiCheckSquare,
+      disabled: true,
+    },
+    {
       label: "Newsletter",
       url: "https://newsletter.statescu.net/",
       icon: FiMail,
       openInNewTab: true,
-    },
-    {
-      label: "Bounties",
-      url: "#",
-      icon: FiCheckSquare,
-      openInNewTab: true,
-      disabled: true,
     },
     {
       label: "Jobs",

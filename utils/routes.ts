@@ -20,3 +20,4 @@ export const searchPath = (q?: string) => {
   }
   return `/search?q=${q}`;
 };
+export const bountyPath = "/bounty";
