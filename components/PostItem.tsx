@@ -4,24 +4,8 @@ import { FiBook, FiLink, FiTwitter } from 'react-icons/fi';
 
 import { copyLinkToClipboard, getRefUrl, getShareOnTwitterUrl } from '../utils/post-item';
 import { categoryPath } from '../utils/routes';
+import {IPostItem} from "../types/components";
 
-interface IPostItemTag {
-  id: number;
-  title: string;
-}
-
-export interface IPostItem {
-  id: number;
-  title: string;
-  image_url: string;
-  resource_url: string;
-  category: string;
-  category_id: number;
-  description: string;
-  author: string;
-  tags?: IPostItemTag[];
-  slug?: string;
-}
 
 export default function PostItem({ post }: { post: IPostItem }) {
   const [copyClicked, setCopyClicked] = useState(false);

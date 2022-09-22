@@ -1,7 +1,6 @@
-import { IPostItem } from '../components/PostItem';
-import { IPostItemGrid } from '../components/PostItemGrid';
 import { MediaResource } from '../types/supabase';
 import { RESOURCE_BASE_URL } from './storage_buckets';
+import {IPostItem, IPostItemGrid} from "../types/components";
 
 const WEBSITE_NAME = "egldhub.dev";
 

@@ -1,17 +1,8 @@
 import { useMemo, useState } from 'react';
 import { FiBook, FiLink, FiTwitter } from 'react-icons/fi';
 
-import { copyLinkToClipboard, getRefUrl, getShareOnTwitterUrl } from '../utils/post-item';
-
-export interface IPostItemGrid {
-  title: string;
-  description?: string;
-  image_url?: string;
-  resource_url: string;
-  category?: string;
-  author: string;
-  slug?: string;
-}
+import {copyLinkToClipboard, getRefUrl, getShareOnTwitterUrl} from '../utils/post-item';
+import {IPostItemGrid} from "../types/components";
 
 interface IPostItemGridProps {
   post: IPostItemGrid;

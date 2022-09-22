@@ -5,13 +5,14 @@ import { FiCopy, FiExternalLink, FiTwitter } from 'react-icons/fi';
 import Moment from 'react-moment';
 
 import Layout from '../../components/Layout';
-import PostItemGrid, { IPostItemGrid } from '../../components/PostItemGrid';
+import PostItemGrid from '../../components/PostItemGrid';
 import Button from '../../components/shared/Button';
 import { MediaResource } from '../../types/supabase';
 import { RESOURCES_TABLE } from '../../utils/dbtables';
 import { copyLinkToClipboard, getFullImageUrl, getRefUrl, getShareOnTwitterUrl } from '../../utils/post-item';
 import { homePath } from '../../utils/routes';
 import { supabaseAdmin } from '../../utils/supabase';
+import {IPostItemGrid} from "../../types/components";
 
 export default function PostPage({ post, morePosts }: { post: MediaResource; morePosts: IPostItemGrid[] }) {
   const [copyClicked, setCopyClicked] = useState(false);

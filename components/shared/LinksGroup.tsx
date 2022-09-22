@@ -1,18 +1,7 @@
 import Link from 'next/link';
-import { BiChevronRight } from 'react-icons/bi';
+import {BiChevronRight} from 'react-icons/bi';
+import {ILink, ILinksGroupProps} from "../../types/components";
 
-export interface ILink {
-  label: string;
-  url: string;
-  icon?: any;
-  openInNewTab?: boolean;
-  disabled?: boolean;
-}
-
-export interface ILinksGroupProps {
-  title?: string;
-  links: ILink[];
-}
 
 const LinkWrapper = ({ link, children }: { link: ILink; children: any }) => {
   if (link?.disabled) {

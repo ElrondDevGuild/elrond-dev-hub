@@ -18,7 +18,8 @@ import { Category } from '../../types/supabase';
 import { api } from '../../utils/api';
 import { categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
 import Button from '../shared/Button';
-import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
+import LinksGroup from '../shared/LinksGroup';
+import {ILinksGroupProps} from "../../types/components";
 
 const menuSection: ILinksGroupProps = {
   links: [
@@ -29,9 +30,8 @@ const menuSection: ILinksGroupProps = {
     },
     {
       label: "Bounties",
-      url: "#",
+      url: "bounty",
       icon: FiCheckSquare,
-      disabled: true,
     },
     {
       label: "Newsletter",
