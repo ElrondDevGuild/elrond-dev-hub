@@ -1,6 +1,7 @@
 import "./env";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import {
+    BountyApplication,
     BountyExperienceLevel,
     BountyType,
     Category,
@@ -17,6 +18,8 @@ import * as erdCore from "@elrondnetwork/elrond-core-js";
 import UserRepository from "../repositories/UserRepository";
 import BountyRepository from "../repositories/BountyRepository";
 import BountyTagRepository from "../repositories/BountyTagRepository";
+import ApplicationsRepository from "../repositories/ApplicationsRepository";
+import SocialLinksRepository from "../repositories/SocialLinksRepository";
 
 
 const createCategories = (qty: number = 1): Array<Partial<Category>> => {
@@ -126,6 +129,17 @@ const seedUsers = async (qty: number = 1) => {
         throw error;
     }
 
+    const socialLinksRepo = new SocialLinksRepository();
+    const userSocialLinks = data.map(user => ({
+        user_id: user.id,
+        platform: ["twitter", "github", "discord", "linkedin"][Math.floor(Math.random() * 3)],
+        username: faker.internet.userName(),
+    }));
+
+    // @ts-ignore
+    await socialLinksRepo.createMany(userSocialLinks);
+
+
     return data;
 }
 const seedBounty = async (user: User) => {
@@ -154,10 +168,12 @@ const seedBounty = async (user: User) => {
 }
 const seedBounties = async (tagIds) => {
     const users = await seedUsers(10);
+    const bounties = [];
     for (let user of users) {
         const qty = Math.floor(Math.random() * 10);
         for (let i of [...Array(qty).keys()]) {
             const bounty = await seedBounty(user);
+            bounties.push(bounty);
             const randTagIds = [...tagIds].sort(() => Math.random() - Math.random())
                 .slice(0, Math.floor(Math.random() * tagIds.length / 2) || 1);
 
@@ -168,6 +184,31 @@ const seedBounties = async (tagIds) => {
 
             await new BountyTagRepository().createMany(resourceTags);
         }
+    }
+    const workers = await seedUsers(20);
+    const randBounties = [...bounties].sort(() => Math.random() - Math.random())
+        .slice(0, Math.floor(Math.random() * bounties.length / 2) || 1);
+    const applicationsRepo = new ApplicationsRepository();
+    for (let bounty of randBounties) {
+        const applications = [...workers].sort(() => Math.random() - Math.random())
+            .slice(0, Math.floor(Math.random() * workers.length / 2) || 1)
+            .map((worker) => {
+                const approvalStatus = ["approved", "rejected", "pending"][Math.floor(Math.random() * 3)]
+                const workStatus = ["rejected", "pending"].includes(approvalStatus)
+                    ? "pending"
+                    : ["in_progress", "completed"][Math.floor(Math.random() * 2)];
+
+                return {
+                    bounty_id: bounty.id,
+                    user_id: worker.id,
+                    approval_status: approvalStatus,
+                    work_status: workStatus,
+                }
+            });
+
+        // @ts-ignore
+        await applicationsRepo.createMany(applications);
+
     }
 }
 

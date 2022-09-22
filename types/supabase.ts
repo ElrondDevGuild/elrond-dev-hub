@@ -45,6 +45,7 @@ export type User = {
 
 export type UserSocialLink = {
   id: string;
+  user_id: string;
   platform: 'twitter' | 'github' | 'discord' | 'linkedin';
   username: string;
 }

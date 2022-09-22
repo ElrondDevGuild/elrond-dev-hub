@@ -1,6 +1,6 @@
 import { MediaResource } from '../types/supabase';
 import { RESOURCES_TABLE } from '../utils/dbtables';
-// import { getFullImageUrl } from '../utils/post-item';
+import { getFullImageUrl } from '../utils/post-item';
 import { supabaseAdmin } from '../utils/supabase';
 import { BaseRepository } from './base/BaseRepository';
 
@@ -64,7 +64,7 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
     }
 
     const finalData = data?.map((resource: MediaResource) => {
-      // resource.image_url = getFullImageUrl(resource);
+      resource.image_url = getFullImageUrl(resource);
       return resource;
     });
 
