@@ -3,12 +3,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 
 import Layout from '../components/Layout';
-import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
+import PostItemGrid from '../components/PostItemGrid';
 import Loader from '../components/shared/Loader';
 import Pagination from '../components/shared/Pagination';
 import { Category } from '../types/supabase';
 import { api } from '../utils/api';
 import { categoryPath } from '../utils/routes';
+import {IPostItemGrid} from "../types/components";
 
 const pageSize = 12;
 

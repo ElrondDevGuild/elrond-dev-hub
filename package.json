@@ -38,6 +38,7 @@
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
+    "@elrondnetwork/elrond-core-js": "^2.1.0",
     "@faker-js/faker": "^7.2.0",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/keccak": "^3.0.1",

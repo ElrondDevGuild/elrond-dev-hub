@@ -1,12 +1,12 @@
 import { NextPage } from 'next';
-import { useCallback, useMemo } from 'react';
 import { useEffect, useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
 
 import Layout from '../components/Layout';
-import PostItem, { IPostItem } from '../components/PostItem';
+import PostItem from '../components/PostItem';
 import Loader from '../components/shared/Loader';
 import { api } from '../utils/api';
+import {IPostItem} from "../types/components";
 
 const pageSize = 10;
 

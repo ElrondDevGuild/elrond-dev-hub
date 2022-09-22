@@ -45,6 +45,7 @@ export type User = {
 
 export type UserSocialLink = {
   id: string;
+  user_id: string;
   platform: 'twitter' | 'github' | 'discord' | 'linkedin';
   username: string;
 }
@@ -53,3 +54,63 @@ export type AuthNonce = {
   id: string;
   created_at: string;
 }
+
+export type BountyType = "single_worker" | "many_workers";
+export type BountyStatus =
+    "open"
+    | "expired"
+    | "canceled"
+    | "work_started"
+    | "work_submitted"
+    | "work_done";
+
+export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced";
+
+export type Bounty = {
+  id: string;
+  title: string;
+  description: string;
+  acceptance_criteria: string;
+  status: BountyStatus;
+  project_type: BountyType;
+  issue_type: string;
+  requires_work_permission: boolean;
+  experience_level: BountyExperienceLevel;
+  value: number;
+  repository_url: string | null;
+  repository_issue_url: string | null;
+  created_at: string;
+  deleted_at: string | null;
+  owner_id: string;
+  owner: User;
+  tags?: Tag[];
+};
+
+export type ApplicationApprovalStatus = "pending" | "accepted" | "rejected";
+export type WorkStatus = "pending" | "in_progress" | "completed";
+
+export type BountyApplication = {
+  id: string;
+  bounty_id: string;
+  user_id: string;
+  approval_status: ApplicationApprovalStatus;
+  work_status: WorkStatus;
+  work_url: string | null;
+  created_at: string;
+  user: User;
+  bounty?: Bounty;
+};
+
+export type BountyResource = {
+  id: string;
+  bounty_id: string
+  user_id: string;
+  url: string;
+  description: string | null;
+};
+
+export type BountyTag = {
+  id: number;
+  bounty_id: string;
+  tag_id: number;
+};

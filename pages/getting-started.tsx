@@ -1,7 +1,8 @@
 import { NextSeo } from 'next-seo';
 
 import Layout from '../components/Layout';
-import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
+import PostItemGrid from '../components/PostItemGrid';
+import {IPostItemGrid} from "../types/components";
 
 const resouresList: IPostItemGrid[] = [
   {
