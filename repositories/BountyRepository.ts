@@ -2,6 +2,7 @@ import {BaseRepository} from "./base/BaseRepository";
 import {Bounty} from "../types/supabase";
 import {supabaseAdmin} from "../utils/supabase";
 import {BOUNTIES_TABLE} from "../utils/dbtables";
+import NotFoundError from "../errors/NotFoundError";
 
 export default class BountyRepository extends BaseRepository<Bounty> {
     constructor() {
@@ -59,5 +60,16 @@ export default class BountyRepository extends BaseRepository<Bounty> {
 
         return {data, count};
 
+    }
+
+    async findOrFail(id: string): Promise<Bounty> {
+        const bounty = await this.findById(id, [
+            "owner:owner_id(*)",
+            "tags:bounty_tag(tag_id,details:tags(id, title))"
+        ]);
+        if (null === bounty || bounty.deleted_at) {
+            throw new NotFoundError("bounty");
+        }
+        return bounty;
     }
 };

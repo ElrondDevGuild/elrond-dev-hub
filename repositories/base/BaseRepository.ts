@@ -53,10 +53,13 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
         return !!data;
     }
 
-    async findById(id: T[keyof T]): Promise<T | null> {
+    async findById(id: T[keyof T], relation: string | string[] = []): Promise<T | null> {
         if (!this._idField) throw new Error("Unique ID not provided.");
-
-        const {data, error} = await this._table.select("*")
+        if (!Array.isArray(relation)) {
+            relation = [relation];
+        }
+        const selectRelations = relation.length ? ',' + relation.join(',') : "";
+        const {data, error} = await this._table.select(`*${selectRelations}`)
             .eq(this._idField, id)
             .maybeSingle();
 
