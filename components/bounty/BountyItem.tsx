@@ -4,18 +4,29 @@ import {GoPrimitiveDot} from 'react-icons/go';
 import {Bounty} from "../../types/supabase";
 import moment from "moment";
 import BountyStatus from "./BountyStatus";
+import {useRouter} from "next/router";
+import {bountyPath} from "../../utils/routes";
+import Link from "next/link";
 
 export default function BountyItem({bounty}: { bounty: Bounty }) {
+  const router = useRouter();
   return (
-      <div
-          className="flex flex-col bg-white dark:bg-secondary-dark-lighter border border-theme-border dark:border-theme-border-dark rounded">
+      <li
+          className="flex flex-col bg-white dark:bg-secondary-dark-lighter border border-theme-border dark:border-theme-border-dark rounded cursor-pointer"
+          onClick={async () => {
+            await router.push(bountyPath(bounty.id));
+          }}
+      >
+
         <div
             className="flex justify-between py-6 pl-6 border-b border-theme-border dark:border-theme-border-dark flex-col sm:flex-row">
           <div
               className="text-theme-title dark:text-theme-title-dark font-semibold text-2xl order-last sm:order-first pr-6 sm:pr-0">
-            <div className="max-w-2xl">
-              {bounty.title}
-            </div>
+            <Link href={bountyPath(bounty.id)}>
+              <a className="max-w-2xl">
+                {bounty.title}
+              </a>
+            </Link>
           </div>
           <div
               className="font-semibold text-sm  flex-shrink-0 w-1/2 self-end sm:w-auto sm:self-start pb-4 sm:pb-0">
@@ -57,6 +68,6 @@ export default function BountyItem({bounty}: { bounty: Bounty }) {
           </ul>
         </div>
       </div>
-    </div>
+      </li>
   );
 }
