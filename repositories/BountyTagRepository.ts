@@ -17,6 +17,7 @@ export default class BountyTagRepository extends BaseRepository<BountyTag> {
 
         if (error) {throw error;}
 
+        // @ts-ignore
         bounty.tags = tags;
 
         return bounty;
