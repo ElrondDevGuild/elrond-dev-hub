@@ -59,6 +59,7 @@ const createUser = (): Omit<User, "id" | "created_at"> => {
         avatar_url: faker.image.avatar(),
         name: faker.name.findName(),
         description: faker.hacker.phrase(),
+        verified: Math.random() > 0.5,
     }
 };
 
