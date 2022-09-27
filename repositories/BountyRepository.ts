@@ -64,9 +64,9 @@ export default class BountyRepository extends BaseRepository<Bounty> {
 
     async findOrFail(id: string): Promise<Bounty> {
         const bounty = await this.findById(id, [
-            "owner:owner_id(*)",
+            "owner:owner_id(*, social_links:user_social_links(*))",
             "tags:bounty_tag(tag_id,details:tags(id, title))"
-        ]);
+         ]);
         if (null === bounty || bounty.deleted_at) {
             throw new NotFoundError("bounty");
         }

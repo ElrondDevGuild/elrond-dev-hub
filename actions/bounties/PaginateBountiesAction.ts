@@ -1,7 +1,7 @@
-import BaseAction from "./_base/BaseAction";
-import {ApiRequest} from "./_base/handler";
-import ApiResponse from "./_base/ApiResponse";
-import BountyRepository from "../repositories/BountyRepository";
+import BaseAction from "../_base/BaseAction";
+import {ApiRequest} from "../_base/handler";
+import ApiResponse from "../_base/ApiResponse";
+import BountyRepository from "../../repositories/BountyRepository";
 
 export default class PaginateBountiesAction extends BaseAction {
     async handle(req: ApiRequest): Promise<ApiResponse> {
@@ -21,8 +21,7 @@ export default class PaginateBountiesAction extends BaseAction {
             };
         });
 
-        return new ApiResponse({body: {bounties: _bounties, count}})
-            ;
+        return new ApiResponse({body: {bounties: _bounties, count}});
     }
 
     isPrivate(): boolean {
