@@ -1,14 +1,38 @@
 import RequiresAuth from "../../components/RequiresAuth";
 import {NextSeo} from "next-seo";
 import Layout from "../../components/Layout";
-import { FormProvider, useForm } from 'react-hook-form';
+import {FormProvider, useForm} from 'react-hook-form';
 import Input from "../../components/shared/form/Input";
+import Select from "../../components/shared/form/Select";
+import {IOption} from "../../components/shared/form/SelectElement";
 
 
 type FormValues = {}
+
+const typeOptions: IOption[] = [
+    {id: "single_worker", name: "Single Worker"},
+    {id: "many_workers", name: "Many Workers"},
+];
+const permissionOptions: IOption[] = [
+    {id: false, name: "Permissionless"},
+    {id: true, name: "Require Permission"}
+];
+
+const experienceOptions: IOption[] = [
+    {id: "beginner", name: "Beginner"},
+    {id: "intermediate", name: "Intermediate"},
+    {id: "experienced", name: "Experienced"},
+];
+
+const issueTypeOptions: IOption[] = [
+    {id: "bug", name: "Bug"},
+    {id: "feature", name: "Feature"},
+    {id: "design", name: "Design"},
+    {id: "other", name: "Other"},
+];
 export default function Create() {
     const formMethods = useForm<FormValues>();
-    const { handleSubmit, setValue } = formMethods;
+    const {handleSubmit, setValue} = formMethods;
 
     const submitBounty = async (formData: FormValues) => {
 
@@ -39,15 +63,49 @@ export default function Create() {
                                         name="title"
                                         placeholder="My awesome resource"
                                         type="text"
-                                        options={{ required: true }}
+                                        options={{required: true}}
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <Input label="tags" name="tags" placeholder="elrond,blockchain" type="text" />
+                                    <Input label="tags" name="tags" placeholder="elrond,blockchain"
+                                           type="text"/>
                                     <p className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
                                         Tags will improve content discovery
                                     </p>
                                 </div>
+                                <div>
+                                    <Select
+                                        name="project_type"
+                                        options={{required: true}}
+                                        label="Type*"
+                                        selectOptions={typeOptions}
+                                    />
+                                </div>
+                                <div>
+                                    <Select
+                                        name="requires_work_permission"
+                                        options={{required: true}}
+                                        label="Permissions*"
+                                        selectOptions={permissionOptions}
+                                    />
+                                </div>
+                                <div>
+                                    <Select
+                                        name="experience_level"
+                                        options={{required: true}}
+                                        label="Experience Level*"
+                                        selectOptions={experienceOptions}
+                                    />
+                                </div>
+                                <div>
+                                    <Select
+                                        name="issue_type"
+                                        options={{required: true}}
+                                        label="Issue type*"
+                                        selectOptions={issueTypeOptions}
+                                    />
+                                </div>
+
                             </form>
                         </FormProvider>
                     </div>
