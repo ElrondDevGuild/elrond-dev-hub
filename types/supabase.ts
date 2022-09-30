@@ -40,6 +40,7 @@ export type User = {
   name: string | null;
   description: string | null;
   created_at: string | null;
+  verified: boolean;
   social_links?: UserSocialLink[];
 };
 
@@ -83,7 +84,9 @@ export type Bounty = {
   deleted_at: string | null;
   owner_id: string;
   owner: User;
-  tags?: Tag[];
+  tags?: {details: Tag}[];
+  applicationsCount: number;
+  applications?: BountyApplication[];
 };
 
 export type ApplicationApprovalStatus = "pending" | "accepted" | "rejected";
@@ -114,3 +117,11 @@ export type BountyTag = {
   bounty_id: string;
   tag_id: number;
 };
+
+export type UserReview = {
+  id: string;
+  user_id: string;
+  reviewer_id: string;
+  rating: number;
+  review: string;
+}

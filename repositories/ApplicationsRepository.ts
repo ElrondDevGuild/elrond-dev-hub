@@ -8,4 +8,14 @@ export default class ApplicationsRepository extends BaseRepository<BountyApplica
         const table = supabaseAdmin.from<BountyApplication>(BOUNTY_APPLICATIONS_TABLE);
         super(table, "id");
     }
+
+    async listByBountyId(bountyId: string) {
+        const {data, error} = await this._table.select("*, user:user_id(*)")
+            .eq("bounty_id", bountyId);
+        if (error) {
+            throw error;
+        }
+
+        return data;
+    }
 };
