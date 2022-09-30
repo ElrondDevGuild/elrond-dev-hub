@@ -42,7 +42,7 @@ export default function Navbar() {
                 <SocialIcons/>
 
                 {/*<Button label="+ Add Resource" href={submitPath} />*/}
-                <ButtonCreateResource/>
+                <ButtonCreateResource label="+ Add" size="small"/>
 
                 <div className="-mr-2 flex sm:hidden">
                   <Disclosure.Button

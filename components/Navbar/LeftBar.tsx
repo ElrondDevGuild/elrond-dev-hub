@@ -20,6 +20,7 @@ import { categoryPath, gettingStartedPath, homePath, submitPath } from '../../ut
 import Button from '../shared/Button';
 import LinksGroup from '../shared/LinksGroup';
 import {ILinksGroupProps} from "../../types/components";
+import ButtonCreateResource from "../shared/ButtonCreateResource";
 
 const menuSection: ILinksGroupProps = {
   links: [
@@ -160,7 +161,7 @@ export default function Leftbar() {
         <LinksGroup {...menuSection} />
       </div>
       <div className="mb-8">
-        <Button label="+ Add Resource" href={submitPath} />
+        <ButtonCreateResource position="right" size="small"/>
       </div>
       <div className="mb-8">
         <LinksGroup {...gettingStartedSection} />
