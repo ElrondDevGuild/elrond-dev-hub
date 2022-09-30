@@ -30,8 +30,8 @@ export default function ApplicationListItem(
         <li key={application.id}>
             <div className="flex items-center justify-between py-2">
                 <div
-                    className="flex flex-col md:flex-row items-start md:items-center gap-x-6 gap-y-1 justify-between w-1/2 md:w-2/3 lg:w-1/2">
-                    <p className="truncate text-sm font-medium dark:text-secondary-dark-lighter w-1/2">
+                    className="flex flex-col md:flex-row items-start md:items-center gap-x-6 gap-y-1  w-1/2 md:w-2/3 lg:w-1/2">
+                    <p className="truncate text-sm font-medium dark:text-secondary w-1/2">
                         {application.user.name}
                     </p>
                     <UserRating reviews={[]}/>

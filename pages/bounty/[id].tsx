@@ -153,11 +153,11 @@ export default function BountyDetails() {
                     </div>
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Description</h3>
-                    <div className="text-sm mt-4 dark:text-secondary-dark-lighter" dangerouslySetInnerHTML={{__html:bounty.description}}></div>
+                    <div className="text-sm mt-4 text-theme-text dark:text-white" dangerouslySetInnerHTML={{__html:bounty.description}}></div>
 
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Acceptance Criteria</h3>
-                    <div className="text-sm mt-4 dark:text-secondary-dark-lighter" dangerouslySetInnerHTML={{__html:bounty.acceptance_criteria}}></div>
+                    <div className="text-sm mt-4 text-theme-text dark:text-white" dangerouslySetInnerHTML={{__html:bounty.acceptance_criteria}}></div>
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     {bounty.owner_id === user?.id && (
                         <>

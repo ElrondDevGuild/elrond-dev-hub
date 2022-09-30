@@ -30,7 +30,7 @@ const menuSection: ILinksGroupProps = {
     },
     {
       label: "Bounties",
-      url: "bounty",
+      url: "/bounty",
       icon: FiCheckSquare,
     },
     {

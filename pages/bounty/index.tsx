@@ -104,7 +104,7 @@ export default function BountyListing() {
                 {user && <Link href={""}>
                     <a
                         className={classNames(
-                            "uppercase text-sm",
+                            "uppercase text-sm text-theme-text dark:text-theme-text-dark",
                             hasFilter("owner") ? "underline" : ""
                         )}
                         onClick={(e) => {

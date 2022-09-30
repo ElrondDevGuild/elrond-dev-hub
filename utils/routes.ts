@@ -21,3 +21,5 @@ export const searchPath = (q?: string) => {
   return `/search?q=${q}`;
 };
 export const bountyPath = (id: string) => `/bounty/${id}`;
+export const resourcesPath = "/resources";
+export const submitBountyPath = "/bounty/create";
