@@ -7,7 +7,7 @@ import { HiSelector } from 'react-icons/hi';
 import { classNames } from '../../../utils/presentation';
 
 export interface IOption {
-  id: string;
+  id: string | number | boolean;
   name: string;
 }
 

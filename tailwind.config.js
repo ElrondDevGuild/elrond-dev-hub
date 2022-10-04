@@ -43,5 +43,5 @@ module.exports = {
   variants: {
     scrollbar: ["dark"],
   },
-  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
+  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar"), require('@tailwindcss/line-clamp')],
 };

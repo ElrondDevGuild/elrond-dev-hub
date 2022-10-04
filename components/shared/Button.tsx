@@ -10,6 +10,7 @@ interface IButtonProps {
   disabled?: boolean;
   theme?: BtnTheme;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
 const ButtonComponent = (btnProps: IButtonProps) => {
