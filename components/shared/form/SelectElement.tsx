@@ -57,6 +57,7 @@ export default function SelectElement({ options, onChange }: ISelectElementProps
               <Listbox.Options className="absolute z-10 mt-1 w-full bg-white dark:bg-secondary-dark-lighter shadow-lg max-h-60 py-1 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none text-sm">
                 {options.map((person) => (
                   <Listbox.Option
+                      // @ts-ignore
                     key={person.id}
                     className={({ active }) =>
                       classNames(

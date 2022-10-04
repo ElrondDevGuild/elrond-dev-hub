@@ -4,11 +4,12 @@ import {Fragment, PropsWithChildren} from 'react';
 import {AiOutlineClose} from 'react-icons/ai';
 
 type PopupProps = PropsWithChildren<{
-  title: string;
+  title?: string;
   open: boolean;
   setOpen: (value: boolean) => void;
+  withCloseButton?: boolean;
 }>;
-export default function Popup({open = false, setOpen, children, title}: PopupProps) {
+export default function Popup({open = false, setOpen, children, title, withCloseButton = true}: PopupProps) {
   return (
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setOpen}>
@@ -43,7 +44,7 @@ export default function Popup({open = false, setOpen, children, title}: PopupPro
               <Dialog.Panel
                   className="inline-block bg-secondary dark:bg-secondary-dark px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle w-full sm:max-w-lg sm:p-6 rounded border border-theme-border dark:border-theme-border-dark">
                 <div className="absolute top-0 right-0 hidden py-4 pr-4 sm:block">
-                  <button
+                  {withCloseButton && <button
                       type="button"
                       className="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => setOpen(false)}
@@ -51,6 +52,7 @@ export default function Popup({open = false, setOpen, children, title}: PopupPro
                     <span className="sr-only">Close</span>
                     <AiOutlineClose className="h-6 w-6" aria-hidden="true"/>
                   </button>
+                  }
                 </div>
                 {title && <Dialog.Title
                     as="h3"

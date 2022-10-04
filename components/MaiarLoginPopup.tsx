@@ -14,8 +14,8 @@ export default function MaiarLoginPopup({qrCode, uri, open, setOpen}: PopupProps
     const isMobile = platform?.os?.family === 'iOS' || platform?.os?.family === 'Android';
 
     return (
-        <Popup open={open} setOpen={setOpen}>
-            <div className="flex flex-col items-center">
+        <Popup open={open} setOpen={setOpen} withCloseButton={false}>
+            <div className="flex flex-col items-center text-primary dark:text-primary-dark">
                 <Dialog.Title
                     as="h3"
                     className="text-xl"
