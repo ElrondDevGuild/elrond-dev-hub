@@ -63,9 +63,9 @@ export type BountyStatus =
     | "canceled"
     | "work_started"
     | "work_submitted"
-    | "work_done";
+    | "work_done"; // todo: change to completed
 
-export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced";
+export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced"; // todo: add "any"
 
 export type Bounty = {
   id: string;
@@ -87,6 +87,7 @@ export type Bounty = {
   tags?: {details: Tag}[];
   applicationsCount: number;
   applications?: BountyApplication[];
+  resources?: BountyResource[];
 };
 
 export type ApplicationApprovalStatus = "pending" | "accepted" | "rejected";

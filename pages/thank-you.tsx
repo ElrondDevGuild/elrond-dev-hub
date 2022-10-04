@@ -5,6 +5,7 @@ import { IoReturnUpBackOutline } from 'react-icons/io5';
 import Layout from '../components/Layout';
 import Button from '../components/shared/Button';
 import { homePath, submitPath } from '../utils/routes';
+import ButtonCreateResource from "../components/shared/ButtonCreateResource";
 
 export default function ThankYou() {
   return (
@@ -16,11 +17,15 @@ export default function ThankYou() {
           </h1>
           <p className="mt-4 text-theme-text dark:text-theme-text-dark text-center">
             {" "}
-            Submissions will be manually reviewed before publishing them to the platform.
+            Resource submissions will be manually reviewed before publishing them to the platform.
+          </p>
+          <p className="mt-4 text-theme-text dark:text-theme-text-dark text-center">
+            {" "}
+            Bounty submissions are automatically published them to the platform.
           </p>
 
           <div className="flex items-center md:space-x-6 mt-10 flex-col md:flex-row space-y-6 md:space-y-0">
-            <Button icon={BiPlus} label="Add New Resource" href={submitPath} />
+            <ButtonCreateResource />
             <Button icon={IoReturnUpBackOutline} label="Return to homepage" theme="secondary" href={homePath} />
           </div>
         </div>

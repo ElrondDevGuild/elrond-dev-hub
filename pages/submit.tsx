@@ -50,12 +50,17 @@ export default function Submit() {
       const { data } = await api.post("resources", { ...formData, tags });
       formMethods.reset();
 
-      router.push(thankYouPath);
+      await router.push(thankYouPath);
     } catch (e) {
       let errMessage: string;
       if (axios.isAxiosError(e) && e.response?.status === 422) {
         // @ts-ignore
         errMessage = e.response.data.error;
+        // @ts-ignore
+        if (e.response.data.details) {
+          // @ts-ignore
+          errMessage += "\n\n" + e.response.data.details.map((detail: any) => detail.message).join(",\n");
+        }
       } else {
         errMessage = "Something went wrong. Please try again in a few moments";
       }

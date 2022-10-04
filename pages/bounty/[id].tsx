@@ -2,7 +2,7 @@ import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
 import Layout from "../../components/Layout";
 import RequiresAuth from "../../components/RequiresAuth";
-import {Bounty} from "../../types/supabase";
+import {Bounty, BountyResource} from "../../types/supabase";
 import Loader from "../../components/shared/Loader";
 import {api} from "../../utils/api";
 import axios from "axios";
@@ -12,9 +12,11 @@ import Moment from "react-moment";
 import {ucFirst} from "../../utils/presentation";
 import {useAuth} from "../../hooks/useAuth";
 import ApplicationsList from "../../components/bounty/applications/ApplicationsList";
+import ResourceItem from "../../components/bounty/resources/ResourceItem";
 
 export default function BountyDetails() {
     const [bounty, setBounty] = useState<Bounty | null>(null);
+    const [bountyResources, setBountyResources] = useState<BountyResource[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const {user} = useAuth();
@@ -30,7 +32,16 @@ export default function BountyDetails() {
         } finally {
             setLoading(false);
         }
+    };
+    const getBountyResources = async (id: string) => {
+        try {
+            const {data: bountyResources} = await api.get(`bounties/${id}/resources`);
+            setBountyResources(bountyResources);
+        } catch (e) {
+
+        }
     }
+
     useEffect(() => {
         if (!router.isReady) {
             return;
@@ -39,6 +50,13 @@ export default function BountyDetails() {
         getBounty(id as string);
 
     }, [router]);
+
+    useEffect(() => {
+        if (!bounty) {
+            return;
+        }
+        getBountyResources(bounty.id);
+    }, [bounty]);
 
     if (loading || !bounty) {
         return (
@@ -153,11 +171,21 @@ export default function BountyDetails() {
                     </div>
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Description</h3>
-                    <div className="text-sm mt-4 text-theme-text dark:text-white" dangerouslySetInnerHTML={{__html:bounty.description}}></div>
+                    <div className="text-sm mt-4 text-theme-text dark:text-white"
+                         dangerouslySetInnerHTML={{__html: bounty.description}}></div>
 
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
-                    <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Acceptance Criteria</h3>
-                    <div className="text-sm mt-4 text-theme-text dark:text-white" dangerouslySetInnerHTML={{__html:bounty.acceptance_criteria}}></div>
+                    <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Acceptance
+                        Criteria</h3>
+                    <div className="text-sm mt-4 text-theme-text dark:text-white"
+                         dangerouslySetInnerHTML={{__html: bounty.acceptance_criteria}}></div>
+                    <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
+                    <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Resources</h3>
+                    <div className="flex items-start gap-6 mb-4 flex-wrap mt-4">
+                        {bountyResources.map(resource => (
+                            <ResourceItem key={resource.id} resource={resource}/>
+                        ))}
+                    </div>
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     {bounty.owner_id === user?.id && (
                         <>
