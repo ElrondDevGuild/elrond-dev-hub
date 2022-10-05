@@ -20,6 +20,6 @@ export const searchPath = (q?: string) => {
   }
   return `/search?q=${q}`;
 };
-export const bountyPath = (id: string, path: string) => `/bounty/${id}${path ? `/${path}` : ''}`;
+export const bountyPath = (id: string, path?: string) => `/bounty/${id}${path ? `/${path}` : ''}`;
 export const resourcesPath = "/resources";
 export const submitBountyPath = "/bounty/create";
