@@ -5,12 +5,14 @@ import {api} from "../../../utils/api";
 import UserRating from "../../UserRating";
 import {BsCheck, BsX} from "react-icons/bs";
 import ApplicationListItem from "./ApplicationListItem";
+import ApplicationDetailsModal from "./ApplicationDetailsModal";
 
 
 export default function ApplicationsList({bounty}: { bounty: Bounty }) {
     const {user} = useAuth();
     const [applications, setApplications] = useState<BountyApplication[]>([]);
     const [loading, setLoading] = useState(false);
+    const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
 
     const loadApplications = async () => {
         setLoading(true);
@@ -25,7 +27,7 @@ export default function ApplicationsList({bounty}: { bounty: Bounty }) {
     };
 
     const openApplication = (application: BountyApplication) => {
-        alert("Not implemented yet");
+        setCurrentApplication(application);
     };
 
 
@@ -41,14 +43,20 @@ export default function ApplicationsList({bounty}: { bounty: Bounty }) {
     }
 
     return (
-        <ul role="list" className="divide-y divide-theme-border dark:divide-theme-border-dark">
-            {applications.map((application) => (
-                <ApplicationListItem
-                    application={application}
-                    openApplication={openApplication}
-                    key={application.id}
-                />
-            ))}
-        </ul>
+        <>
+            <ul role="list" className="divide-y divide-theme-border dark:divide-theme-border-dark">
+                {applications.map((application) => (
+                    <ApplicationListItem
+                        application={application}
+                        openApplication={openApplication}
+                        key={application.id}
+                    />
+                ))}
+            </ul>
+            <ApplicationDetailsModal
+                application={currentApplication}
+                setOpen={() => {setCurrentApplication(null)}}
+            />
+        </>
     );
 };

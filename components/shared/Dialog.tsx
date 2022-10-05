@@ -46,7 +46,7 @@ export default function Popup({open = false, setOpen, children, title, withClose
                 <div className="absolute top-0 right-0 hidden py-4 pr-4 sm:block">
                   {withCloseButton && <button
                       type="button"
-                      className="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       onClick={() => setOpen(false)}
                   >
                     <span className="sr-only">Close</span>
