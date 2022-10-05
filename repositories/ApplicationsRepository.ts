@@ -18,4 +18,16 @@ export default class ApplicationsRepository extends BaseRepository<BountyApplica
 
         return data;
     }
+
+    async findByUserIdAndBountyId(userId: string, bountyId: string) {
+        const {data, error} = await this._table.select("*")
+            .eq("user_id", userId)
+            .eq("bounty_id", bountyId)
+            .maybeSingle();
+        if (error) {
+            throw error;
+        }
+
+        return data;
+    }
 };

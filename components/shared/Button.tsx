@@ -9,22 +9,27 @@ interface IButtonProps {
   href?: string;
   disabled?: boolean;
   theme?: BtnTheme;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   type?: "button" | "submit" | "reset";
+  extraClasses?: string;
 }
 
 const ButtonComponent = (btnProps: IButtonProps) => {
   const btnClasses = useMemo(() => {
+    let classes = "";
     if (btnProps.theme === "secondary") {
-      return "bg-transparent text-theme-text dark:text-theme-text-dark border-theme-text dark:border-theme-text-dark";
+      classes = "bg-transparent text-theme-text dark:text-theme-text-dark border-theme-text dark:border-theme-text-dark";
+    } else {
+      classes = "bg-primary dark:bg-primary-dark  text-secondary dark:text-secondary-dark border-transparent";
     }
-    return "bg-primary dark:bg-primary-dark  text-secondary dark:text-secondary-dark border-transparent";
-  }, [btnProps?.theme]);
+
+    return classes + " " + btnProps.extraClasses;
+  }, [btnProps.extraClasses, btnProps.theme]);
 
   return (
     <button
-      disabled={btnProps?.disabled}
-      className={`${btnClasses} border font-medium text-xs sm:text-sm py-2 px-4 rounded-md transition-opacity ease-in-out hover:opacity-80 flex items-center disabled:opacity-80 disabled:cursor-not-allowed`}
+        disabled={btnProps?.disabled}
+        className={`border font-medium text-xs sm:text-sm py-2 px-4 rounded-md transition-opacity ease-in-out hover:opacity-80 flex items-center disabled:opacity-80 disabled:cursor-not-allowed ${btnClasses}`}
         {...{onClick: btnProps?.onClick}}
     >
       {btnProps.icon && (

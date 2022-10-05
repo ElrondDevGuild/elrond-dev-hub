@@ -15,7 +15,7 @@ import {
 } from "../../utils/bounties";
 import axios from "axios";
 import {useRouter} from "next/router";
-import {api} from "../../utils/api";
+import {api, getApiErrorMessage} from "../../utils/api";
 import {bountyPath, thankYouPath} from "../../utils/routes";
 import {BountyResource} from "../../types/supabase";
 import {nanoid} from "nanoid";
@@ -56,19 +56,7 @@ export default function Create() {
             formMethods.reset();
             await router.push(bountyPath(data.id));
         } catch (e) {
-            let errMessage: string;
-            if (axios.isAxiosError(e) && e.response?.status === 422) {
-                // @ts-ignore
-                errMessage = e.response.data.error;
-                // @ts-ignore
-                if (e.response.data.details) {
-                    // @ts-ignore
-                    errMessage += "\n\n" + e.response.data.details.map((detail: any) => detail.message).join(",\n");
-                }
-            } else {
-                errMessage = "Something went wrong. Please try again in a few moments";
-            }
-            alert(errMessage);
+            alert(getApiErrorMessage(e));
         } finally {
             setSubmitting(false);
         }

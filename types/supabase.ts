@@ -97,6 +97,7 @@ export type BountyApplication = {
   id: string;
   bounty_id: string;
   user_id: string;
+  message: string;
   approval_status: ApplicationApprovalStatus;
   work_status: WorkStatus;
   work_url: string | null;
