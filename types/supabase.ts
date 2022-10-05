@@ -65,7 +65,7 @@ export type BountyStatus =
     | "work_submitted"
     | "work_done"; // todo: change to completed
 
-export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced"; // todo: add "any"
+export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced" | "any";
 
 export type Bounty = {
   id: string;
@@ -97,6 +97,7 @@ export type BountyApplication = {
   id: string;
   bounty_id: string;
   user_id: string;
+  message: string;
   approval_status: ApplicationApprovalStatus;
   work_status: WorkStatus;
   work_url: string | null;

@@ -2,7 +2,6 @@ import Popup from "../../shared/Dialog";
 import Input from "../../shared/form/Input";
 import {useForm, FormProvider} from "react-hook-form";
 import Button from "../../shared/Button";
-import {Dialog} from '@headlessui/react';
 
 type FormValues = {
     description: string;
@@ -49,13 +48,18 @@ export default function ModalAddResource(
                         type="url"
                         options={{
                             required: true,
-                            pattern:"https://.*"
-                    }}
+                            pattern: "https://.*"
+                        }}
                     />
                 </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <Button label="Add resource"/>
-                    <Button label="Close" theme="secondary" onClick={() => setOpenState(false)}/>
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
+                    <Button label="Add resource" extraClasses="w-full sm:w-40 justify-center"/>
+                    <Button
+                        label="Close"
+                        theme="secondary"
+                        onClick={() => setOpenState(false)}
+                        extraClasses="w-full sm:w-40 justify-center"
+                    />
                 </div>
             </form>
         </FormProvider>

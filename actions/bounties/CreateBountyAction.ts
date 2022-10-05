@@ -17,7 +17,13 @@ export default class CreateBountyAction extends BaseAction {
         delete data.tags;
         delete data.resources;
 
-        const bounty = await this.createBounty({...data, status: "open", owner_id: user?.id});
+        const bounty = await this.createBounty({
+            ...data,
+            status: "open",
+            owner_id: user?.id,
+            project_type: "single_worker",
+            requires_work_permission: true
+        });
         const bountyWithTags = await this.setBountyTags(bounty, tags);
         const bountyResources = await this.storeBountyResources(bountyWithTags, resources);
 
@@ -32,9 +38,9 @@ export default class CreateBountyAction extends BaseAction {
             title: Joi.string().required().max(100),
             description: Joi.string().required(),
             acceptance_criteria: Joi.string().required().label("Acceptance Criteria"),
-            project_type: Joi.string().required().valid(...typeOptions.map(type => type.id)).label("Type"),
+            // project_type: Joi.string().required().valid(...typeOptions.map(type => type.id)).label("Type"),
             issue_type: Joi.string().required().valid(...issueTypeOptions.map(type => type.id)).label("Issue Type"),
-            requires_work_permission: Joi.boolean().required().label("Permissions"),
+            // requires_work_permission: Joi.boolean().required().label("Permissions"),
             experience_level: Joi.string().required().valid(...experienceOptions.map(type => type.id)).label("Experience Level"),
             repository_url: Joi.string().required().uri().label("Repository URL"),
             repository_issue_url: Joi.string().optional().allow("").uri().label("Issue URL"),

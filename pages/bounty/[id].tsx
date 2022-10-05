@@ -2,7 +2,7 @@ import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
 import Layout from "../../components/Layout";
 import RequiresAuth from "../../components/RequiresAuth";
-import {Bounty, BountyResource} from "../../types/supabase";
+import {Bounty, BountyApplication, BountyResource} from "../../types/supabase";
 import Loader from "../../components/shared/Loader";
 import {api} from "../../utils/api";
 import axios from "axios";
@@ -13,11 +13,15 @@ import {ucFirst} from "../../utils/presentation";
 import {useAuth} from "../../hooks/useAuth";
 import ApplicationsList from "../../components/bounty/applications/ApplicationsList";
 import ResourceItem from "../../components/bounty/resources/ResourceItem";
+import ApplicationWorkModal from "../../components/bounty/applications/ApplicationWorkModal";
+import {bountyPath} from "../../utils/routes";
 
 export default function BountyDetails() {
     const [bounty, setBounty] = useState<Bounty | null>(null);
     const [bountyResources, setBountyResources] = useState<BountyResource[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showApplicationWorkModal, setShowApplicationWorkModal] = useState(false);
+    const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
     const router = useRouter();
     const {user} = useAuth();
 
@@ -40,6 +44,17 @@ export default function BountyDetails() {
         } catch (e) {
 
         }
+    };
+    const getCurrentUserApplication = async () => {
+        try {
+            if (!user || !bounty) {
+                return;
+            }
+            const {data: application} = await api.get(`bounties/${bounty.id}/applications/current`);
+            setCurrentApplication(application);
+        } catch (e) {
+            setCurrentApplication(null);
+        }
     }
 
     useEffect(() => {
@@ -57,6 +72,10 @@ export default function BountyDetails() {
         }
         getBountyResources(bounty.id);
     }, [bounty]);
+
+    useEffect(() => {
+        getCurrentUserApplication();
+    }, [bounty, user]);
 
     if (loading || !bounty) {
         return (
@@ -113,10 +132,12 @@ export default function BountyDetails() {
                             <UserRating reviews={[]}/>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Button label="Start Work"
-                                    onClick={() => {
-                                        alert("start work")
-                                    }}/>
+                            <BountyAction
+                                bounty={bounty}
+                                currentApplication={currentApplication}
+                                user={user}
+                                setShowApplicationWorkModal={setShowApplicationWorkModal}
+                            />
                             <Button
                                 label="Share"
                                 theme="secondary"
@@ -195,7 +216,36 @@ export default function BountyDetails() {
                     )}
 
                 </div>
+                <ApplicationWorkModal
+                    open={showApplicationWorkModal}
+                    setOpen={setShowApplicationWorkModal}
+                    bountyId={bounty.id}
+                    onSuccess={async () => { await getCurrentUserApplication()}}
+                />
             </RequiresAuth>
         </Layout>
     );
 };
+
+function BountyAction({bounty, user, currentApplication, setShowApplicationWorkModal}: any) {
+    const router = useRouter();
+
+    if (bounty.owner_id === user?.id) {
+        return <Button
+            label="Edit"
+            onClick={() => router.push(bountyPath(bounty.id, "edit"))}
+        />
+    }
+
+    if (currentApplication) {
+        return <Button
+            label="My Application"
+            onClick={() => alert("Not Implemented")}
+        />
+    }
+
+    return <Button
+        label="Start Work"
+        onClick={() => setShowApplicationWorkModal(true)}
+    />
+}
