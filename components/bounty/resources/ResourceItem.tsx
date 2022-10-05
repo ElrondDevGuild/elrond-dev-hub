@@ -18,7 +18,7 @@ export default function ResourceItem(
                 <FiExternalLink className="w-8 h-8"/>
             </a>
             <div className="flex flex-col items-start">
-                <p className="text-sm text-secondary mt-3 line-clamp-1 ">
+                <p className="text-sm text-theme-text dark:text-theme-text-dark mt-3 line-clamp-1 ">
                     {resource.description}
                 </p>
                 {typeof onRemove === "function" && (

@@ -65,7 +65,7 @@ export type BountyStatus =
     | "work_submitted"
     | "work_done"; // todo: change to completed
 
-export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced"; // todo: add "any"
+export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced" | "any";
 
 export type Bounty = {
   id: string;

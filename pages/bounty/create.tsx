@@ -16,7 +16,7 @@ import {
 import axios from "axios";
 import {useRouter} from "next/router";
 import {api} from "../../utils/api";
-import {thankYouPath} from "../../utils/routes";
+import {bountyPath, thankYouPath} from "../../utils/routes";
 import {BountyResource} from "../../types/supabase";
 import {nanoid} from "nanoid";
 import ResourceItem from "../../components/bounty/resources/ResourceItem";
@@ -54,7 +54,7 @@ export default function Create() {
                 resources: resources.map(resource => ({...resource, id: undefined}))
             });
             formMethods.reset();
-            await router.push(thankYouPath);
+            await router.push(bountyPath(data.id));
         } catch (e) {
             let errMessage: string;
             if (axios.isAxiosError(e) && e.response?.status === 422) {
@@ -119,22 +119,22 @@ export default function Create() {
                                         Tags will improve content discovery
                                     </p>
                                 </div>
-                                <div>
-                                    <Select
-                                        name="project_type"
-                                        options={{required: true}}
-                                        label="Type*"
-                                        selectOptions={typeOptions}
-                                    />
-                                </div>
-                                <div>
-                                    <Select
-                                        name="requires_work_permission"
-                                        options={{required: true}}
-                                        label="Permissions*"
-                                        selectOptions={permissionOptions}
-                                    />
-                                </div>
+                                {/*<div>*/}
+                                {/*    <Select*/}
+                                {/*        name="project_type"*/}
+                                {/*        options={{required: true}}*/}
+                                {/*        label="Type*"*/}
+                                {/*        selectOptions={typeOptions}*/}
+                                {/*    />*/}
+                                {/*</div>*/}
+                                {/*<div>*/}
+                                {/*    <Select*/}
+                                {/*        name="requires_work_permission"*/}
+                                {/*        options={{required: true}}*/}
+                                {/*        label="Permissions*"*/}
+                                {/*        selectOptions={permissionOptions}*/}
+                                {/*    />*/}
+                                {/*</div>*/}
                                 <div>
                                     <Select
                                         name="experience_level"
@@ -212,7 +212,7 @@ export default function Create() {
                                         ))}
                                     </div>
                                     <button
-                                        className=""
+                                        className="text-primary dark:text-primary-dark hover:underline"
                                         type="button"
                                         onClick={() => setAddResourceModalOpen(true)}
                                     >

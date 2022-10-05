@@ -12,10 +12,11 @@ export const experienceOptions: IOption[] = [
     {id: "beginner", name: "Beginner"},
     {id: "intermediate", name: "Intermediate"},
     {id: "experienced", name: "Experienced"},
+    {id: "any", name: "Any"},
 ];
 export const issueTypeOptions: IOption[] = [
-    {id: "bug", name: "Bug"},
     {id: "feature", name: "Feature"},
     {id: "design", name: "Design"},
+    {id: "bug", name: "Bug"},
     {id: "other", name: "Other"},
 ];
