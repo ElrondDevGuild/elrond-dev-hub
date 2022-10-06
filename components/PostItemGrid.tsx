@@ -9,7 +9,7 @@ export interface IPostItemGrid {
   image_url?: string;
   resource_url: string;
   category?: string;
-  author: string;
+  author?: string;
   slug?: string;
 }
 
@@ -53,9 +53,11 @@ export default function PostItemGrid({ post, imageHeight = "h-52", showLinks = t
         </a>
       </div>
       <div className="p-4 md:px-8 md:py-6 flex-grow">
-        <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">
-          By <span className="text-primary dark:text-primary-dark">{post.author}</span>
-        </div>
+        {post?.author && (
+          <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">
+            By <span className="text-primary dark:text-primary-dark">{post.author}</span>
+          </div>
+        )}
         <div className="font-semibold text-theme-title dark:text-theme-title-dark text-base  sm:text-xl">
           <a href={readArticleUrl} target="_blank" rel="noreferrer">
             {post.title}
@@ -79,9 +81,8 @@ export default function PostItemGrid({ post, imageHeight = "h-52", showLinks = t
           </a>
           <a className="flex-1 cursor-pointer">
             <div
-              className={`flex items-center justify-center cursor-pointer ${
-                copyClicked && "pointer-events-none text-primary dark:text-primary-dark"
-              }`}
+              className={`flex items-center justify-center cursor-pointer ${copyClicked &&
+                "pointer-events-none text-primary dark:text-primary-dark"}`}
               onClick={onCopyClicked}
             >
               <FiLink className="text-2xl sm:text-xl" />

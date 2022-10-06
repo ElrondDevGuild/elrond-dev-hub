@@ -48,6 +48,13 @@ export default function Layout({ hideRightBar = false, children }: any) {
             </div> */}
 
             <div>
+              <a href="https://xday.com/builders" target="_blank" rel="noreferrer" className="block mb-8">
+                <img
+                  src="https://pbs.twimg.com/media/FeZcYm4WAAA7uZe?format=jpg&name=large"
+                  alt="Join X Day"
+                  className="border-0.5 border-theme-border dark:border-theme-border-dark rounded-md hover:opacity-85"
+                />
+              </a>
               <PostItemGrid
                 post={{
                   title: "Elrond's Dev Hub launch w/ Beniamin Mincu",
