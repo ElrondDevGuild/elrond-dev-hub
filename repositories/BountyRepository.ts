@@ -1,5 +1,5 @@
 import {BaseRepository} from "./base/BaseRepository";
-import {Bounty} from "../types/supabase";
+import {Bounty, BountyStatus} from "../types/supabase";
 import {supabaseAdmin} from "../utils/supabase";
 import {BOUNTIES_TABLE} from "../utils/dbtables";
 import NotFoundError from "../errors/NotFoundError";
@@ -66,10 +66,22 @@ export default class BountyRepository extends BaseRepository<Bounty> {
         const bounty = await this.findById(id, [
             "owner:owner_id(*, social_links:user_social_links(*))",
             "tags:bounty_tag(tag_id,details:tags(id, title))"
-         ]);
+        ]);
         if (null === bounty || bounty.deleted_at) {
             throw new NotFoundError("bounty");
         }
         return bounty;
+    }
+
+    async updateStatus(id: string, status: BountyStatus) {
+        const {data, error} = await this._table.update({status})
+            .eq("id", id)
+            .maybeSingle();
+        if (error || !data) {
+            throw new Error("Failed to update bounty status");
+        }
+
+        return data;
+
     }
 };

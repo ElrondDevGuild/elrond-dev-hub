@@ -63,7 +63,7 @@ export type BountyStatus =
     | "canceled"
     | "work_started"
     | "work_submitted"
-    | "work_done"; // todo: change to completed
+    | "completed";
 
 export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced" | "any";
 
@@ -102,6 +102,7 @@ export type BountyApplication = {
   work_status: WorkStatus;
   work_url: string | null;
   created_at: string;
+  approval_status_timestamp: string | null;
   user: User;
   bounty?: Bounty;
 };

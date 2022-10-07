@@ -6,15 +6,7 @@ const formatStatus = (status: string): string => {
     return status.replace("_", " ")
 }
 const statusColor = (status: string) => {
-    switch (status) {
-        case "expired":
-        case "cancelled":
-        case "open":
-            return "text-primary dark:text-primary-dark"
-        default:
-            return "text-secondary dark:text-secondary-dark"
-
-    }
+    return "text-primary dark:text-primary-dark";
 }
 export default function BountyStatus({bounty}: { bounty: Bounty }) {
     const color = statusColor(bounty.status);

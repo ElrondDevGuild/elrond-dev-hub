@@ -1,5 +1,5 @@
 import {BaseRepository} from "./base/BaseRepository";
-import {BountyApplication} from "../types/supabase";
+import {ApplicationApprovalStatus, BountyApplication} from "../types/supabase";
 import {supabaseAdmin} from "../utils/supabase";
 import {BOUNTY_APPLICATIONS_TABLE} from "../utils/dbtables";
 
@@ -29,5 +29,20 @@ export default class ApplicationsRepository extends BaseRepository<BountyApplica
         }
 
         return data;
+    }
+
+    async updateApprovalStatus(id: string, status: ApplicationApprovalStatus) {
+        const {data, error} = await this._table.update({
+                approval_status: status,
+                approval_status_timestamp: new Date().toISOString()
+            })
+            .eq("id", id)
+            .maybeSingle();
+        if (error || !data) {
+            throw new Error("Failed to update application status");
+        }
+
+        return data;
+
     }
 };

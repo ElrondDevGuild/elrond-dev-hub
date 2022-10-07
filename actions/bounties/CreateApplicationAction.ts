@@ -38,7 +38,7 @@ export default class CreateApplicationAction extends BaseAction {
             user_id: user?.id,
             bounty_id: bountyId as string,
             approval_status: "pending",
-            work_status: "pending"
+            work_status: "in_progress"
         });
 
         return new ApiResponse().status(201).body(application);
