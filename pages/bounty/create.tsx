@@ -8,15 +8,12 @@ import Textarea from "../../components/shared/form/Textarea";
 import Button from "../../components/shared/Button";
 import {useState} from "react";
 import {
-    typeOptions,
     issueTypeOptions,
-    experienceOptions,
-    permissionOptions
+    experienceOptions
 } from "../../utils/bounties";
-import axios from "axios";
 import {useRouter} from "next/router";
 import {api, getApiErrorMessage} from "../../utils/api";
-import {bountyPath, thankYouPath} from "../../utils/routes";
+import {bountyPath} from "../../utils/routes";
 import {BountyResource} from "../../types/supabase";
 import {nanoid} from "nanoid";
 import ResourceItem from "../../components/bounty/resources/ResourceItem";

@@ -44,10 +44,11 @@ export type User = {
   social_links?: UserSocialLink[];
 };
 
+export type SocialPlatform = "twitter" | "github" | "discord" | "telegram" | "linkedin";
 export type UserSocialLink = {
   id: string;
   user_id: string;
-  platform: 'twitter' | 'github' | 'discord' | 'linkedin';
+  platform: SocialPlatform;
   username: string;
 }
 
