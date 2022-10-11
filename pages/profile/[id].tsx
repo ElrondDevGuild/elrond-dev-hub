@@ -8,6 +8,7 @@ import {User, UserReview} from "../../types/supabase";
 import UserRating from "../../components/UserRating";
 import {FaDiscord, FaGithub, FaLinkedin, FaTelegram, FaTwitter} from "react-icons/fa";
 import {getUserHandle} from "../../utils/profile";
+import UserBounties from "../../components/profile/UserBounties";
 
 
 const platforms = {
@@ -85,6 +86,9 @@ export default function UserProfile() {
                         <h3 className="text-theme-text dark:text-theme-text-dark font-semibold mt-10">Description</h3>
                         <div className="text-sm mt-2 text-theme-text dark:text-white">
                             {user.description}
+                        </div>
+                        <div className="mt-10">
+                            <UserBounties user={user}/>
                         </div>
                     </div>
                 }
