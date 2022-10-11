@@ -3,19 +3,19 @@ import {HiUserCircle} from "react-icons/hi"
 import Image from "next/image";
 import {classNames} from "../../utils/presentation";
 
-type Size = "sm" | "md" | "lg";
+type Size = "sm" | "md" | "lg" | "xl";
 export default function ProfileImage(
     {
         user,
         size = "md"
     }: { user: User, size?: Size }
 ) {
-    const pxSize = getPxSize(size);
+    const sizeClass = getClassSizes(size);
     if (!user.avatar_url) {
         return (
             <HiUserCircle
                 className={classNames(
-                    getClassSizes(size),
+                    sizeClass,
                     "text-theme-text dark:text-theme-text-dark"
                 )}
             />
@@ -23,11 +23,9 @@ export default function ProfileImage(
     }
 
     return (
-        <Image
+        <img
             src={user.avatar_url}
-            width={pxSize}
-            height={pxSize}
-            className="rounded-full"
+            className={classNames(sizeClass, "rounded-full")}
             alt="profile picture"
         />
     );
@@ -39,6 +37,8 @@ const getPxSize = (size: Size) => {
             return 16;
         case "md":
             return 32;
+        case "lg":
+            return 44;
         default:
             return 64;
     }
@@ -49,6 +49,8 @@ const getClassSizes = (size: Size) => {
             return "w-[16px] h-[16px]";
         case "md":
             return "w-[32px] h-[32px]";
+        case "lg":
+            return "w-[44px] h-[44px]";
         default:
             return "w-[64px] h-[64px]";
     }

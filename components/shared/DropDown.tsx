@@ -4,7 +4,7 @@ import {Menu, Transition} from '@headlessui/react'
 import {IoEllipsisVertical} from 'react-icons/io5'
 import {classNames} from "../../utils/presentation";
 
-type DropdownOption = {
+export type DropdownOption = {
     label: string;
     onClick: () => void;
 }
@@ -16,9 +16,13 @@ type DropdownOpenOptions = {
 type DropdownProps = {
     options: DropdownOption[];
     openOptions?: DropdownOpenOptions;
+    positionX?: "right" | "left";
+    positionY?: "top" | "bottom";
 }
 
-export default function DropDown({options, openOptions}: DropdownProps) {
+export default function DropDown({options, openOptions, positionX, positionY}: DropdownProps) {
+    const _positionX = positionX === "right" ? "left-0" : "right-0";
+    const _positionY = positionY === "top" ? "bottom-0" : "top-0";
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
@@ -47,7 +51,11 @@ export default function DropDown({options, openOptions}: DropdownProps) {
                 leaveTo="transform opacity-0 scale-95"
             >
                 <Menu.Items
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-secondary dark:bg-secondary-dark border border-theme-border dark:border-theme-border-dark divide-y divide-theme-border dark:divide-theme-border-dark">
+                    className={classNames(
+                        _positionX,
+                        _positionY,
+                        "absolute  z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-secondary dark:bg-secondary-dark border border-theme-border dark:border-theme-border-dark divide-y divide-theme-border dark:divide-theme-border-dark"
+                    )}>
                     <div className="py-1">
                         {options.map((option, index) => (
                             <Menu.Item key={index}>

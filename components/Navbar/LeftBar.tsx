@@ -15,12 +15,12 @@ import {
 import { SiPlausibleanalytics } from 'react-icons/si';
 
 import { Category } from '../../types/supabase';
-import { api } from '../../utils/api';
-import { categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
-import Button from '../shared/Button';
+import {api} from '../../utils/api';
+import {categoryPath, gettingStartedPath, homePath} from '../../utils/routes';
 import LinksGroup from '../shared/LinksGroup';
 import {ILinksGroupProps} from "../../types/components";
 import ButtonCreateResource from "../shared/ButtonCreateResource";
+import UserInfoBox from "../profile/UserInfoBox";
 
 const menuSection: ILinksGroupProps = {
   links: [
@@ -170,12 +170,15 @@ export default function Leftbar() {
         <LinksGroup {...firstSection} />
       </div>
       {categoriesSection && (
-        <div className="mb-8">
-          <LinksGroup {...categoriesSection} />
-        </div>
+          <div className="mb-8">
+            <LinksGroup {...categoriesSection} />
+          </div>
       )}
       <div className="mb-8">
         <LinksGroup {...sourceCode} />
+      </div>
+      <div className="">
+        <UserInfoBox/>
       </div>
     </>
   );

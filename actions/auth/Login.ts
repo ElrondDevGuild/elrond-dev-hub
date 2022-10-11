@@ -7,6 +7,7 @@ import UserRepository from "../../repositories/UserRepository";
 import ElrondValidator from "../../utils/auth/ElrondValidator";
 import ApiError from "../../errors/ApiError";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 
 export default class Login extends BaseAction {
@@ -26,6 +27,13 @@ export default class Login extends BaseAction {
 
         const userRepo = new UserRepository();
         const user = await userRepo.findOrCreate(address);
+        if (!user.handle) {
+            const heroTag = await this.getHeroTag(address);
+            if (heroTag) {
+                await userRepo.update(user.id, {handle: heroTag});
+                user.handle = heroTag;
+            }
+        }
 
 
         const secret = process.env.AUTH_SECRET_KEY;
@@ -58,4 +66,13 @@ export default class Login extends BaseAction {
         return false;
     }
 
+    private async getHeroTag(wallet: string): Promise<string | null> {
+        try {
+            const response = await axios.get(`https://api.elrond.com/accounts/${wallet}`);
+
+            return response.data.username !== undefined ? response.data.username : null;
+        } catch (e) {
+            return null;
+        }
+    }
 };

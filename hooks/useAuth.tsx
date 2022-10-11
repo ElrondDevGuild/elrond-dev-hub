@@ -103,6 +103,7 @@ export const AuthContextProvider = ({children, env}: PropsWithChildren<{ env: Ne
                 if (authProvider) {
                     authProvider.logout();
                 }
+                // todo: logout from backend
             },
             setUser
         };

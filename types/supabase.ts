@@ -41,6 +41,7 @@ export type User = {
   description: string | null;
   created_at: string | null;
   verified: boolean;
+  handle: string | null;
   social_links?: UserSocialLink[];
 };
 
