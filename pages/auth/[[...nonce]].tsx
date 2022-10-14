@@ -105,6 +105,8 @@ const Auth: NextPage = () => {
           </div>
         </div>
       </div>
+
+      <MaiarLoginPopup qrCode={authQrCode} uri={maiarAuthUri} open={showPopup} setOpen={setIsPopupOpen} />
     </>
   );
 
