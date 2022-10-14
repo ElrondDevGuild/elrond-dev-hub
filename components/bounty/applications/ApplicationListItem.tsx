@@ -5,6 +5,7 @@ import {BsCheck, BsX} from "react-icons/bs";
 import DropDown from "../../shared/DropDown";
 import {classNames} from "../../../utils/presentation";
 import {IoEllipsisVertical} from "react-icons/io5";
+import {getUserHandle} from "../../../utils/profile";
 
 
 export default function ApplicationListItem(
@@ -48,7 +49,7 @@ export default function ApplicationListItem(
                 <div
                     className="flex flex-col md:flex-row items-start md:items-center gap-x-6 gap-y-1  w-1/2 md:w-2/3 lg:w-1/2">
                     <p className="truncate text-sm font-medium dark:text-secondary w-1/2">
-                        {application.user.name}
+                        {application.user.name || getUserHandle(application.user)}
                     </p>
                     <UserRating reviews={[]}/>
                 </div>

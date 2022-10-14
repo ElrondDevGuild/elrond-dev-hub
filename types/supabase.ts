@@ -41,13 +41,15 @@ export type User = {
   description: string | null;
   created_at: string | null;
   verified: boolean;
+  handle: string | null;
   social_links?: UserSocialLink[];
 };
 
+export type SocialPlatform = "twitter" | "github" | "discord" | "telegram" | "linkedin";
 export type UserSocialLink = {
   id: string;
   user_id: string;
-  platform: 'twitter' | 'github' | 'discord' | 'linkedin';
+  platform: SocialPlatform;
   username: string;
 }
 

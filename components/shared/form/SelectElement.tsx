@@ -9,6 +9,7 @@ import { classNames } from '../../../utils/presentation';
 export interface IOption {
   id: string | number | boolean;
   name: string;
+  icon?: JSX.Element;
 }
 
 interface ISelectElementProps {
@@ -70,24 +71,33 @@ export default function SelectElement({ options, onChange }: ISelectElementProps
                     value={person}
                   >
                     {({ selected, active }) => (
-                      <>
-                        <span className={classNames(selected ? "font-semibold" : "font-normal", "block truncate")}>
-                          {person.name}
-                        </span>
-
-                        {selected ? (
-                          <span
-                            className={classNames(
-                              active
-                                ? "text-secondary dark:text-secondary-dark"
-                                : "text-theme-text dark:text-theme-text-dark",
-                              "absolute inset-y-0 right-0 flex items-center pr-4"
-                            )}
+                        <>
+                          <div
+                              className={classNames(selected ? "font-semibold" : "font-normal", "flex items-center")}
                           >
-                            <GoCheck className="h-5 w-5" aria-hidden="true" />
+                            {person.icon && (
+                                <div className="flex items-center justify-center ml-1 mr-4">
+                                  <div className="" aria-hidden="true">
+                                    {person.icon}
+                                  </div>
+                                </div>
+                            )}
+                            <span className="truncate">{person.name}</span>
+                          </div>
+
+                          {selected ? (
+                              <span
+                                  className={classNames(
+                                      active
+                                          ? "text-secondary dark:text-secondary-dark"
+                                          : "text-theme-text dark:text-theme-text-dark",
+                                      "absolute inset-y-0 right-0 flex items-center pr-4"
+                                  )}
+                              >
+                            <GoCheck className="h-5 w-5" aria-hidden="true"/>
                           </span>
-                        ) : null}
-                      </>
+                          ) : null}
+                        </>
                     )}
                   </Listbox.Option>
                 ))}

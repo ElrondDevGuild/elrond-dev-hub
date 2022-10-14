@@ -4,6 +4,9 @@ import UserRating from "../../UserRating";
 import {BsCheck, BsX} from "react-icons/bs";
 import {useState} from "react";
 import {classNames} from "../../../utils/presentation";
+import {useRouter} from "next/router";
+import {profilePath} from "../../../utils/routes";
+
 
 export default function ApplicationDetailsModal(
     {
@@ -19,6 +22,7 @@ export default function ApplicationDetailsModal(
     }
 ) {
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     const acceptApplication = async (application: BountyApplication) => {
         setLoading(true);
         await onAccept(application);
@@ -55,7 +59,9 @@ export default function ApplicationDetailsModal(
                 <div className="flex items-center space-x-4">
                     <button
                         className="text-sm text-theme-text dark:text-secondary underline"
-                        onClick={() => {}}
+                        onClick={async () => {
+                            await router.push(`${profilePath}/${application.user.id}`);
+                        }}
                         disabled={loading}
 
                     >

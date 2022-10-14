@@ -14,6 +14,7 @@ interface IAuthContext {
     loading: boolean;
     login: (provider: AuthProviderType, ledgerIndex?: number) => Promise<string>;
     logout: () => void;
+    setUser: (user: User) => void;
 }
 
 const contextDefaultvalue: IAuthContext = {
@@ -22,6 +23,7 @@ const contextDefaultvalue: IAuthContext = {
     loading: true,
     login: (provider: AuthProviderType, ledgerIndex?: number) => Promise.resolve(''),
     logout: () => {},
+    setUser: (user: User) => {},
 };
 export const AuthContext = createContext(contextDefaultvalue);
 export const AuthContextProvider = ({children, env}: PropsWithChildren<{ env: NetworkEnv }>) => {
@@ -101,7 +103,9 @@ export const AuthContextProvider = ({children, env}: PropsWithChildren<{ env: Ne
                 if (authProvider) {
                     authProvider.logout();
                 }
-            }
+                // todo: logout from backend
+            },
+            setUser
         };
     }, [loading, user]);
 
