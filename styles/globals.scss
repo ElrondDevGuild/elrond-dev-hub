@@ -46,6 +46,9 @@ a {
 
 @layer components {
   .auth-button {
-    @apply w-44 md:w-auto inline-flex items-center justify-center px-6 py-5 border-4 border text-xl font-semibold font-medium rounded-3xl shadow-sm  focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply inline-flex items-center justify-center py-3 text-sm font-medium rounded-lg focus:outline-none bg-secondary-dark text-white;
+    &:hover {
+      @apply opacity-90;
+    }
   }
 }
