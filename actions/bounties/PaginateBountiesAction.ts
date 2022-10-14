@@ -20,8 +20,7 @@ export default class PaginateBountiesAction extends BaseAction {
                 applicationsCount: applications?.length || 0
             };
         });
-
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        
 
         return new ApiResponse({body: {bounties: _bounties, count}});
     }
