@@ -3,6 +3,7 @@ import ProfileImage from "./ProfileImage";
 import DropDown, {DropdownOption} from "../shared/DropDown";
 import {useRouter} from "next/router";
 import {getUserHandle} from "../../utils/profile";
+import {profilePath} from "../../utils/routes";
 
 export default function UserInfoBox() {
     const {user, logout} = useAuth();
@@ -26,7 +27,10 @@ export default function UserInfoBox() {
         <div
             className="w-full h-20 flex items-center justify-between pr-3 bg-secondary dark:bg-secondary-dark border-t border-b border-theme-border dark:border-theme-border-dark"
         >
-            <div className="flex items-center overflow-hidden">
+            <button
+                className="flex items-center overflow-hidden"
+                onClick={() => router.push(`${profilePath}/${user.id}`)}
+            >
                 <ProfileImage user={user} size="lg"/>
                 <div className="flex flex-col items-start ml-2 space-y-1 ">
                     <div className="flex items-center space-x-2">
@@ -46,7 +50,7 @@ export default function UserInfoBox() {
                     </span>
 
                 </div>
-            </div>
+            </button>
             <DropDown options={menuOptions} positionY={"top"}/>
         </div>
     );

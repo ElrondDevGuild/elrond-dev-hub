@@ -9,6 +9,9 @@ import UserRating from "../../components/UserRating";
 import {FaDiscord, FaGithub, FaLinkedin, FaTelegram, FaTwitter} from "react-icons/fa";
 import {getUserHandle} from "../../utils/profile";
 import UserBounties from "../../components/profile/UserBounties";
+import Button from "../../components/shared/Button";
+import {bountyPath, profilePath, profileSettingsPath} from "../../utils/routes";
+import {useAuth} from "../../hooks/useAuth";
 
 
 const platforms = {
@@ -39,6 +42,7 @@ export default function UserProfile() {
     const [reviews, setReviews] = useState<UserReview[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const {user: authUser} = useAuth();
 
     const getUser = async (userId: string) => {
         setLoading(true);
@@ -57,31 +61,38 @@ export default function UserProfile() {
             <RequiresAuth>
                 {
                     user && <div className="flex flex-col w-full pl-6">
-                        <div className="flex items-center">
-                            <ProfileImage user={user} size="xl"/>
-                            <div className="flex flex-col ml-3 space-y-1">
-                                <div className="flex items-center space-x-2">
-                                    <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">{user.name}</h1>
-                                    {user.verified && (
-                                        <img src="/verified_icon.svg" className="mr-1"/>
-                                    )}
-                                </div>
-                                <span
-                                    className="text-sm text-theme-text dark:text-theme-text-dark text-clip overflow-hidden"
-                                >
+                        <div className="flex items-end justify-between">
+                            <div className="flex items-center">
+                                <ProfileImage user={user} size="xl"/>
+                                <div className="flex flex-col ml-3 space-y-1">
+                                    <div className="flex items-center space-x-2">
+                                        <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">{user.name}</h1>
+                                        {user.verified && (
+                                            <img src="/verified_icon.svg" className="mr-1"/>
+                                        )}
+                                    </div>
+                                    <span
+                                        className="text-sm text-theme-text dark:text-theme-text-dark text-clip overflow-hidden"
+                                    >
                                     {getUserHandle(user)}
                                 </span>
-                                <UserRating reviews={reviews}/>
-                                <div className="flex items-center space-x-2 pt-1">
-                                    {user.social_links?.map((link,) => {
-                                        return <PlatformIcon
-                                            key={link.platform}
-                                            platform={link.platform}
-                                            username={link.username}
-                                        />
-                                    })}
+                                    <UserRating reviews={reviews}/>
+                                    <div className="flex items-center space-x-2 pt-1">
+                                        {user.social_links?.map((link,) => {
+                                            return <PlatformIcon
+                                                key={link.platform}
+                                                platform={link.platform}
+                                                username={link.username}
+                                            />
+                                        })}
+                                    </div>
                                 </div>
                             </div>
+                            {authUser && authUser.id === user.id && <Button
+                                label="Edit"
+                                onClick={() => router.push(`${profileSettingsPath}`)}
+                            />
+                            }
                         </div>
                         <h3 className="text-theme-text dark:text-theme-text-dark font-semibold mt-10">Description</h3>
                         <div className="text-sm mt-2 text-theme-text dark:text-white">

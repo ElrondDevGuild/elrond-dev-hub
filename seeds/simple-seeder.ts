@@ -53,13 +53,13 @@ const generateWalletAddress = (): string => {
 
 };
 
-const createUser = (): Omit<User, "id" | "created_at"> => {
+const createUser = (): Omit<User, "id" | "created_at" | "handle"> => {
     return {
         wallet: generateWalletAddress(),
         avatar_url: faker.image.avatar(),
         name: faker.name.findName(),
         description: faker.hacker.phrase(),
-        verified: Math.random() > 0.5,
+        verified: Math.random() > 0.5
     }
 };
 
