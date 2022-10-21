@@ -210,7 +210,7 @@ export default function BountyDetails() {
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     {bounty.owner_id === user?.id && (
                         <>
-                            <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Applicants</h3>
+                            <h3 id="applications" className="text-theme-text dark:text-theme-text-dark font-semibold">Applicants</h3>
                             <ApplicationsList bounty={bounty}/>
                         </>
                     )}

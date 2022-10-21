@@ -66,17 +66,15 @@ export default function UserProfile() {
                                 <ProfileImage user={user} size="xl"/>
                                 <div className="flex flex-col ml-3 space-y-1">
                                     <div className="flex items-center space-x-2">
-                                        <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">{user.name}</h1>
+                                        <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">
+                                            {user.name ?? getUserHandle(user)}
+                                        </h1>
                                         {user.verified && (
                                             <img src="/verified_icon.svg" className="mr-1"/>
                                         )}
                                     </div>
-                                    <span
-                                        className="text-sm text-theme-text dark:text-theme-text-dark text-clip overflow-hidden"
-                                    >
-                                    {getUserHandle(user)}
-                                </span>
-                                    <UserRating reviews={reviews}/>
+
+                                    {/*<UserRating reviews={reviews}/>*/}
                                     <div className="flex items-center space-x-2 pt-1">
                                         {user.social_links?.map((link,) => {
                                             return <PlatformIcon

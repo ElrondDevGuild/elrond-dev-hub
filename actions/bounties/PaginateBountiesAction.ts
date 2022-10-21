@@ -5,13 +5,13 @@ import BountyRepository from "../../repositories/BountyRepository";
 
 export default class PaginateBountiesAction extends BaseAction {
     async handle(req: ApiRequest): Promise<ApiResponse> {
-        let {page, page_size: size, tags, owner} = req.query;
+        let {page, page_size: size, tags, owner_id} = req.query;
         if (tags) {
             tags = Array.isArray(tags) ? tags : [tags];
         }
         const {data: bounties, count} = await new BountyRepository()
             // @ts-ignore
-            .paginate({page, size, tags, owner, withApplications: true});
+            .paginate({page, size, tags, owner:owner_id, withApplications: true});
 
         const _bounties = bounties.map(bounty => {
             const {applications, ...rest} = bounty;
