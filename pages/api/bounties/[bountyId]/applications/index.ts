@@ -1,9 +1,10 @@
 import {handler} from "../../../../../actions/_base/handler";
-import ListApplications from "../../../../../actions/bounties/ListApplications";
 import CreateApplicationAction from "../../../../../actions/bounties/CreateApplicationAction";
+import ListBountyApplicationsAction
+    from "../../../../../actions/bounties/ListBountyApplicationsAction";
 
 export default handler({
-    get: ListApplications,
+    get: ListBountyApplicationsAction,
     post: CreateApplicationAction,
 
 });
