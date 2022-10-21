@@ -6,7 +6,7 @@ import Input from "../../components/shared/form/Input";
 import Select from "../../components/shared/form/Select";
 import Textarea from "../../components/shared/form/Textarea";
 import Button from "../../components/shared/Button";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
     issueTypeOptions,
     experienceOptions
@@ -18,6 +18,7 @@ import {BountyResource} from "../../types/supabase";
 import {nanoid} from "nanoid";
 import ResourceItem from "../../components/bounty/resources/ResourceItem";
 import ModalAddResource from "../../components/bounty/resources/ModalAddResource";
+import {useProfileRequirement} from "../../hooks/useProfileRequirement";
 
 
 type FormValues = {
@@ -40,8 +41,18 @@ export default function Create() {
     const router = useRouter();
     const [resources, setResources] = useState<Partial<BountyResource>[]>([]);
     const [addResourceModalOpen, setAddResourceModalOpen] = useState(false);
+    const {isComplete, showPopup} = useProfileRequirement();
+
+    useEffect(() => {
+        if (!isComplete) {showPopup({force: true})}
+    }, [isComplete]);
 
     const submitBounty = async (formData: FormValues) => {
+        if (!isComplete) {
+            showPopup({force: true});
+            return;
+        }
+
         const tags = formData.tags?.split(",");
         try {
             setSubmitting(true);

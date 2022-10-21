@@ -15,6 +15,7 @@ import ApplicationsList from "../../components/bounty/applications/ApplicationsL
 import ResourceItem from "../../components/bounty/resources/ResourceItem";
 import ApplicationWorkModal from "../../components/bounty/applications/ApplicationWorkModal";
 import {bountyPath} from "../../utils/routes";
+import {useProfileRequirement} from "../../hooks/useProfileRequirement";
 
 export default function BountyDetails() {
     const [bounty, setBounty] = useState<Bounty | null>(null);
@@ -24,6 +25,7 @@ export default function BountyDetails() {
     const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
     const router = useRouter();
     const {user} = useAuth();
+    const {isComplete: isProfileComplete, showPopup: showProfilePopup} = useProfileRequirement();
 
     const getBounty = async (id: string) => {
         try {
@@ -77,6 +79,15 @@ export default function BountyDetails() {
         getCurrentUserApplication();
     }, [bounty, user]);
 
+    const setApplicationWorkModal = (value: boolean) => {
+        if (value && !isProfileComplete) {
+            showProfilePopup({force: true});
+            return;
+        }
+
+        setShowApplicationWorkModal(value);
+    }
+
     if (loading || !bounty) {
         return (
             <Layout hideRightBar={true}>
@@ -121,7 +132,8 @@ export default function BountyDetails() {
                     </div>
                     <div className="flex items-end justify-between">
                         <div className="flex flex-col items-start mt-4 font-semibold text-sm">
-                            <span className="text-xs text-primary dark:text-primary-dark uppercase">bounty owner</span>
+                                <span
+                                    className="text-xs text-primary dark:text-primary-dark uppercase">bounty owner</span>
                             <div className="flex items-center space-x-2 mt-1">
                                 <span
                                     className="text-theme-text dark:text-theme-text-dark">{bounty.owner.name}</span>
@@ -136,7 +148,7 @@ export default function BountyDetails() {
                                 bounty={bounty}
                                 currentApplication={currentApplication}
                                 user={user}
-                                setShowApplicationWorkModal={setShowApplicationWorkModal}
+                                setShowApplicationWorkModal={setApplicationWorkModal}
                             />
                             <Button
                                 label="Share"
@@ -150,7 +162,8 @@ export default function BountyDetails() {
                     <div
                         className="grid grid-cols-2 md:grid-cols-3 gap-y-6 justify-items-center md:justify-items-start text-sm font-semibold">
                         <div className="flex flex-col items-center md:items-start space-y-1">
-                            <span className="text-theme-text dark:text-theme-text-dark uppercase">Creation Date</span>
+                                <span
+                                    className="text-theme-text dark:text-theme-text-dark uppercase">Creation Date</span>
                             <span className="text-primary dark:text-primary-dark">
                                <Moment fromNow>{bounty.created_at}</Moment>
                             </span>
@@ -163,14 +176,16 @@ export default function BountyDetails() {
                             </span>
                         </div>
                         <div className="flex flex-col items-center md:items-start space-y-1">
-                            <span className="text-theme-text dark:text-theme-text-dark uppercase">Issue Type</span>
+                                <span
+                                    className="text-theme-text dark:text-theme-text-dark uppercase">Issue Type</span>
                             <span className="text-primary dark:text-primary-dark">
                                 {ucFirst(bounty.issue_type)}
                             </span>
                         </div>
 
                         <div className="flex flex-col items-center md:items-start space-y-1">
-                            <span className="text-theme-text dark:text-theme-text-dark uppercase">Project type</span>
+                                <span
+                                    className="text-theme-text dark:text-theme-text-dark uppercase">Project type</span>
                             <span className="text-primary dark:text-primary-dark">
                               {ucFirst(bounty.project_type.replace("_", " "))}
                             </span>
@@ -210,7 +225,8 @@ export default function BountyDetails() {
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     {bounty.owner_id === user?.id && (
                         <>
-                            <h3 id="applications" className="text-theme-text dark:text-theme-text-dark font-semibold">Applicants</h3>
+                            <h3 id="applications"
+                                className="text-theme-text dark:text-theme-text-dark font-semibold">Applicants</h3>
                             <ApplicationsList bounty={bounty}/>
                         </>
                     )}

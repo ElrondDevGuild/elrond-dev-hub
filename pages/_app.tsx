@@ -3,6 +3,7 @@ import '../styles/globals.scss';
 import { DefaultSeo } from 'next-seo';
 import { AppProps } from 'next/app';
 import {AuthContextProvider} from "../hooks/useAuth";
+import {ProfileRequirementContextProvider} from "../hooks/useProfileRequirement";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -28,7 +29,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         }}
       />
         <AuthContextProvider env={process.env.NODE_ENV === "production" ? "mainnet" : "devnet"}>
-            <Component {...pageProps} />
+            <ProfileRequirementContextProvider>
+                <Component {...pageProps} />
+            </ProfileRequirementContextProvider>
         </AuthContextProvider>
     </>
   );
