@@ -4,7 +4,12 @@ import {api} from "../../../utils/api";
 import UserReviewsList from "./UserReviewsList";
 import ReviewsLoader from "./ReviewsLoader";
 
-export default function BountyReviewsList({userId}: { userId: string }) {
+export default function ReviewsList(
+    {
+        userId,
+        type
+    }: { userId: string, type: "bounty" | "application" }
+) {
     const [reviews, setReviews] = useState<UserReview[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -13,6 +18,7 @@ export default function BountyReviewsList({userId}: { userId: string }) {
         try {
             const {data} = await api.get("user/reviews", {
                 params: {
+                    type,
                     user_id: userId
                 }
             });
@@ -26,7 +32,7 @@ export default function BountyReviewsList({userId}: { userId: string }) {
 
     useEffect(() => {
         loadItems();
-    }, []);
+    }, [userId]);
 
     if (loading) {
         return <ReviewsLoader />

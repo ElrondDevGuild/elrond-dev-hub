@@ -141,7 +141,7 @@ export default function BountyDetails() {
                                     <img src="/verified_icon.svg" className="mr-1"/>
                                 )}
                             </div>
-                            <UserRating reviews={[]}/>
+                            <UserRating reviews={[]} userId={bounty.owner_id}/>
                         </div>
                         <div className="flex items-center space-x-2">
                             <BountyAction

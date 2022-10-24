@@ -125,7 +125,7 @@ export type BountyTag = {
 
 export type UserReview = {
   id: string;
-  bounty_id: string;
+  bounty_application_id: string;
   user_id: string;
   reviewer_id: string;
   rating: number;

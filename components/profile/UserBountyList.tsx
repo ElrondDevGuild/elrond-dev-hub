@@ -50,8 +50,9 @@ export default function UserBountyList({user}: { user: User }) {
 
 
     useEffect(() => {
+        setInitialLoad(true);
         loadItems(0);
-    }, []);
+    }, [user]);
 
     const onNext = async () => {
         loadItems(page + 1);

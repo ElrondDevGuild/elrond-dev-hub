@@ -4,7 +4,7 @@ import Tabs from "../tabs/Tabs";
 import Tab from "../tabs/Tab";
 import UserBountyList from "./UserBountyList";
 import UserApplicationsList from "./UserApplicationsList";
-import BountyReviewsList from "./reviews/BountyReviewsList";
+import ReviewsList from "./reviews/ReviewsList";
 
 export default function UserBounties({user}: { user: User }) {
 
@@ -13,10 +13,11 @@ export default function UserBounties({user}: { user: User }) {
         <Tabs>
             <Tab label="Bounties">
                 <UserBountyList user={user}/>
-                <BountyReviewsList userId={user.id}/>
+                <ReviewsList userId={user.id} type={"bounty"}/>
             </Tab>
             <Tab label="Applications">
                 <UserApplicationsList user={user}/>
+                <ReviewsList userId={user.id} type={"application"}/>
             </Tab>
         </Tabs>
     );

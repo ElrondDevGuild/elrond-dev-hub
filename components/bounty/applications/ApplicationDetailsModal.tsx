@@ -51,7 +51,7 @@ export default function ApplicationDetailsModal(
                     <p className="truncate text-sm font-medium dark:text-secondary w-1/2">
                         {application.user.name || "Test name"}
                     </p>
-                    <UserRating reviews={[]}/>
+                    <UserRating reviews={[]} userId={application.user_id}/>
                 </div>
                 <p className="flex-1 block w-full focus:outline-none text-theme-text dark:text-secondary border-0 focus-within:ring-0 autofill:bg-transparent font-medium text-sm">
                     {application.message}

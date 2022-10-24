@@ -181,24 +181,24 @@ async function seedReviews(
     const reviews = [];
     for (let application of apps) {
         const ownerReview = {
-            bounty_id: bounty.id,
+            bounty_application_id: application.id,
             reviewer_id: bounty.owner_id,
             user_id: application.user_id,
             rating: Math.ceil(Math.random() * 5),
             review: faker.lorem.sentences(Math.ceil(Math.random() * 3))
-        }
+        };
         const workerReview = {
-            bounty_id: bounty.id,
+            bounty_application_id: application.id,
             reviewer_id: application.user_id,
             user_id: bounty.owner_id,
             rating: Math.ceil(Math.random() * 5),
             review: faker.lorem.sentences(Math.ceil(Math.random() * 3))
-        }
+        };
 
         reviews.push(ownerReview, workerReview);
     }
 
-    await new ReviewsRepository().createMany(reviews);
+     await new ReviewsRepository().createMany(reviews);
 }
 
 const seedBounties = async (tagIds) => {
@@ -242,9 +242,9 @@ const seedBounties = async (tagIds) => {
             });
 
         // @ts-ignore
-        await applicationsRepo.createMany(applications);
+        const {data} = await applicationsRepo.createMany(applications);
 
-        await seedReviews(bounty, applications as BountyApplication[]);
+        await seedReviews(bounty, data as BountyApplication[]);
 
     }
 }

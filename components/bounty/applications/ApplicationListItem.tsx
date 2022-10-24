@@ -51,7 +51,7 @@ export default function ApplicationListItem(
                     <p className="truncate text-sm font-medium dark:text-secondary w-1/2">
                         {application.user.name || getUserHandle(application.user)}
                     </p>
-                    <UserRating reviews={[]}/>
+                    <UserRating reviews={[]} userId={application.user_id}/>
                 </div>
                 <div className="flex items-center space-x-2">
                     <button
