@@ -63,7 +63,7 @@ export default function UserProfile() {
                     user && <div className="flex flex-col w-full pl-6">
                         <div className="flex items-end justify-between">
                             <div className="flex items-center">
-                                <ProfileImage user={user} size="xl"/>
+                                <ProfileImage avatarUrl={user.avatar_url} size="xl"/>
                                 <div className="flex flex-col ml-3 space-y-1">
                                     <div className="flex items-center space-x-2">
                                         <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">

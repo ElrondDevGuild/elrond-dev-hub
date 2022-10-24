@@ -9,3 +9,4 @@ export const BOUNTY_APPLICATIONS_TABLE = "bounty_applications";
 export const BOUNTY_RESOURCES_TABLE = "bounty_resources";
 export const BOUNTY_TAG_PIVOT_TABLE = "bounty_tag";
 export const USER_SOCIAL_LINKS_TABLE = "user_social_links";
+export const REVIEWS_TABLE = "user_reviews";

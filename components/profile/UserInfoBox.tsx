@@ -31,7 +31,7 @@ export default function UserInfoBox() {
                 className="flex items-center overflow-hidden"
                 onClick={() => router.push(`${profilePath}/${user.id}`)}
             >
-                <ProfileImage user={user} size="lg"/>
+                <ProfileImage avatarUrl={user.avatar_url} size="lg"/>
                 <div className="flex flex-col items-start ml-2 space-y-1 ">
                     <div className="flex items-center space-x-2">
                     <span

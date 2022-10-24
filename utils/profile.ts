@@ -10,7 +10,7 @@ export const getMaiarAvatar = async (address: string): Promise<string | null> =>
     }
 };
 
-export const getUserHandle = (user: User): string => {
+export const getUserHandle = (user: Pick<User, "handle" | "wallet">): string => {
     if (user.handle) {
         return `@${user.handle}`;
     }

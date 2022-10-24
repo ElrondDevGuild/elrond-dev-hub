@@ -125,8 +125,12 @@ export type BountyTag = {
 
 export type UserReview = {
   id: string;
+  bounty_id: string;
   user_id: string;
   reviewer_id: string;
   rating: number;
   review: string;
+  created_at: string
+  reviewer: { name: string; avatar_url: string };
+  bounty?: Pick<Bounty, "id" | "title">;
 }
