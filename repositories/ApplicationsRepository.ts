@@ -45,4 +45,32 @@ export default class ApplicationsRepository extends BaseRepository<BountyApplica
         return data;
 
     }
+
+    async paginate(
+        {
+            page,
+            size,
+            owner,
+        }: {
+            page?: number;
+            size?: number;
+            owner: string;
+        }
+    ) {
+        const {from, to} = ApplicationsRepository.computePageRange({page, size});
+        const {data, error, count} = await this._table.select(
+            "*, bounty:bounty_id(id, title)",
+            {count: "exact"}
+            )
+            .eq("user_id", owner)
+            .order("created_at", {ascending: false})
+            .range(from, to);
+
+        if (error) {
+            throw error;
+        }
+
+
+        return {data, count};
+    }
 };

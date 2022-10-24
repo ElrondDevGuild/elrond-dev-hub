@@ -7,11 +7,19 @@ import Textarea from "../../components/shared/form/Textarea";
 import {SocialPlatform, UserSocialLink} from "../../types/supabase";
 import {useAuth} from "../../hooks/useAuth";
 import ModalAddSocialLink from "../../components/profile/ModalAddSocialLink";
-import {FaTwitter, FaLinkedin, FaDiscord, FaTelegram, FaGithub} from "react-icons/fa"
+import {
+    FaTwitter,
+    FaLinkedin,
+    FaDiscord,
+    FaTelegram,
+    FaGithub,
+    FaExclamationCircle
+} from "react-icons/fa"
 import Button from "../../components/shared/Button";
 import {api, getApiErrorMessage} from "../../utils/api";
 import {useRouter} from "next/router";
 import {profilePath} from "../../utils/routes";
+import {hasRequiredSocialAccounts} from "../../utils/profile";
 
 type FormValues = {
     name: string;
@@ -47,6 +55,10 @@ export default function Profile() {
 
         // @ts-ignore
         return platforms.filter(platform => !usedPlatforms.includes(platform.id));
+    }, [socialLinks]);
+
+    const hasRequiredSocialLinks = useMemo(() => {
+        return hasRequiredSocialAccounts(socialLinks as UserSocialLink[]);
     }, [socialLinks]);
 
     const updateProfile = async (values: FormValues) => {
@@ -124,14 +136,20 @@ export default function Profile() {
                                     options={{required: true}}
                                 />
                                 <div className="flex flex-col items-start">
-                                     <span
-                                         className="block font-semibold text-xs text-primary dark:text-primary-dark uppercase mb-2"
-                                     >
-                                         Social links
-                                    </span>
+                                    <div className="flex items-center space-x-2 mb-2">
+                                        <span
+                                            className="block font-semibold text-xs text-primary dark:text-primary-dark uppercase"
+                                        >
+                                            Social links
+                                        </span>
+                                        {
+                                            !hasRequiredSocialLinks && <FaExclamationCircle className="w-5 h-5 text-yellow-400"/>
+                                        }
+                                    </div>
                                     <p className="text-sm mb-4">
-                                        You must set at least your Twitter or LinkedIn handle and
-                                        one of Telegram or Discord accounts.
+                                        You must set at least your <b>Twitter or LinkedIn</b> handle
+                                        and
+                                        one of <b>Telegram or Discord</b> accounts.
                                     </p>
                                     <div className="flex flex-col items-start my-2 space-y-4">
                                         {socialLinks.map((socialLink) => (

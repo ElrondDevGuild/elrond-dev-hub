@@ -3,6 +3,7 @@ import {useState} from "react";
 import Tabs from "../tabs/Tabs";
 import Tab from "../tabs/Tab";
 import UserBountyList from "./UserBountyList";
+import UserApplicationsList from "./UserApplicationsList";
 
 export default function UserBounties({user}: { user: User }) {
 
@@ -14,7 +15,7 @@ export default function UserBounties({user}: { user: User }) {
                 <UserBountyList user={user}/>
             </Tab>
             <Tab label="Applications">
-
+                <UserApplicationsList user={user}/>
             </Tab>
         </Tabs>
     );
