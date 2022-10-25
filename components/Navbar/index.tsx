@@ -10,6 +10,8 @@ import SocialIcons from '../shared/SocialIcons';
 import Leftbar from './LeftBar';
 import SearchBar from './SearchBar';
 import ButtonCreateResource from "../shared/ButtonCreateResource";
+import DropDown from "../shared/DropDown";
+import UserIconMenu from "../profile/UserIconMenu";
 
 export default function Navbar() {
   return (
@@ -40,6 +42,8 @@ export default function Navbar() {
                   className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
                 {/* Profile dropdown */}
                 <SocialIcons/>
+
+                <UserIconMenu/>
 
                 {/*<Button label="+ Add Resource" href={submitPath} />*/}
                 <ButtonCreateResource label="+ Add" size="small"/>
