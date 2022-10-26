@@ -1,14 +1,12 @@
 import BaseAction from "../_base/BaseAction";
 import {ApiRequest} from "../_base/handler";
 import ApiResponse from "../_base/ApiResponse";
-import ApiError from "../../errors/ApiError";
 import ReviewsRepository from "../../repositories/ReviewsRepository";
 import Joi from "joi";
 
 export default class ListReviewsAction extends BaseAction {
     async handle(req: ApiRequest): Promise<ApiResponse> {
         const {user, query: {bounty_id, user_id, reviewer_id, type}} = req;
-
 
         const reviews = await new ReviewsRepository().list({
             bountyId: bounty_id as string,

@@ -8,7 +8,7 @@ export default class ApiResponse {
     body,
     status,
     headers,
-  }: {
+              }: {
     body?: any;
     status?: number;
     headers?: [];
@@ -17,6 +17,10 @@ export default class ApiResponse {
     this._status = status ?? 200;
     this._headers = headers ?? [];
     this._cacheHeader = null;
+  }
+
+  static error(message: string, code = 500) {
+    return new ApiResponse({body: {error: message}, status: code});
   }
 
   body(value: any) {

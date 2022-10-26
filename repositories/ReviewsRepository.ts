@@ -57,7 +57,8 @@ export default class ReviewsRepository extends BaseRepository<UserReview> {
                 return review.reviewer_id === review.application.bounty.owner_id
             }
 
-            return review.reviewer_id === review.user_id;
+            // @ts-ignore
+            return review.reviewer_id === review.application.user_id;
 
         });
 
@@ -73,4 +74,23 @@ export default class ReviewsRepository extends BaseRepository<UserReview> {
             }
         });
     }
+
+    async findReview(
+        {
+            applicationId,
+            reviewerId,
+            userId
+        }: { applicationId: string, reviewerId: string, userId: string }
+    ): Promise<UserReview | null> {
+        const {data, error} = await this._table.select('*')
+            .eq("bounty_application_id", applicationId)
+            .eq("reviewer_id", reviewerId)
+            .eq("user_id", userId)
+            .maybeSingle();
+
+        if (error) {throw error;}
+
+        return data;
+    }
+
 };

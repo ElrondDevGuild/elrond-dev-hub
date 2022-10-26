@@ -2,6 +2,7 @@ import {BaseRepository} from "./base/BaseRepository";
 import {ApplicationApprovalStatus, BountyApplication} from "../types/supabase";
 import {supabaseAdmin} from "../utils/supabase";
 import {BOUNTY_APPLICATIONS_TABLE} from "../utils/dbtables";
+import NotFoundError from "../errors/NotFoundError";
 
 export default class ApplicationsRepository extends BaseRepository<BountyApplication> {
     constructor() {
@@ -72,5 +73,18 @@ export default class ApplicationsRepository extends BaseRepository<BountyApplica
 
 
         return {data, count};
+    }
+
+    async findOrFail(id: string): Promise<BountyApplication> {
+        const application = await this.findById(id, [
+            "bounty:bounty_id(*)",
+            "user:user_id(*)"
+        ]);
+
+        if (null === application) {
+            throw new NotFoundError("Application");
+        }
+
+        return application;
     }
 };

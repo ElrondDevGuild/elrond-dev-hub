@@ -6,6 +6,7 @@ import {useState} from "react";
 import {classNames} from "../../../utils/presentation";
 import {useRouter} from "next/router";
 import {profilePath} from "../../../utils/routes";
+import ApplicationStatusInfo from "./ApplicationStatusInfo";
 
 
 export default function ApplicationDetailsModal(
@@ -68,16 +69,7 @@ export default function ApplicationDetailsModal(
                         View Profile
                     </button>
                     <div className="flex items-center space-x-4">
-                        {application.approval_status === "accepted" &&
-                            <span className="text-primary-dark">
-                                 Accepted
-                            </span>
-                        }
-                        {application.approval_status === "rejected" &&
-                            <span className="text-red-500">
-                                 Rejected
-                            </span>
-                        }
+                       <ApplicationStatusInfo application={application}/>
                         {application.approval_status === "pending" && (
                         <>
                             <button

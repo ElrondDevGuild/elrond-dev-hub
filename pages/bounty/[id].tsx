@@ -16,6 +16,7 @@ import ResourceItem from "../../components/bounty/resources/ResourceItem";
 import ApplicationWorkModal from "../../components/bounty/applications/ApplicationWorkModal";
 import {bountyPath} from "../../utils/routes";
 import {useProfileRequirement} from "../../hooks/useProfileRequirement";
+import ReviewSubmissionModal from "../../components/profile/reviews/ReviewSubmissionModal";
 
 export default function BountyDetails() {
     const [bounty, setBounty] = useState<Bounty | null>(null);
@@ -23,6 +24,7 @@ export default function BountyDetails() {
     const [loading, setLoading] = useState(true);
     const [showApplicationWorkModal, setShowApplicationWorkModal] = useState(false);
     const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
+    const [showReviewModal, setShowReviewModal] = useState(false);
     const router = useRouter();
     const {user} = useAuth();
     const {isComplete: isProfileComplete, showPopup: showProfilePopup} = useProfileRequirement();
@@ -130,29 +132,36 @@ export default function BountyDetails() {
                             </span>
                         ))}
                     </div>
-                    <div className="flex items-end justify-between">
+                    <div
+                        className="flex flex-col sm:flex-row items-start sm:items-end sm:justify-between gap-y-3"
+                    >
                         <div className="flex flex-col items-start mt-4 font-semibold text-sm">
                                 <span
                                     className="text-xs text-primary dark:text-primary-dark uppercase">bounty owner</span>
                             <div className="flex items-center space-x-2 mt-1">
                                 <span
-                                    className="text-theme-text dark:text-theme-text-dark">{bounty.owner.name}</span>
+                                    className="text-theme-text dark:text-theme-text-dark"
+                                >
+                                    {bounty.owner.name}
+                                </span>
                                 {bounty.owner.verified && (
                                     <img src="/verified_icon.svg" className="mr-1"/>
                                 )}
                             </div>
                             <UserRating reviews={[]} userId={bounty.owner_id}/>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <BountyAction
                                 bounty={bounty}
                                 currentApplication={currentApplication}
                                 user={user}
                                 setShowApplicationWorkModal={setApplicationWorkModal}
+                                setShowReviewModal={setShowReviewModal}
                             />
                             <Button
                                 label="Share"
                                 theme="secondary"
+                                extraClasses="col-span-1 justify-center"
                                 onClick={() => {
                                     alert("share")
                                 }}/>
@@ -238,30 +247,62 @@ export default function BountyDetails() {
                     bountyId={bounty.id}
                     onSuccess={async () => { await getCurrentUserApplication()}}
                 />
+                {currentApplication && <ReviewSubmissionModal
+                    open={showReviewModal}
+                    setOpen={setShowReviewModal}
+                    bounty={bounty}
+                    applicationId={currentApplication!.id}
+                />
+                }
             </RequiresAuth>
         </Layout>
     );
 };
 
-function BountyAction({bounty, user, currentApplication, setShowApplicationWorkModal}: any) {
+function BountyAction(
+    {
+        bounty,
+        user,
+        currentApplication,
+        setShowApplicationWorkModal,
+        setShowReviewModal
+    }: any
+) {
     const router = useRouter();
 
     if (bounty.owner_id === user?.id) {
         return <Button
             label="Edit"
+            extraClasses="col-span-1 justify-center"
             onClick={() => router.push(bountyPath(bounty.id, "edit"))}
         />
     }
 
     if (currentApplication) {
+        if (currentApplication.work_status === "completed") {
+            return <>
+                <Button
+                    label="Leave Review"
+                    extraClasses="col-span-1 justify-center"
+                    onClick={() => setShowReviewModal(true)}
+                />
+                <Button
+                    label="My Application"
+                    extraClasses="col-span-1 justify-center"
+                    onClick={() => alert("Not Implemented")}
+                />
+            </>
+        }
         return <Button
             label="My Application"
+            extraClasses="col-span-1 justify-center"
             onClick={() => alert("Not Implemented")}
-        />
+        />;
     }
 
     return <Button
         label="Start Work"
+        extraClasses="col-span-1 justify-center"
         onClick={() => setShowApplicationWorkModal(true)}
     />
 }

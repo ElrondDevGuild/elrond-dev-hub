@@ -6,6 +6,7 @@ import DropDown from "../../shared/DropDown";
 import {classNames} from "../../../utils/presentation";
 import {IoEllipsisVertical} from "react-icons/io5";
 import {getUserHandle} from "../../../utils/profile";
+import ApplicationStatusInfo from "./ApplicationStatusInfo";
 
 
 export default function ApplicationListItem(
@@ -61,16 +62,7 @@ export default function ApplicationListItem(
                     >
                         View Application
                     </button>
-                    {application.approval_status === "accepted" &&
-                        <span className="text-primary-dark">
-                                 Accepted
-                            </span>
-                    }
-                    {application.approval_status === "rejected" &&
-                        <span className="text-red-500">
-                                 Rejected
-                            </span>
-                    }
+                    <ApplicationStatusInfo application={application}/>
                     {application.approval_status === "pending" && (
                         <>
                             <div className="hidden lg:flex items-center space-x-2">
