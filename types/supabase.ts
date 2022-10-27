@@ -61,7 +61,8 @@ export type AuthNonce = {
 
 export type BountyType = "single_worker" | "many_workers";
 export type BountyStatus =
-    "open"
+    "pending"
+    | "open"
     | "expired"
     | "canceled"
     | "work_started"

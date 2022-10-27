@@ -5,12 +5,11 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {api} from "../../utils/api";
 import {User, UserReview} from "../../types/supabase";
-import UserRating from "../../components/UserRating";
 import {FaDiscord, FaGithub, FaLinkedin, FaTelegram, FaTwitter} from "react-icons/fa";
 import {getUserHandle} from "../../utils/profile";
 import UserBounties from "../../components/profile/UserBounties";
 import Button from "../../components/shared/Button";
-import {bountyPath, profilePath, profileSettingsPath} from "../../utils/routes";
+import {profileSettingsPath} from "../../utils/routes";
 import {useAuth} from "../../hooks/useAuth";
 
 

@@ -22,7 +22,7 @@ export default function UserBountyList({user}: { user: User }) {
         setLoading(true);
         try {
             const {data: {bounties, count}} = await api.get("bounties", {
-                params: {page, page_size: 5, owner_id: user.id}
+                params: {page, page_size: 5, owner: user.id}
             });
             setBounties(
                 (oldBounties) => page === 0 ? bounties : [...oldBounties, ...bounties]

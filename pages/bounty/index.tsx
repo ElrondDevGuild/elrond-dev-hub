@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import Loader from "../../components/shared/Loader";
 import {Bounty} from "../../types/supabase";
 import {api} from "../../utils/api";
-import {FiPlusCircle} from "react-icons/fi";
+import {FiPlusCircle, FiX} from "react-icons/fi";
 import Link from "next/link";
 import {useAuth} from "../../hooks/useAuth";
 import {classNames} from "../../utils/presentation";
@@ -104,7 +104,7 @@ export default function BountyListing() {
                 {user && <Link href={""}>
                     <a
                         className={classNames(
-                            "uppercase text-sm text-theme-text dark:text-theme-text-dark",
+                            "flex items-center uppercase text-sm text-theme-text dark:text-theme-text-dark",
                             hasFilter("owner") ? "underline" : ""
                         )}
                         onClick={(e) => {
@@ -116,7 +116,8 @@ export default function BountyListing() {
                             }
                         }}
                     >
-                        my bounties
+                        {hasFilter("owner") && <FiX className="text-md mr-0.5"/>}
+                        <span>my bounties</span>
                     </a>
                 </Link>
                 }
