@@ -1,4 +1,4 @@
-import {Bounty, BountyApplication} from "../../../types/supabase";
+import {Bounty, BountyApplication, ItemWithUserRating} from "../../../types/supabase";
 import {useAuth} from "../../../hooks/useAuth";
 import {useEffect, useState} from "react";
 import {api, getApiErrorMessage} from "../../../utils/api";
@@ -10,7 +10,7 @@ import ApplicationDetailsModal from "./ApplicationDetailsModal";
 
 export default function ApplicationsList({bounty}: { bounty: Bounty }) {
     const {user} = useAuth();
-    const [applications, setApplications] = useState<BountyApplication[]>([]);
+    const [applications, setApplications] = useState<ItemWithUserRating<BountyApplication>[]>([]);
     const [loading, setLoading] = useState(false);
     const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
 

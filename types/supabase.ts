@@ -43,6 +43,7 @@ export type User = {
   verified: boolean;
   handle: string | null;
   social_links?: UserSocialLink[];
+  ratings?: UserRatings;
 };
 
 export type SocialPlatform = "twitter" | "github" | "discord" | "telegram" | "linkedin";
@@ -133,4 +134,17 @@ export type UserReview = {
   created_at: string
   reviewer: { name: string; avatar_url: string };
   bounty?: Pick<Bounty, "id" | "title">;
+};
+
+export type UserRating = {
+  rating: number;
+  nbReviews: number;
 }
+
+export type UserRatings = {
+  bounties: UserRating;
+  applications: UserRating;
+};
+
+type UserWithRatings = User & { ratings: UserRatings; }
+export type ItemWithUserRating<T> = T & {user : UserWithRatings};

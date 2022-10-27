@@ -4,6 +4,7 @@ import ApiResponse from "../_base/ApiResponse";
 import BountyRepository from "../../repositories/BountyRepository";
 import AuthorisationError from "../../errors/AuthorisationError";
 import ApplicationsRepository from "../../repositories/ApplicationsRepository";
+import {mapUserItemRating} from "../../utils/rating";
 
 export default class ListBountyApplicationsAction extends BaseAction {
     async handle(req: ApiRequest): Promise<ApiResponse> {
@@ -13,8 +14,10 @@ export default class ListBountyApplicationsAction extends BaseAction {
             throw new AuthorisationError();
         }
         const applications = await new ApplicationsRepository().listByBountyId(bountyId as string);
+        const applicationsWithUserRating = await mapUserItemRating(applications);
 
-        return new ApiResponse().body(applications);
+
+        return new ApiResponse().body(applicationsWithUserRating);
     }
 
 }

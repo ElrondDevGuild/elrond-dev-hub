@@ -1,21 +1,18 @@
-import {UserReview} from "../types/supabase";
-import {BsStarFill as StarIcon} from "react-icons/bs";
+import {UserRating as UserRatingType} from "../types/supabase";
 import ReviewRating from "./ReviewRating";
 import Link from "next/link";
 import {profilePath} from "../utils/routes";
 
-export default function UserRating({userId, reviews}: { userId: string, reviews: UserReview[] }) {
-    // const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-    const averageRating = 4.5;
+export default function UserRating({userId, rating}: { userId: string, rating: UserRatingType }) {
 
 
     return (
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1">
-            <ReviewRating rating={averageRating}/>
+            <ReviewRating rating={rating.rating}/>
             <Link href={`${profilePath}/${userId}`}>
                 <a className="text-theme-text dark:text-theme-text-dark text-xs underline">
-                    ({reviews.length} reviews)
+                    ({rating.nbReviews} {rating.nbReviews === 1 ? 'review' : 'reviews'})
                 </a>
             </Link>
         </div>

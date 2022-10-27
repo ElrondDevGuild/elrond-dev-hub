@@ -2,11 +2,11 @@ import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
 import Layout from "../../components/Layout";
 import RequiresAuth from "../../components/RequiresAuth";
-import {Bounty, BountyApplication, BountyResource} from "../../types/supabase";
+import {Bounty, BountyApplication, BountyResource, UserRatings} from "../../types/supabase";
 import Loader from "../../components/shared/Loader";
 import {api} from "../../utils/api";
 import axios from "axios";
-import UserRating from "../../components/UserRating";
+import UserRatingComponent from "../../components/UserRating";
 import Button from "../../components/shared/Button";
 import Moment from "react-moment";
 import {ucFirst} from "../../utils/presentation";
@@ -25,6 +25,7 @@ export default function BountyDetails() {
     const [showApplicationWorkModal, setShowApplicationWorkModal] = useState(false);
     const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
     const [showReviewModal, setShowReviewModal] = useState(false);
+    const [userRating, setUserRating] = useState<UserRatings | null>(null)
     const router = useRouter();
     const {user} = useAuth();
     const {isComplete: isProfileComplete, showPopup: showProfilePopup} = useProfileRequirement();
@@ -59,7 +60,16 @@ export default function BountyDetails() {
         } catch (e) {
             setCurrentApplication(null);
         }
-    }
+    };
+
+    const loadUserRating = async (userId: string) => {
+        try {
+            const {data} = await api.get(`user/${userId}/rating`);
+            setUserRating(data);
+        } catch (e) {
+            setUserRating(null);
+        }
+    };
 
     useEffect(() => {
         if (!router.isReady) {
@@ -75,6 +85,7 @@ export default function BountyDetails() {
             return;
         }
         getBountyResources(bounty.id);
+        loadUserRating(bounty.owner_id);
     }, [bounty]);
 
     useEffect(() => {
@@ -148,7 +159,10 @@ export default function BountyDetails() {
                                     <img src="/verified_icon.svg" className="mr-1"/>
                                 )}
                             </div>
-                            <UserRating reviews={[]} userId={bounty.owner_id}/>
+                            {userRating && <UserRatingComponent
+                                rating={userRating.bounties}
+                                userId={bounty.owner_id}
+                            />}
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <BountyAction

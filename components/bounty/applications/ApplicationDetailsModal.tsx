@@ -1,4 +1,4 @@
-import {BountyApplication} from "../../../types/supabase";
+import {BountyApplication, ItemWithUserRating} from "../../../types/supabase";
 import Popup from "../../shared/Dialog";
 import UserRating from "../../UserRating";
 import {BsCheck, BsX} from "react-icons/bs";
@@ -16,7 +16,7 @@ export default function ApplicationDetailsModal(
         onAccept,
         onReject
     }: {
-        application: BountyApplication | null,
+        application: ItemWithUserRating<BountyApplication> | null,
         setOpen: (value: boolean) => void,
         onAccept: (application: BountyApplication) => Promise<boolean>,
         onReject: (application: BountyApplication) => Promise<boolean>,
@@ -52,7 +52,7 @@ export default function ApplicationDetailsModal(
                     <p className="truncate text-sm font-medium dark:text-secondary w-1/2">
                         {application.user.name || "Test name"}
                     </p>
-                    <UserRating reviews={[]} userId={application.user_id}/>
+                    <UserRating rating={application.user.ratings.applications} userId={application.user_id}/>
                 </div>
                 <p className="flex-1 block w-full focus:outline-none text-theme-text dark:text-secondary border-0 focus-within:ring-0 autofill:bg-transparent font-medium text-sm">
                     {application.message}
