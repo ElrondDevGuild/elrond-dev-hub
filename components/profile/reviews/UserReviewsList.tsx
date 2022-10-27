@@ -39,7 +39,7 @@ export default function UserReviewsList({reviews}: { reviews: UserReview[] }) {
                     >
                         <div className="flex items-center space-x-2 text-sm mb-1 w-full">
                             <span className="text-primary dark:text-primary-dark">BOUNTY:</span>
-                            <Link href={bountyPath(review.bounty_id)}>
+                            <Link href={bountyPath(review.bounty!.id)}>
                                 <a
                                     className="dark:text-secondary underline truncate">{review.bounty?.title}
                                 </a>

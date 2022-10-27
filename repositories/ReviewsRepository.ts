@@ -70,7 +70,8 @@ export default class ReviewsRepository extends BaseRepository<UserReview> {
                 reviewer: {
                     avatar_url: review.reviewer.avatar_url,
                     name: review.reviewer.name || getUserHandle(review.reviewer as User)
-                }
+                },
+                bounty: application.bounty
             }
         });
     }
