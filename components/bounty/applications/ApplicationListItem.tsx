@@ -17,7 +17,7 @@ export default function ApplicationListItem(
         onReject
     }: {
         application: ItemWithUserRating<BountyApplication>,
-        openApplication: (application: BountyApplication) => void,
+        openApplication: (application: ItemWithUserRating<BountyApplication>) => void,
         onAccept: (application: BountyApplication) => Promise<boolean>,
         onReject: (application: BountyApplication) => Promise<boolean>,
     }

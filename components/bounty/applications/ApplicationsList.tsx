@@ -12,7 +12,10 @@ export default function ApplicationsList({bounty}: { bounty: Bounty }) {
     const {user} = useAuth();
     const [applications, setApplications] = useState<ItemWithUserRating<BountyApplication>[]>([]);
     const [loading, setLoading] = useState(false);
-    const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
+    const [
+        currentApplication,
+        setCurrentApplication
+    ] = useState<ItemWithUserRating<BountyApplication> | null>(null);
 
     const loadApplications = async () => {
         setLoading(true);
@@ -26,7 +29,7 @@ export default function ApplicationsList({bounty}: { bounty: Bounty }) {
         }
     };
 
-    const openApplication = (application: BountyApplication) => {
+    const openApplication = (application: ItemWithUserRating<BountyApplication>) => {
         setCurrentApplication(application);
     };
 
