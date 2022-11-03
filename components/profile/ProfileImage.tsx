@@ -1,17 +1,15 @@
-import {User} from "../../types/supabase";
 import {HiUserCircle} from "react-icons/hi"
-import Image from "next/image";
 import {classNames} from "../../utils/presentation";
 
 type Size = "sm" | "md" | "lg" | "xl";
 export default function ProfileImage(
     {
-        user,
+        avatarUrl,
         size = "md"
-    }: { user: User, size?: Size }
+    }: { avatarUrl: string | null, size?: Size }
 ) {
     const sizeClass = getClassSizes(size);
-    if (!user.avatar_url) {
+    if (!avatarUrl) {
         return (
             <HiUserCircle
                 className={classNames(
@@ -24,7 +22,7 @@ export default function ProfileImage(
 
     return (
         <img
-            src={user.avatar_url}
+            src={avatarUrl}
             className={classNames(sizeClass, "rounded-full")}
             alt="profile picture"
         />

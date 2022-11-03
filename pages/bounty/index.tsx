@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { FiPlusCircle } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { FiPlusCircle, FiPlusCircle, FiX } from 'react-icons/fi';
 
 import BountyItem from '../../components/bounty/BountyItem';
 import Layout from '../../components/Layout';
@@ -103,7 +104,7 @@ export default function BountyListing() {
           <Link href={""}>
             <a
               className={classNames(
-                "uppercase text-sm text-theme-text dark:text-theme-text-dark",
+                "flex items-center uppercase text-sm text-theme-text dark:text-theme-text-dark",
                 hasFilter("owner") ? "underline" : ""
               )}
               onClick={(e) => {
@@ -115,7 +116,8 @@ export default function BountyListing() {
                 }
               }}
             >
-              my bounties
+              {hasFilter("owner") && <FiX className="text-md mr-0.5" />}
+              <span>my bounties</span>
             </a>
           </Link>
         )}

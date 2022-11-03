@@ -1,4 +1,4 @@
-import {BountyApplication} from "../../../types/supabase";
+import {BountyApplication, ItemWithUserRating} from "../../../types/supabase";
 import Popup from "../../shared/Dialog";
 import UserRating from "../../UserRating";
 import {BsCheck, BsX} from "react-icons/bs";
@@ -6,6 +6,7 @@ import {useState} from "react";
 import {classNames} from "../../../utils/presentation";
 import {useRouter} from "next/router";
 import {profilePath} from "../../../utils/routes";
+import ApplicationStatusInfo from "./ApplicationStatusInfo";
 
 
 export default function ApplicationDetailsModal(
@@ -15,7 +16,7 @@ export default function ApplicationDetailsModal(
         onAccept,
         onReject
     }: {
-        application: BountyApplication | null,
+        application: ItemWithUserRating<BountyApplication> | null,
         setOpen: (value: boolean) => void,
         onAccept: (application: BountyApplication) => Promise<boolean>,
         onReject: (application: BountyApplication) => Promise<boolean>,
@@ -51,7 +52,7 @@ export default function ApplicationDetailsModal(
                     <p className="truncate text-sm font-medium dark:text-secondary w-1/2">
                         {application.user.name || "Test name"}
                     </p>
-                    <UserRating reviews={[]}/>
+                    <UserRating rating={application.user.ratings.applications} userId={application.user_id}/>
                 </div>
                 <p className="flex-1 block w-full focus:outline-none text-theme-text dark:text-secondary border-0 focus-within:ring-0 autofill:bg-transparent font-medium text-sm">
                     {application.message}
@@ -68,16 +69,7 @@ export default function ApplicationDetailsModal(
                         View Profile
                     </button>
                     <div className="flex items-center space-x-4">
-                        {application.approval_status === "accepted" &&
-                            <span className="text-primary-dark">
-                                 Accepted
-                            </span>
-                        }
-                        {application.approval_status === "rejected" &&
-                            <span className="text-red-500">
-                                 Rejected
-                            </span>
-                        }
+                       <ApplicationStatusInfo application={application}/>
                         {application.approval_status === "pending" && (
                         <>
                             <button

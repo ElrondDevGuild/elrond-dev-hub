@@ -2,11 +2,11 @@ import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
 import Layout from "../../components/Layout";
 import RequiresAuth from "../../components/RequiresAuth";
-import {Bounty, BountyApplication, BountyResource} from "../../types/supabase";
+import {Bounty, BountyApplication, BountyResource, UserRatings} from "../../types/supabase";
 import Loader from "../../components/shared/Loader";
 import {api} from "../../utils/api";
 import axios from "axios";
-import UserRating from "../../components/UserRating";
+import UserRatingComponent from "../../components/UserRating";
 import Button from "../../components/shared/Button";
 import Moment from "react-moment";
 import {ucFirst} from "../../utils/presentation";
@@ -15,6 +15,8 @@ import ApplicationsList from "../../components/bounty/applications/ApplicationsL
 import ResourceItem from "../../components/bounty/resources/ResourceItem";
 import ApplicationWorkModal from "../../components/bounty/applications/ApplicationWorkModal";
 import {bountyPath} from "../../utils/routes";
+import {useProfileRequirement} from "../../hooks/useProfileRequirement";
+import ReviewSubmissionModal from "../../components/profile/reviews/ReviewSubmissionModal";
 
 export default function BountyDetails() {
     const [bounty, setBounty] = useState<Bounty | null>(null);
@@ -22,8 +24,11 @@ export default function BountyDetails() {
     const [loading, setLoading] = useState(true);
     const [showApplicationWorkModal, setShowApplicationWorkModal] = useState(false);
     const [currentApplication, setCurrentApplication] = useState<BountyApplication | null>(null);
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [userRating, setUserRating] = useState<UserRatings | null>(null)
     const router = useRouter();
     const {user} = useAuth();
+    const {isComplete: isProfileComplete, showPopup: showProfilePopup} = useProfileRequirement();
 
     const getBounty = async (id: string) => {
         try {
@@ -55,7 +60,16 @@ export default function BountyDetails() {
         } catch (e) {
             setCurrentApplication(null);
         }
-    }
+    };
+
+    const loadUserRating = async (userId: string) => {
+        try {
+            const {data} = await api.get(`user/${userId}/rating`);
+            setUserRating(data);
+        } catch (e) {
+            setUserRating(null);
+        }
+    };
 
     useEffect(() => {
         if (!router.isReady) {
@@ -71,11 +85,21 @@ export default function BountyDetails() {
             return;
         }
         getBountyResources(bounty.id);
+        loadUserRating(bounty.owner_id);
     }, [bounty]);
 
     useEffect(() => {
         getCurrentUserApplication();
     }, [bounty, user]);
+
+    const setApplicationWorkModal = (value: boolean) => {
+        if (value && !isProfileComplete) {
+            showProfilePopup({force: true});
+            return;
+        }
+
+        setShowApplicationWorkModal(value);
+    }
 
     if (loading || !bounty) {
         return (
@@ -119,28 +143,39 @@ export default function BountyDetails() {
                             </span>
                         ))}
                     </div>
-                    <div className="flex items-end justify-between">
+                    <div
+                        className="flex flex-col sm:flex-row items-start sm:items-end sm:justify-between gap-y-3"
+                    >
                         <div className="flex flex-col items-start mt-4 font-semibold text-sm">
-                            <span className="text-xs text-primary dark:text-primary-dark uppercase">bounty owner</span>
+                                <span
+                                    className="text-xs text-primary dark:text-primary-dark uppercase">bounty owner</span>
                             <div className="flex items-center space-x-2 mt-1">
                                 <span
-                                    className="text-theme-text dark:text-theme-text-dark">{bounty.owner.name}</span>
+                                    className="text-theme-text dark:text-theme-text-dark"
+                                >
+                                    {bounty.owner.name}
+                                </span>
                                 {bounty.owner.verified && (
                                     <img src="/verified_icon.svg" className="mr-1"/>
                                 )}
                             </div>
-                            <UserRating reviews={[]}/>
+                            {userRating && <UserRatingComponent
+                                rating={userRating.bounties}
+                                userId={bounty.owner_id}
+                            />}
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <BountyAction
                                 bounty={bounty}
                                 currentApplication={currentApplication}
                                 user={user}
-                                setShowApplicationWorkModal={setShowApplicationWorkModal}
+                                setShowApplicationWorkModal={setApplicationWorkModal}
+                                setShowReviewModal={setShowReviewModal}
                             />
                             <Button
                                 label="Share"
                                 theme="secondary"
+                                extraClasses="col-span-1 justify-center"
                                 onClick={() => {
                                     alert("share")
                                 }}/>
@@ -150,7 +185,8 @@ export default function BountyDetails() {
                     <div
                         className="grid grid-cols-2 md:grid-cols-3 gap-y-6 justify-items-center md:justify-items-start text-sm font-semibold">
                         <div className="flex flex-col items-center md:items-start space-y-1">
-                            <span className="text-theme-text dark:text-theme-text-dark uppercase">Creation Date</span>
+                                <span
+                                    className="text-theme-text dark:text-theme-text-dark uppercase">Creation Date</span>
                             <span className="text-primary dark:text-primary-dark">
                                <Moment fromNow>{bounty.created_at}</Moment>
                             </span>
@@ -163,14 +199,16 @@ export default function BountyDetails() {
                             </span>
                         </div>
                         <div className="flex flex-col items-center md:items-start space-y-1">
-                            <span className="text-theme-text dark:text-theme-text-dark uppercase">Issue Type</span>
+                                <span
+                                    className="text-theme-text dark:text-theme-text-dark uppercase">Issue Type</span>
                             <span className="text-primary dark:text-primary-dark">
                                 {ucFirst(bounty.issue_type)}
                             </span>
                         </div>
 
                         <div className="flex flex-col items-center md:items-start space-y-1">
-                            <span className="text-theme-text dark:text-theme-text-dark uppercase">Project type</span>
+                                <span
+                                    className="text-theme-text dark:text-theme-text-dark uppercase">Project type</span>
                             <span className="text-primary dark:text-primary-dark">
                               {ucFirst(bounty.project_type.replace("_", " "))}
                             </span>
@@ -210,7 +248,8 @@ export default function BountyDetails() {
                     <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5"/>
                     {bounty.owner_id === user?.id && (
                         <>
-                            <h3 className="text-theme-text dark:text-theme-text-dark font-semibold">Applicants</h3>
+                            <h3 id="applications"
+                                className="text-theme-text dark:text-theme-text-dark font-semibold">Applicants</h3>
                             <ApplicationsList bounty={bounty}/>
                         </>
                     )}
@@ -222,30 +261,62 @@ export default function BountyDetails() {
                     bountyId={bounty.id}
                     onSuccess={async () => { await getCurrentUserApplication()}}
                 />
+                {currentApplication && <ReviewSubmissionModal
+                    open={showReviewModal}
+                    setOpen={setShowReviewModal}
+                    bounty={bounty}
+                    applicationId={currentApplication!.id}
+                />
+                }
             </RequiresAuth>
         </Layout>
     );
 };
 
-function BountyAction({bounty, user, currentApplication, setShowApplicationWorkModal}: any) {
+function BountyAction(
+    {
+        bounty,
+        user,
+        currentApplication,
+        setShowApplicationWorkModal,
+        setShowReviewModal
+    }: any
+) {
     const router = useRouter();
 
     if (bounty.owner_id === user?.id) {
         return <Button
             label="Edit"
+            extraClasses="col-span-1 justify-center"
             onClick={() => router.push(bountyPath(bounty.id, "edit"))}
         />
     }
 
     if (currentApplication) {
+        if (currentApplication.work_status === "completed") {
+            return <>
+                <Button
+                    label="Leave Review"
+                    extraClasses="col-span-1 justify-center"
+                    onClick={() => setShowReviewModal(true)}
+                />
+                <Button
+                    label="My Application"
+                    extraClasses="col-span-1 justify-center"
+                    onClick={() => alert("Not Implemented")}
+                />
+            </>
+        }
         return <Button
             label="My Application"
+            extraClasses="col-span-1 justify-center"
             onClick={() => alert("Not Implemented")}
-        />
+        />;
     }
 
     return <Button
         label="Start Work"
+        extraClasses="col-span-1 justify-center"
         onClick={() => setShowApplicationWorkModal(true)}
     />
 }

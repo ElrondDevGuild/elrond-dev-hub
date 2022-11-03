@@ -10,6 +10,7 @@ export interface IOption {
   id: string | number | boolean;
   name: string;
   icon?: JSX.Element;
+  unavailable?: boolean;
 }
 
 interface ISelectElementProps {
@@ -37,7 +38,7 @@ export default function SelectElement({ options, onChange }: ISelectElementProps
   if (!selected) return null;
 
   return (
-    <Listbox value={selected} onChange={_onChange}>
+    <Listbox value={selected} onChange={_onChange} >
       {({ open }) => (
         <>
           <div className="mt-1 relative">
@@ -56,10 +57,10 @@ export default function SelectElement({ options, onChange }: ISelectElementProps
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 w-full bg-white dark:bg-secondary-dark-lighter shadow-lg max-h-60 py-1 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none text-sm">
-                {options.map((person) => (
+                {options.map((option) => (
                   <Listbox.Option
                       // @ts-ignore
-                    key={person.id}
+                    key={option.id}
                     className={({ active }) =>
                       classNames(
                         active
@@ -68,21 +69,22 @@ export default function SelectElement({ options, onChange }: ISelectElementProps
                         "cursor-default select-none relative py-2 pl-3 pr-9"
                       )
                     }
-                    value={person}
+                    value={option}
+                    disabled={option.unavailable}
                   >
                     {({ selected, active }) => (
                         <>
                           <div
                               className={classNames(selected ? "font-semibold" : "font-normal", "flex items-center")}
                           >
-                            {person.icon && (
+                            {option.icon && (
                                 <div className="flex items-center justify-center ml-1 mr-4">
                                   <div className="" aria-hidden="true">
-                                    {person.icon}
+                                    {option.icon}
                                   </div>
                                 </div>
                             )}
-                            <span className="truncate">{person.name}</span>
+                            <span className="truncate">{option.name}</span>
                           </div>
 
                           {selected ? (

@@ -43,6 +43,7 @@ export type User = {
   verified: boolean;
   handle: string | null;
   social_links?: UserSocialLink[];
+  ratings?: UserRatings;
 };
 
 export type SocialPlatform = "twitter" | "github" | "discord" | "telegram" | "linkedin";
@@ -60,7 +61,8 @@ export type AuthNonce = {
 
 export type BountyType = "single_worker" | "many_workers";
 export type BountyStatus =
-    "open"
+    "pending"
+    | "open"
     | "expired"
     | "canceled"
     | "work_started"
@@ -125,8 +127,25 @@ export type BountyTag = {
 
 export type UserReview = {
   id: string;
+  bounty_application_id: string;
   user_id: string;
   reviewer_id: string;
   rating: number;
   review: string;
+  created_at: string
+  reviewer: { name: string; avatar_url: string };
+  bounty?: Pick<Bounty, "id" | "title">;
+};
+
+export type UserRating = {
+  rating: number;
+  nbReviews: number;
 }
+
+export type UserRatings = {
+  bounties: UserRating;
+  applications: UserRating;
+};
+
+type UserWithRatings = User & { ratings: UserRatings; }
+export type ItemWithUserRating<T> = T & {user : UserWithRatings};

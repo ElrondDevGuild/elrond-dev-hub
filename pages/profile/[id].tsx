@@ -5,12 +5,11 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {api} from "../../utils/api";
 import {User, UserReview} from "../../types/supabase";
-import UserRating from "../../components/UserRating";
 import {FaDiscord, FaGithub, FaLinkedin, FaTelegram, FaTwitter} from "react-icons/fa";
 import {getUserHandle} from "../../utils/profile";
 import UserBounties from "../../components/profile/UserBounties";
 import Button from "../../components/shared/Button";
-import {bountyPath, profilePath, profileSettingsPath} from "../../utils/routes";
+import {profileSettingsPath} from "../../utils/routes";
 import {useAuth} from "../../hooks/useAuth";
 
 
@@ -63,20 +62,18 @@ export default function UserProfile() {
                     user && <div className="flex flex-col w-full pl-6">
                         <div className="flex items-end justify-between">
                             <div className="flex items-center">
-                                <ProfileImage user={user} size="xl"/>
+                                <ProfileImage avatarUrl={user.avatar_url} size="xl"/>
                                 <div className="flex flex-col ml-3 space-y-1">
                                     <div className="flex items-center space-x-2">
-                                        <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">{user.name}</h1>
+                                        <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">
+                                            {user.name ?? getUserHandle(user)}
+                                        </h1>
                                         {user.verified && (
                                             <img src="/verified_icon.svg" className="mr-1"/>
                                         )}
                                     </div>
-                                    <span
-                                        className="text-sm text-theme-text dark:text-theme-text-dark text-clip overflow-hidden"
-                                    >
-                                    {getUserHandle(user)}
-                                </span>
-                                    <UserRating reviews={reviews}/>
+
+                                    {/*<UserRating reviews={reviews}/>*/}
                                     <div className="flex items-center space-x-2 pt-1">
                                         {user.social_links?.map((link,) => {
                                             return <PlatformIcon

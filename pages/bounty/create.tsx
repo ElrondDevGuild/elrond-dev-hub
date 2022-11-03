@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ModalAddResource from '../../components/bounty/resources/ModalAddResource';
@@ -12,10 +12,11 @@ import Button from '../../components/shared/Button';
 import Input from '../../components/shared/form/Input';
 import Select from '../../components/shared/form/Select';
 import Textarea from '../../components/shared/form/Textarea';
-import { BountyResource } from '../../types/supabase';
-import { api, getApiErrorMessage } from '../../utils/api';
-import { experienceOptions, issueTypeOptions } from '../../utils/bounties';
-import { bountyPath } from '../../utils/routes';
+import { useProfileRequirement } from '../../hooks/useProfileRequirement';
+import { BountyResource, BountyResource } from '../../types/supabase';
+import { api, api, getApiErrorMessage, getApiErrorMessage } from '../../utils/api';
+import { experienceOptions, experienceOptions, issueTypeOptions, issueTypeOptions } from '../../utils/bounties';
+import { bountyPath, bountyPath } from '../../utils/routes';
 
 type FormValues = {
   title: string;
@@ -37,8 +38,20 @@ export default function Create() {
   const router = useRouter();
   const [resources, setResources] = useState<Partial<BountyResource>[]>([]);
   const [addResourceModalOpen, setAddResourceModalOpen] = useState(false);
+  const { isComplete, showPopup } = useProfileRequirement();
+
+  useEffect(() => {
+    if (!isComplete) {
+      showPopup({ force: true });
+    }
+  }, [isComplete]);
 
   const submitBounty = async (formData: FormValues) => {
+    if (!isComplete) {
+      showPopup({ force: true });
+      return;
+    }
+
     const tags = formData.tags?.split(",");
     try {
       setSubmitting(true);

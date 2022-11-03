@@ -17,12 +17,14 @@ export default class BountyRepository extends BaseRepository<Bounty> {
             tags,
             owner,
             withApplications,
+            status
         }: {
             page?: number;
             size?: number;
             tags?: number[];
             owner?: string;
             withApplications?: boolean;
+            status?: BountyStatus[];
         } = {}
     ) {
         const {from, to} = BountyRepository.computePageRange({page, size});
@@ -43,11 +45,15 @@ export default class BountyRepository extends BaseRepository<Bounty> {
             .order("created_at", {ascending: false})
             .range(from, to);
 
+        if (status?.length) {
+            query = query.in("status", status);
+        }
 
         if (tags?.length) {
             // @ts-ignore
             query = query.in("bounty_tag.tag_id", tags);
         }
+
         if (owner) {
             query = query.eq("owner_id", owner);
         }

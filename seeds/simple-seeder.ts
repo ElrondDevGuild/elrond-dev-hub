@@ -1,13 +1,14 @@
 import "./env";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import {
+    Bounty,
     BountyApplication,
     BountyExperienceLevel,
     BountyType,
     Category,
     MediaResource,
     Tag,
-    User
+    User, UserReview
 } from "../types/supabase";
 import {faker} from '@faker-js/faker';
 import {CategoryRepository} from "../repositories/CategoryRepository";
@@ -20,6 +21,7 @@ import BountyRepository from "../repositories/BountyRepository";
 import BountyTagRepository from "../repositories/BountyTagRepository";
 import ApplicationsRepository from "../repositories/ApplicationsRepository";
 import SocialLinksRepository from "../repositories/SocialLinksRepository";
+import ReviewsRepository from "../repositories/ReviewsRepository";
 
 
 const createCategories = (qty: number = 1): Array<Partial<Category>> => {
@@ -167,6 +169,38 @@ const seedBounty = async (user: User) => {
 
     return data;
 }
+
+async function seedReviews(
+    bounty: Bounty,
+    applications: BountyApplication[]
+) {
+    if (bounty.status === "canceled" || bounty.status === "expired") {return;}
+    const apps = applications.filter(
+        application => application.approval_status !== "rejected"
+    );
+    const reviews = [];
+    for (let application of apps) {
+        const ownerReview = {
+            bounty_application_id: application.id,
+            reviewer_id: bounty.owner_id,
+            user_id: application.user_id,
+            rating: Math.ceil(Math.random() * 5),
+            review: faker.lorem.sentences(Math.ceil(Math.random() * 3))
+        };
+        const workerReview = {
+            bounty_application_id: application.id,
+            reviewer_id: application.user_id,
+            user_id: bounty.owner_id,
+            rating: Math.ceil(Math.random() * 5),
+            review: faker.lorem.sentences(Math.ceil(Math.random() * 3))
+        };
+
+        reviews.push(ownerReview, workerReview);
+    }
+
+     await new ReviewsRepository().createMany(reviews);
+}
+
 const seedBounties = async (tagIds) => {
     const users = await seedUsers(10);
     const bounties = [];
@@ -208,7 +242,9 @@ const seedBounties = async (tagIds) => {
             });
 
         // @ts-ignore
-        await applicationsRepo.createMany(applications);
+        const {data} = await applicationsRepo.createMany(applications);
+
+        await seedReviews(bounty, data as BountyApplication[]);
 
     }
 }

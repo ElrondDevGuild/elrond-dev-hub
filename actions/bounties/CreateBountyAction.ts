@@ -19,7 +19,7 @@ export default class CreateBountyAction extends BaseAction {
 
         const bounty = await this.createBounty({
             ...data,
-            status: "open",
+            status: user!.verified ? "open" : "pending",
             owner_id: user?.id,
             project_type: "single_worker",
             requires_work_permission: true

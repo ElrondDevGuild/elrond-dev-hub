@@ -1,4 +1,4 @@
-import {BountyApplication} from "../../../types/supabase";
+import {BountyApplication, ItemWithUserRating} from "../../../types/supabase";
 import {useState} from "react";
 import UserRating from "../../UserRating";
 import {BsCheck, BsX} from "react-icons/bs";
@@ -6,6 +6,7 @@ import DropDown from "../../shared/DropDown";
 import {classNames} from "../../../utils/presentation";
 import {IoEllipsisVertical} from "react-icons/io5";
 import {getUserHandle} from "../../../utils/profile";
+import ApplicationStatusInfo from "./ApplicationStatusInfo";
 
 
 export default function ApplicationListItem(
@@ -15,8 +16,8 @@ export default function ApplicationListItem(
         onAccept,
         onReject
     }: {
-        application: BountyApplication,
-        openApplication: (application: BountyApplication) => void,
+        application: ItemWithUserRating<BountyApplication>,
+        openApplication: (application: ItemWithUserRating<BountyApplication>) => void,
         onAccept: (application: BountyApplication) => Promise<boolean>,
         onReject: (application: BountyApplication) => Promise<boolean>,
     }
@@ -51,7 +52,10 @@ export default function ApplicationListItem(
                     <p className="truncate text-sm font-medium dark:text-secondary w-1/2">
                         {application.user.name || getUserHandle(application.user)}
                     </p>
-                    <UserRating reviews={[]}/>
+                    <UserRating
+                        rating={application.user.ratings.applications}
+                        userId={application.user_id}
+                    />
                 </div>
                 <div className="flex items-center space-x-2">
                     <button
@@ -61,16 +65,7 @@ export default function ApplicationListItem(
                     >
                         View Application
                     </button>
-                    {application.approval_status === "accepted" &&
-                        <span className="text-primary-dark">
-                                 Accepted
-                            </span>
-                    }
-                    {application.approval_status === "rejected" &&
-                        <span className="text-red-500">
-                                 Rejected
-                            </span>
-                    }
+                    <ApplicationStatusInfo application={application}/>
                     {application.approval_status === "pending" && (
                         <>
                             <div className="hidden lg:flex items-center space-x-2">
