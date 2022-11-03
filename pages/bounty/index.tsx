@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useEffect, useState } from 'react';
-import { FiPlusCircle, FiPlusCircle, FiX } from 'react-icons/fi';
+import { FiPlusCircle, FiX } from 'react-icons/fi';
 
 import BountyItem from '../../components/bounty/BountyItem';
 import Layout from '../../components/Layout';

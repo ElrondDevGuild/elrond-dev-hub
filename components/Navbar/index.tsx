@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 
 import { homePath } from '../../utils/routes';
-import UserIconMenu from '../profile/UserIconMenu';
 import UserInfoBox from '../profile/UserInfoBox';
 import Logo from '../shared/Logo';
 import SocialIcons from '../shared/SocialIcons';
@@ -39,8 +38,6 @@ export default function Navbar() {
               <div className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
                 {/* Profile dropdown */}
                 <SocialIcons />
-
-                <UserIconMenu />
 
                 {/*<Button label="+ Add Resource" href={submitPath} />*/}
                 {/* <ButtonCreateResource label="+ Add" size="small"/> */}
