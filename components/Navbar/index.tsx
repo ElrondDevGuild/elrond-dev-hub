@@ -3,13 +3,12 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 
-import { homePath, submitPath } from '../../utils/routes';
-import Button from '../shared/Button';
+import { homePath } from '../../utils/routes';
+import UserInfoBox from '../profile/UserInfoBox';
 import Logo from '../shared/Logo';
 import SocialIcons from '../shared/SocialIcons';
 import Leftbar from './LeftBar';
 import SearchBar from './SearchBar';
-import ButtonCreateResource from "../shared/ButtonCreateResource";
 
 export default function Navbar() {
   return (
@@ -34,24 +33,25 @@ export default function Navbar() {
                 </Link>
               </div>
               <div className="sm:w-2/4 hidden sm:block px-8">
-                <SearchBar/>
+                <SearchBar />
               </div>
-              <div
-                  className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
+              <div className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
                 {/* Profile dropdown */}
-                <SocialIcons/>
+                <SocialIcons />
 
                 {/*<Button label="+ Add Resource" href={submitPath} />*/}
-                <ButtonCreateResource label="+ Add" size="small"/>
+                {/* <ButtonCreateResource label="+ Add" size="small"/> */}
+                <div className="hidden sm:block">
+                  <UserInfoBox />
+                </div>
 
                 <div className="-mr-2 flex sm:hidden">
-                  <Disclosure.Button
-                      className="inline-flex items-center justify-center rounded-md text-primary dark:text-primary-dark">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md text-primary dark:text-primary-dark">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
-                        <AiOutlineClose className="block h-6 w-6" aria-hidden="true"/>
+                      <AiOutlineClose className="block h-6 w-6" aria-hidden="true" />
                     ) : (
-                        <AiOutlineMenu className="block h-6 w-6" aria-hidden="true"/>
+                      <AiOutlineMenu className="block h-6 w-6" aria-hidden="true" />
                     )}
                   </Disclosure.Button>
                 </div>

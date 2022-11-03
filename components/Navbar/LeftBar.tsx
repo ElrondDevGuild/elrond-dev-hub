@@ -14,13 +14,13 @@ import {
 } from 'react-icons/fi';
 import { SiPlausibleanalytics } from 'react-icons/si';
 
+import { ILinksGroupProps } from '../../types/components';
 import { Category } from '../../types/supabase';
-import {api} from '../../utils/api';
-import {categoryPath, gettingStartedPath, homePath} from '../../utils/routes';
+import { api } from '../../utils/api';
+import { categoryPath, gettingStartedPath, homePath } from '../../utils/routes';
+import UserInfoBox from '../profile/UserInfoBox';
+import ButtonCreateResource from '../shared/ButtonCreateResource';
 import LinksGroup from '../shared/LinksGroup';
-import {ILinksGroupProps} from "../../types/components";
-import ButtonCreateResource from "../shared/ButtonCreateResource";
-import UserInfoBox from "../profile/UserInfoBox";
 
 const menuSection: ILinksGroupProps = {
   links: [
@@ -157,11 +157,14 @@ export default function Leftbar() {
 
   return (
     <>
+      <div className="sm:hidden mb-8">
+        <UserInfoBox />
+      </div>
       <div className="mb-8">
         <LinksGroup {...menuSection} />
       </div>
       <div className="mb-8">
-        <ButtonCreateResource position="right" size="small"/>
+        <ButtonCreateResource position="right" size="small" />
       </div>
       <div className="mb-8">
         <LinksGroup {...gettingStartedSection} />
@@ -170,15 +173,12 @@ export default function Leftbar() {
         <LinksGroup {...firstSection} />
       </div>
       {categoriesSection && (
-          <div className="mb-8">
-            <LinksGroup {...categoriesSection} />
-          </div>
+        <div className="mb-8">
+          <LinksGroup {...categoriesSection} />
+        </div>
       )}
       <div className="mb-8">
         <LinksGroup {...sourceCode} />
-      </div>
-      <div className="">
-        <UserInfoBox/>
       </div>
     </>
   );
