@@ -7,17 +7,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <DefaultSeo
-        titleTemplate="Elrond Dev Hub | %s"
-        defaultTitle="Elrond Dev Hub"
-        description="Get started with Elrond Development. Elrond is a highly scalable, fast and secure blockchain platform for distributed apps, enterprise use cases and the new internet economy."
+        titleTemplate="xDevHub | %s"
+        defaultTitle="xDevHub"
+        description="Get started with MultiversX Development. MultiversX is a highly scalable, fast and secure blockchain platform for distributed apps, enterprise use cases and the new internet economy."
         openGraph={{
           type: "website",
-          site_name: "Elrond Dev Hub",
+          site_name: "xDevHub",
           images: [
             {
-              url: `https://egldhub.dev/facebook.png`,
+              url: `https://xdevhub.com/og-image.png`,
               width: 1200,
-              height: 630,
+              height: 675,
               type: "image/png",
             },
           ],
