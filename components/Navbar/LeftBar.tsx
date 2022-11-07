@@ -53,7 +53,7 @@ const firstSection: ILinksGroupProps = {
   title: "Reference",
   links: [
     {
-      label: "Elrond Docs",
+      label: "Docs",
       url: "https://docs.elrond.com/",
       icon: FiExternalLink,
       openInNewTab: true,

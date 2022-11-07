@@ -2,7 +2,7 @@ import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { getServerSideSitemap, ISitemapField } from 'next-sitemap';
 
-const siteUrl = "https://egldhub.dev";
+const siteUrl = "https://xdevhub.com";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const result: ISitemapField[] = [];

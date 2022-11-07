@@ -57,9 +57,9 @@ export default function Layout({ hideRightBar = false, children }: any) {
               </a>
               <PostItemGrid
                 post={{
-                  title: "Elrond's Dev Hub launch w/ Beniamin Mincu",
+                  title: "xDevHub launch w/ Beniamin Mincu",
                   description:
-                    "We talked about the Dev Hub, Elrond's plan to onboard the next wave of developers and we took a lot of questions from the community.",
+                    "We talked about the Dev Hub, MultiversX's plan to onboard the next wave of developers and we took a lot of questions from the community.",
                   image_url: "/hub-launch.jpg",
                   resource_url: "https://youtu.be/C5e0oc3DWEo?t=94",
                   author: "Razvan Statescu",

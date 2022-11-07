@@ -25,7 +25,7 @@ export const copyLinkToClipboard = (post: IPostItem | IPostItemGrid | MediaResou
 export const getShareOnTwitterUrl = (post: IPostItemGrid | IPostItem | MediaResource) => {
   const url = encodeURIComponent(getSharePostUrl(post) + "\n\n");
   const text = `${post.title}\n`;
-  return `https://twitter.com/intent/tweet?url=${url}&hashtags=Elrond,ElrondNetwork,ElrondDevGuild,ElrondDevHub,ElrondDevs&text=${encodeURIComponent(
+  return `https://twitter.com/intent/tweet?url=${url}&hashtags=MultiversX,MultiversXNetwork,ElrondDevGuild,xDevHub,MultiversXDevs&text=${encodeURIComponent(
     text
   )}`;
 };
