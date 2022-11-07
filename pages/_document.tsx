@@ -7,7 +7,7 @@ class MyDocument extends Document {
         <Head>
           <link rel="shortcut icon" href="/favicon.png" />
 
-          <script defer data-domain="egldhub.dev" src="https://plausible.io/js/plausible.js" />
+          <script defer data-domain="xdevhub.com" src="https://plausible.io/js/script.js"></script>
 
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
