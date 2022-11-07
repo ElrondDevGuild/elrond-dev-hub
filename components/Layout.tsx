@@ -48,13 +48,19 @@ export default function Layout({ hideRightBar = false, children }: any) {
             </div> */}
 
             <div>
-              <a href="https://xday.com/builders" target="_blank" rel="noreferrer" className="block mb-8">
-                <img
-                  src="https://pbs.twimg.com/media/FeZcYm4WAAA7uZe?format=jpg&name=large"
-                  alt="Join X Day"
-                  className="border-0.5 border-theme-border dark:border-theme-border-dark rounded-md hover:opacity-85"
-                />
-              </a>
+              <PostItemGrid
+                post={{
+                  title: "xDevHub presentation at X Day",
+                  description:
+                    "We talked about the xDevHub rebranding and some other important announcements on the Hub",
+                  image_url: "/hub-x-day.jpeg",
+                  resource_url: "https://youtu.be/VSMV4G2VeSc?t=24816",
+                  author: "MultiversX",
+                }}
+                imageHeight="h-36"
+                showLinks={false}
+              />
+              <div className="my-8"></div>
               <PostItemGrid
                 post={{
                   title: "xDevHub launch w/ Beniamin Mincu",
@@ -64,7 +70,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
                   resource_url: "https://youtu.be/C5e0oc3DWEo?t=94",
                   author: "Razvan Statescu",
                 }}
-                imageHeight="h-42"
+                imageHeight="h-36"
                 showLinks={false}
               />
             </div>
