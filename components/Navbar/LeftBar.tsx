@@ -102,7 +102,7 @@ const sourceCode: ILinksGroupProps = {
     },
     {
       label: "Analytics",
-      url: "https://plausible.io/egldhub.dev",
+      url: "https://plausible.io/xdevhub.com",
       icon: SiPlausibleanalytics,
       openInNewTab: true,
     },

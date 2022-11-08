@@ -3,7 +3,7 @@ import { IPostItemGrid } from '../components/PostItemGrid';
 import { MediaResource } from '../types/supabase';
 import { RESOURCE_BASE_URL } from './storage_buckets';
 
-const WEBSITE_NAME = "egldhub.dev";
+const WEBSITE_NAME = "xdevhub.com";
 
 const appOrigin = process.env.NEXT_PUBLIC_VERCEL_URL;
 
