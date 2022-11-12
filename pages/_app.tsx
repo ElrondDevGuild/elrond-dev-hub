@@ -2,8 +2,16 @@ import '../styles/globals.scss';
 
 import { DefaultSeo } from 'next-seo';
 import { AppProps } from 'next/app';
+import { useEffect } from 'react';
+
+import { ThemeHelper } from '../utils/theme';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    const themeHelper = new ThemeHelper();
+    const theme = themeHelper.theme;
+    document.body.classList.add(theme);
+  }, []);
   return (
     <>
       <DefaultSeo
@@ -26,7 +34,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           cardType: "summary_large_image",
         }}
       />
-      <Component {...pageProps} />
+      <div className="bg-secondary dark:bg-secondary-dark">
+        <Component {...pageProps} />
+      </div>
     </>
   );
 }

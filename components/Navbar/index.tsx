@@ -1,9 +1,12 @@
 import { Disclosure } from '@headlessui/react';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
 
 import { homePath, submitPath } from '../../utils/routes';
+import { Theme, ThemeHelper } from '../../utils/theme';
 import Button from '../shared/Button';
 import Logo from '../shared/Logo';
 import SocialIcons from '../shared/SocialIcons';
@@ -11,6 +14,24 @@ import Leftbar from './LeftBar';
 import SearchBar from './SearchBar';
 
 export default function Navbar() {
+  const [currentTheme, setCurrentTheme] = useState<Theme>();
+
+  useEffect(() => {
+    const themeHelper = new ThemeHelper();
+    setCurrentTheme(themeHelper.theme);
+  }, []);
+
+  const changeTheme = () => {
+    const themeHelper = new ThemeHelper();
+    if (themeHelper.theme === Theme.LIGHT) {
+      themeHelper.changeTheme(Theme.DARK);
+      setCurrentTheme(Theme.DARK);
+    } else {
+      themeHelper.changeTheme(Theme.LIGHT);
+      setCurrentTheme(Theme.LIGHT);
+    }
+  };
+
   return (
     <Disclosure
       as="nav"
@@ -37,10 +58,11 @@ export default function Navbar() {
               </div>
               <div className="sm:ml-6 sm:w-1/4 flex items-center space-x-4 sm:space-x-5 justify-end">
                 {/* Profile dropdown */}
+                <button onClick={changeTheme} className="text-primary dark:text-primary-dark">
+                  {currentTheme === Theme.DARK ? <BsFillSunFill /> : <BsFillMoonFill />}
+                </button>
                 <SocialIcons />
-
                 <Button label="+ Add Resource" href={submitPath} />
-
                 <div className="-mr-2 flex sm:hidden">
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-md text-primary dark:text-primary-dark">
                     <span className="sr-only">Open main menu</span>
