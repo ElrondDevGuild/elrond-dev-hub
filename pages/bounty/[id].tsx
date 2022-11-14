@@ -160,34 +160,34 @@ export default function BountyDetails() {
           <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5 border-0" />
           <div className="grid grid-cols-2 md:grid-cols-3 gap-y-6 justify-items-center md:justify-items-start text-sm font-semibold">
             <div className="flex flex-col items-center md:items-start space-y-1">
-              <span className="text-theme-text dark:text-theme-text-dark uppercase">Creation Date</span>
+              <span className="text-theme-text dark:text-theme-text-dark uppercase text-xs">Creation Date</span>
               <span className="text-primary dark:text-primary-dark">
                 <Moment fromNow>{bounty.created_at}</Moment>
               </span>
             </div>
             <div className="flex flex-col items-center md:items-start space-y-1">
-              <span className="text-theme-text dark:text-theme-text-dark uppercase">Status</span>
+              <span className="text-theme-text dark:text-theme-text-dark uppercase text-xs">Status</span>
               <span className="text-primary dark:text-primary-dark">{ucFirst(bounty.status.replace("_", " "))}</span>
             </div>
             <div className="flex flex-col items-center md:items-start space-y-1">
-              <span className="text-theme-text dark:text-theme-text-dark uppercase">Issue Type</span>
+              <span className="text-theme-text dark:text-theme-text-dark uppercase text-xs">Issue Type</span>
               <span className="text-primary dark:text-primary-dark">{ucFirst(bounty.issue_type)}</span>
             </div>
 
             <div className="flex flex-col items-center md:items-start space-y-1">
-              <span className="text-theme-text dark:text-theme-text-dark uppercase">Project type</span>
+              <span className="text-theme-text dark:text-theme-text-dark uppercase text-xs">Project type</span>
               <span className="text-primary dark:text-primary-dark">
                 {ucFirst(bounty.project_type.replace("_", " "))}
               </span>
             </div>
             <div className="flex flex-col items-center md:items-start space-y-1">
-              <span className="text-theme-text dark:text-theme-text-dark uppercase">Permissions</span>
+              <span className="text-theme-text dark:text-theme-text-dark uppercase text-xs">Permissions</span>
               <span className="text-primary dark:text-primary-dark">
                 {bounty.requires_work_permission ? "Required" : "Permissionless"}
               </span>
             </div>
             <div className="flex flex-col items-center md:items-start space-y-1">
-              <span className="text-theme-text dark:text-theme-text-dark uppercase">Experience</span>
+              <span className="text-theme-text dark:text-theme-text-dark uppercase text-xs">Experience</span>
               <span className="text-primary dark:text-primary-dark">{ucFirst(bounty.experience_level)}</span>
             </div>
           </div>

@@ -100,7 +100,7 @@ export default function Create() {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <Input label="tags" name="tags" placeholder="elrond,blockchain" type="text" />
+                  <Input label="tags" name="tags" placeholder="multiversx,blockchain" type="text" />
                   <p className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
                     Tags will improve content discovery
                   </p>

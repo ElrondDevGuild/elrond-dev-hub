@@ -3,7 +3,7 @@ import { FiBook, FiGithub } from 'react-icons/fi';
 const items = [
   {
     label: "Github",
-    href: "https://github.com/ElrondDevGuild",
+    href: "https://github.com/xdevguild",
     icon: FiGithub,
   },
   {

@@ -1,6 +1,6 @@
+import { IPostItem, IPostItemGrid } from '../types/components';
 import { MediaResource } from '../types/supabase';
 import { RESOURCE_BASE_URL } from './storage_buckets';
-import {IPostItem, IPostItemGrid} from "../types/components";
 
 const WEBSITE_NAME = "xdevhub.com";
 
@@ -24,7 +24,7 @@ export const copyLinkToClipboard = (post: IPostItem | IPostItemGrid | MediaResou
 export const getShareOnTwitterUrl = (post: IPostItemGrid | IPostItem | MediaResource) => {
   const url = encodeURIComponent(getSharePostUrl(post) + "\n\n");
   const text = `${post.title}\n`;
-  return `https://twitter.com/intent/tweet?url=${url}&hashtags=MultiversX,MultiversXNetwork,ElrondDevGuild,xDevHub,MultiversXDevs&text=${encodeURIComponent(
+  return `https://twitter.com/intent/tweet?url=${url}&hashtags=MultiversX,MultiversXNetwork,xDevGuild,xDevHub,MultiversXDevs&text=${encodeURIComponent(
     text
   )}`;
 };
