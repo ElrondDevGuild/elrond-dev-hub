@@ -2,7 +2,7 @@ import { MediaResource } from '../types/supabase';
 import { RESOURCE_BASE_URL } from './storage_buckets';
 import {IPostItem, IPostItemGrid} from "../types/components";
 
-const WEBSITE_NAME = "egldhub.dev";
+const WEBSITE_NAME = "xdevhub.com";
 
 const appOrigin = process.env.NEXT_PUBLIC_VERCEL_URL;
 
@@ -24,7 +24,7 @@ export const copyLinkToClipboard = (post: IPostItem | IPostItemGrid | MediaResou
 export const getShareOnTwitterUrl = (post: IPostItemGrid | IPostItem | MediaResource) => {
   const url = encodeURIComponent(getSharePostUrl(post) + "\n\n");
   const text = `${post.title}\n`;
-  return `https://twitter.com/intent/tweet?url=${url}&hashtags=Elrond,ElrondNetwork,ElrondDevGuild,ElrondDevHub,ElrondDevs&text=${encodeURIComponent(
+  return `https://twitter.com/intent/tweet?url=${url}&hashtags=MultiversX,MultiversXNetwork,ElrondDevGuild,xDevHub,MultiversXDevs&text=${encodeURIComponent(
     text
   )}`;
 };

@@ -50,14 +50,27 @@ export default function Layout({ hideRightBar = false, children }: any) {
             <div>
               <PostItemGrid
                 post={{
-                  title: "Elrond's Dev Hub launch w/ Beniamin Mincu",
+                  title: "xDevHub presentation at X Day",
                   description:
-                    "We talked about the Dev Hub, Elrond's plan to onboard the next wave of developers and we took a lot of questions from the community.",
+                    "We talked about the xDevHub rebranding and some other important announcements on the Hub",
+                  image_url: "/hub-x-day.jpeg",
+                  resource_url: "https://youtu.be/VSMV4G2VeSc?t=24816",
+                  author: "MultiversX",
+                }}
+                imageHeight="h-36"
+                showLinks={false}
+              />
+              <div className="my-8"></div>
+              <PostItemGrid
+                post={{
+                  title: "xDevHub launch w/ Beniamin Mincu",
+                  description:
+                    "We talked about the Dev Hub, MultiversX's plan to onboard the next wave of developers and we took a lot of questions from the community.",
                   image_url: "/hub-launch.jpg",
                   resource_url: "https://youtu.be/C5e0oc3DWEo?t=94",
                   author: "Razvan Statescu",
                 }}
-                imageHeight="h-42"
+                imageHeight="h-36"
                 showLinks={false}
               />
             </div>

@@ -54,7 +54,7 @@ const firstSection: ILinksGroupProps = {
   title: "Reference",
   links: [
     {
-      label: "Elrond Docs",
+      label: "Docs",
       url: "https://docs.elrond.com/",
       icon: FiExternalLink,
       openInNewTab: true,
@@ -103,7 +103,7 @@ const sourceCode: ILinksGroupProps = {
     },
     {
       label: "Analytics",
-      url: "https://plausible.io/egldhub.dev",
+      url: "https://plausible.io/xdevhub.com",
       icon: SiPlausibleanalytics,
       openInNewTab: true,
     },

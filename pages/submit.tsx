@@ -79,8 +79,8 @@ export default function Submit() {
             Submit new content
           </h1>
           <p className="max-w-xl">
-            Share new content with other Elrond Devs. Submissions will be manually reviewed before publishing them to
-            the platform.
+            Share new content with other MultiversX Devs. Submissions will be manually reviewed before publishing them
+            to the platform.
           </p>
         </div>
 
@@ -135,7 +135,7 @@ export default function Submit() {
               </div>
 
               <div>
-                <Input label="tags" name="tags" placeholder="elrond,blockchain" type="text" />
+                <Input label="tags" name="tags" placeholder="multiversx,blockchain" type="text" />
               </div>
 
               <div>

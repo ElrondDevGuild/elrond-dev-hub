@@ -1,5 +1,5 @@
 /** @type {import('next-sitemap').IConfig} */
-const siteUrl = "https://egldhub.dev";
+const siteUrl = "https://xdevhub.com";
 
 const config = {
   siteUrl,

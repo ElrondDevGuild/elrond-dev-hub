@@ -1,5 +1,5 @@
-# Elrond's Dev Hub
+# xDevHub
 
-Share & Learn about Elrond Development.
+Share & Learn about MultiversX Development.
 
-[Join now](https://egldhub.dev)
+[Join now](https://xdevhub.com)

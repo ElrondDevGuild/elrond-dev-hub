@@ -13,22 +13,29 @@
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
-  @apply bg-theme-border;
+// ::-webkit-scrollbar-thumb {
+//   @apply bg-theme-border;
 
-  @media (prefers-color-scheme: dark) {
-    @apply bg-theme-border-dark;
+//   @media (prefers-color-scheme: dark) {
+//     @apply bg-theme-border-dark;
+//   }
+// }
+
+body {
+  ::-webkit-scrollbar-thumb {
+    @apply bg-theme-border;
+  }
+
+  &.dark {
+    ::-webkit-scrollbar-thumb {
+      @apply bg-theme-border-dark;
+    }
   }
 }
 
 html,
 body {
   font-family: "Inter", sans-serif;
-  @apply bg-secondary;
-
-  @media (prefers-color-scheme: dark) {
-    @apply bg-secondary-dark;
-  }
 }
 
 .main-content-height {
