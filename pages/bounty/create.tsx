@@ -13,10 +13,10 @@ import Input from '../../components/shared/form/Input';
 import Select from '../../components/shared/form/Select';
 import Textarea from '../../components/shared/form/Textarea';
 import { useProfileRequirement } from '../../hooks/useProfileRequirement';
-import { BountyResource, BountyResource } from '../../types/supabase';
-import { api, api, getApiErrorMessage, getApiErrorMessage } from '../../utils/api';
-import { experienceOptions, experienceOptions, issueTypeOptions, issueTypeOptions } from '../../utils/bounties';
-import { bountyPath, bountyPath } from '../../utils/routes';
+import { BountyResource } from '../../types/supabase';
+import { api, getApiErrorMessage } from '../../utils/api';
+import { experienceOptions, issueTypeOptions } from '../../utils/bounties';
+import { bountyPath } from '../../utils/routes';
 
 type FormValues = {
   title: string;

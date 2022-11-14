@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
 
-import { homePath, submitPath } from '../../utils/routes';
+import { homePath } from '../../utils/routes';
 import { Theme, ThemeHelper } from '../../utils/theme';
-import Button from '../shared/Button';
+import UserInfoBox from '../profile/UserInfoBox';
 import Logo from '../shared/Logo';
 import SocialIcons from '../shared/SocialIcons';
 import Leftbar from './LeftBar';
@@ -62,7 +62,9 @@ export default function Navbar() {
                   {currentTheme === Theme.DARK ? <BsFillSunFill /> : <BsFillMoonFill />}
                 </button>
                 <SocialIcons />
-                <Button label="+ Add Resource" href={submitPath} />
+                <div className="hidden sm:block">
+                  <UserInfoBox />
+                </div>
                 <div className="-mr-2 flex sm:hidden">
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-md text-primary dark:text-primary-dark">
                     <span className="sr-only">Open main menu</span>
