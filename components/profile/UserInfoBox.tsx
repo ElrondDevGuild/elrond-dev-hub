@@ -35,7 +35,7 @@ export default function UserInfoBox() {
   if (!user) {
     return (
       <Link href={authPath}>
-        <div className="bg-primary dark:bg-primary-dark text-white py-2 px-6 text-xs rounded-md cursor-pointer hover:opacity-90">
+        <div className="bg-primary dark:bg-primary-dark text-secondary dark:text-secondary-dark font-bold py-2 px-6 text-xs rounded-md cursor-pointer hover:opacity-90">
           Connect Wallet
         </div>
       </Link>
