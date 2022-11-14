@@ -70,8 +70,7 @@ const Auth: NextPage = () => {
             <img src="/auth-logo.svg" className="h-16" />
 
             <p className="text-white font-semibold text-6xl max-w-xl">
-              A collection of <span className="text-primary">essential resources</span> for developers building on
-              Elrond
+              <span className="">Essential resources</span> for developers building on MultiversX
             </p>
           </div>
         </div>
@@ -94,9 +93,9 @@ const Auth: NextPage = () => {
             </div>
 
             <div>
-              <p className="text-xl font-semibold text-gray-700 text-center">New to Elrond Blockchain?</p>
+              <p className="text-xl font-semibold text-gray-700 text-center">New to MultiversX Blockchain?</p>
               <p className="text-gray-700 text-xl text-center">
-                Easily create your own Elrond wallet using{" "}
+                Easily create your own MultiversX wallet using{" "}
                 <a href="https://maiar.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">
                   Maiar
                 </a>
@@ -106,46 +105,6 @@ const Auth: NextPage = () => {
         </div>
       </div>
 
-      <MaiarLoginPopup qrCode={authQrCode} uri={maiarAuthUri} open={showPopup} setOpen={setIsPopupOpen} />
-    </>
-  );
-
-  return (
-    <>
-      <div className="flex flex-col items-center justify-center space-y-4 min-h-half-screen bg-primary">
-        <h3 className="text-5xl sm:text-6xl text-yellowc font-bold text-center sm:text-left">Connect your wallet</h3>
-        <p className="text-3xl text-white font-semibold pt-5 pb-10">Pick a login method</p>
-        <div className="flex items-center space-x-3">
-          <button type="button" className="auth-button bg-bluec focus:ring-bluec" onClick={maiarClickHandler}>
-            Maiar
-          </button>
-          <button type="button" className="auth-button bg-yellowc focus:ring-yellowc" onClick={webClickHandler}>
-            Web Wallet
-          </button>
-          <button type="button" className="auth-button bg-pinkc focus:ring-pinkc" onClick={extensionClickHandler}>
-            Extension
-          </button>
-          {/*<button*/}
-          {/*    type="button"*/}
-          {/*    className="auth-button bg-orange-300 focus:ring-orange-300"*/}
-          {/*    onClick={ledgerClickHandler}*/}
-          {/*>*/}
-          {/*    Ledger*/}
-          {/*</button>*/}
-        </div>
-        {ledgerAccounts.length > 0 && (
-          <div className="flex items-center">
-            <span>Select ledger account</span>
-            <select className="m-10" onChange={(e) => loginWithLedger(parseInt(e.target.value))}>
-              {ledgerAccounts.map((account, index) => (
-                <option key={account} value={index}>
-                  {account}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-      </div>
       <MaiarLoginPopup qrCode={authQrCode} uri={maiarAuthUri} open={showPopup} setOpen={setIsPopupOpen} />
     </>
   );

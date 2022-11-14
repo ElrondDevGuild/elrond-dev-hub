@@ -38,10 +38,13 @@ module.exports = {
       borderWidth: {
         0.5: "0.5px",
       },
+      height: {
+        0.5: "0.5px",
+      },
     },
   },
   variants: {
     scrollbar: ["dark"],
   },
-  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar"), require('@tailwindcss/line-clamp')],
+  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar"), require("@tailwindcss/line-clamp")],
 };

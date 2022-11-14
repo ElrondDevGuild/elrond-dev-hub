@@ -27,7 +27,7 @@ export default function DropDown({ options, openOptions, positionX, positionY }:
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="flex items-center rounded-full text-theme-title dark:text-theme-title-dark focus:outline-none hover:opacity-80">
+        <Menu.Button className="flex items-center rounded-full text-primary dark:text-primary-dark focus:outline-none hover:opacity-80">
           {openOptions?.label ? (
             <span className="">{openOptions.label}</span>
           ) : (

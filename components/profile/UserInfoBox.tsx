@@ -46,7 +46,7 @@ export default function UserInfoBox() {
     <div className="h-20 flex items-center space-x-3">
       <button className="flex items-center overflow-hidden" onClick={() => router.push(`${profilePath}/${user.id}`)}>
         <ProfileImage avatarUrl={user.avatar_url} size="lg" />
-        <div className="flex flex-col items-start ml-2 space-y-1 ">
+        <div className="flex flex-col items-start ml-2 ">
           <div className="flex items-center space-x-2">
             <span className="text-sm text-theme-title dark:text-theme-title-dark font-semibold">{user.name}</span>
             {user.verified && <img src="/verified_icon.svg" className="mr-1" />}

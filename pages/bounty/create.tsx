@@ -151,7 +151,7 @@ export default function Create() {
                 </div>
                 <div className="md:col-span-2">
                   <Textarea label="Description*" name="description" placeholder="" options={{ required: true }} />
-                  <span className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
+                  <span className="font-medium text-xs text-theme-text dark:text-theme-text mt-1">
                     Brief description about the content. ~100 characters
                   </span>
                 </div>
