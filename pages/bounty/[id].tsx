@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { AiFillGithub } from 'react-icons/ai';
 import Moment from 'react-moment';
 
 import ApplicationsList from '../../components/bounty/applications/ApplicationsList';
@@ -155,13 +156,22 @@ export default function BountyDetails() {
               />
             )}
             <Button
+              icon={AiFillGithub}
+              label="View on Github"
+              theme="secondary"
+              extraClasses="col-span-1 justify-center"
+              onClick={() => {
+                window.open(bounty.repository_url as string, "_blank");
+              }}
+            />
+            {/* <Button
               label="Share"
               theme="secondary"
               extraClasses="col-span-1 justify-center"
               onClick={() => {
                 alert("share");
               }}
-            />
+            /> */}
           </div>
         </div>
         <hr className="w-full h-0.5 bg-theme-border dark:bg-theme-border-dark my-5 border-0" />
