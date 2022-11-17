@@ -52,22 +52,15 @@ export type UserSocialLink = {
   user_id: string;
   platform: SocialPlatform;
   username: string;
-}
+};
 
 export type AuthNonce = {
   id: string;
   created_at: string;
-}
+};
 
 export type BountyType = "single_worker" | "many_workers";
-export type BountyStatus =
-    "pending"
-    | "open"
-    | "expired"
-    | "canceled"
-    | "work_started"
-    | "work_submitted"
-    | "completed";
+export type BountyStatus = "pending" | "open" | "expired" | "canceled" | "work_started" | "completed";
 
 export type BountyExperienceLevel = "beginner" | "intermediate" | "experienced" | "any";
 
@@ -88,14 +81,13 @@ export type Bounty = {
   deleted_at: string | null;
   owner_id: string;
   owner: User;
-  tags?: {details: Tag}[];
+  tags?: { details: Tag }[];
   applicationsCount: number;
   applications?: BountyApplication[];
   resources?: BountyResource[];
 };
 
 export type ApplicationApprovalStatus = "pending" | "accepted" | "rejected";
-export type WorkStatus = "pending" | "in_progress" | "completed";
 
 export type BountyApplication = {
   id: string;
@@ -103,7 +95,6 @@ export type BountyApplication = {
   user_id: string;
   message: string;
   approval_status: ApplicationApprovalStatus;
-  work_status: WorkStatus;
   work_url: string | null;
   created_at: string;
   approval_status_timestamp: string | null;
@@ -113,7 +104,7 @@ export type BountyApplication = {
 
 export type BountyResource = {
   id: string;
-  bounty_id: string
+  bounty_id: string;
   user_id: string;
   url: string;
   description: string | null;
@@ -132,7 +123,7 @@ export type UserReview = {
   reviewer_id: string;
   rating: number;
   review: string;
-  created_at: string
+  created_at: string;
   reviewer: { name: string; avatar_url: string };
   bounty?: Pick<Bounty, "id" | "title">;
 };
@@ -140,12 +131,12 @@ export type UserReview = {
 export type UserRating = {
   rating: number;
   nbReviews: number;
-}
+};
 
 export type UserRatings = {
   bounties: UserRating;
   applications: UserRating;
 };
 
-type UserWithRatings = User & { ratings: UserRatings; }
-export type ItemWithUserRating<T> = T & {user : UserWithRatings};
+type UserWithRatings = User & { ratings: UserRatings };
+export type ItemWithUserRating<T> = T & { user: UserWithRatings };

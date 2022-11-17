@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS public.bounty_applications
     bounty_id       uuid NOT NULL,
     user_id         uuid NOT NULL,
     approval_status text NOT NULL,
-    work_status     text NOT NULL,
     work_url        text NULL,
     created_at      timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT bounty_applications_bounty_id_fkey FOREIGN KEY (bounty_id)

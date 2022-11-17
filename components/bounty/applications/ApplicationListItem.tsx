@@ -14,12 +14,15 @@ export default function ApplicationListItem({
   openApplication,
   onAccept,
   onReject,
+  leaveReview,
 }: {
   application: ItemWithUserRating<BountyApplication>;
   openApplication: (application: ItemWithUserRating<BountyApplication>) => void;
   onAccept: (application: BountyApplication) => Promise<boolean>;
   onReject: (application: BountyApplication) => Promise<boolean>;
+  leaveReview: (application: BountyApplication) => Promise<boolean>;
 }) {
+  console.log(application);
   const [loading, setLoading] = useState(false);
 
   const acceptApplication = async (application: BountyApplication) => {
@@ -56,6 +59,16 @@ export default function ApplicationListItem({
           >
             View Application
           </button>
+          {application.approval_status === "accepted" && application.bounty?.status === "work_started" && (
+            <>
+              <button
+                className="text-sm text-theme-text dark:text-theme-text-dark"
+                onClick={() => leaveReview(application)}
+              >
+                Leave Review
+              </button>
+            </>
+          )}
           <ApplicationStatusInfo application={application} />
           {application.approval_status === "pending" && (
             <>

@@ -241,7 +241,8 @@ export default function BountyDetails() {
           open={showReviewModal}
           setOpen={setShowReviewModal}
           bounty={bounty}
-          applicationId={currentApplication!.id}
+          application={currentApplication}
+          forOwner={true}
         />
       )}
     </Layout>
@@ -251,7 +252,26 @@ export default function BountyDetails() {
 function BountyAction({ bounty, user, currentApplication, setShowApplicationWorkModal, setShowReviewModal }: any) {
   const router = useRouter();
 
+  if (bounty.status === "completed") {
+    return <div></div>;
+  }
+
+  if (currentApplication) {
+    if (currentApplication.approval_status === "accepted") {
+      return (
+        <Button
+          label="Leave Review"
+          extraClasses="col-span-1 justify-center"
+          onClick={() => setShowReviewModal(true)}
+        />
+      );
+    }
+    return <div></div>;
+  }
+
+  // TODO: To be implemented edit bounty page
   if (bounty.owner_id === user?.id) {
+    return <div></div>;
     return (
       <Button
         label="Edit"
@@ -261,31 +281,31 @@ function BountyAction({ bounty, user, currentApplication, setShowApplicationWork
     );
   }
 
-  if (currentApplication) {
-    if (currentApplication.work_status === "completed") {
-      return (
-        <>
-          <Button
-            label="Leave Review"
-            extraClasses="col-span-1 justify-center"
-            onClick={() => setShowReviewModal(true)}
-          />
-          <Button
-            label="My Application"
-            extraClasses="col-span-1 justify-center"
-            onClick={() => alert("Not Implemented")}
-          />
-        </>
-      );
-    }
-    return (
-      <Button
-        label="My Application"
-        extraClasses="col-span-1 justify-center"
-        onClick={() => alert("Not Implemented")}
-      />
-    );
-  }
+  // if (currentApplication) {
+  //   if (currentApplication.work_status === "completed") {
+  //     return (
+  //       <>
+  //         <Button
+  //           label="Leave Review"
+  //           extraClasses="col-span-1 justify-center"
+  //           onClick={() => setShowReviewModal(true)}
+  //         />
+  //         <Button
+  //           label="My Application"
+  //           extraClasses="col-span-1 justify-center"
+  //           onClick={() => alert("Not Implemented")}
+  //         />
+  //       </>
+  //     );
+  //   }
+  //   return (
+  //     <Button
+  //       label="My Application"
+  //       extraClasses="col-span-1 justify-center"
+  //       onClick={() => alert("Not Implemented")}
+  //     />
+  //   );
+  // }
 
   return (
     <Button
