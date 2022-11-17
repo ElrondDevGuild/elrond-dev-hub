@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -88,6 +89,7 @@ export default function Profile() {
 
   return (
     <Layout hideRightBar={true}>
+      <NextSeo title="Settings" />
       <RequiresAuth>
         <div className="lg:px-16 text-theme-text dark:text-theme-text-dark rounded-md">
           <div className="flex flex-col">

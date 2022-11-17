@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FiPlusCircle, FiX } from 'react-icons/fi';
@@ -95,6 +96,7 @@ export default function BountyListing() {
 
   return (
     <Layout hideRightBar={true}>
+      <NextSeo title="Bounties" />
       <div className="flex items-center justify-start space-x-3 pb-4">
         <Link href={"/bounty/create"}>
           <a className="uppercase text-primary dark:text-primary-dark text-sm">+ New bounty</a>

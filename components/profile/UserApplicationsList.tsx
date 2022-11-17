@@ -68,7 +68,7 @@ export default function UserApplicationsList({ user }: { user: User }) {
         {applications.map((application: BountyApplication) => (
           <li
             key={application.id}
-            className="flex items-center justify-between w-full py-2 dark:text-secondary border-b border-theme-border dark:border-theme-border-dark"
+            className="flex items-center justify-between w-full py-2 text-theme-text dark:text-theme-text-dark border-b border-theme-border dark:border-theme-border-dark"
           >
             <Link href={bountyPath(application.bounty_id)}>
               <a className="w-2/5 underline flex items-center justify-start">

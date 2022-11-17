@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AiFillGithub } from 'react-icons/ai';
@@ -109,6 +110,7 @@ export default function BountyDetails() {
 
   return (
     <Layout hideRightBar={true}>
+      <NextSeo title={bounty.title} />
       <div className="flex flex-col w-full sm:pl-6">
         <div className="flex justify-between pb-2 flex-col sm:flex-row items-center">
           <div className="text-theme-title dark:text-theme-title-dark font-semibold text-2xl order-last sm:order-first pr-6 sm:pr-0">

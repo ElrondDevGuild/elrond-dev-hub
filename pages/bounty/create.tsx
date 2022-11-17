@@ -80,11 +80,13 @@ export default function Create() {
   return (
     <Layout hideRightBar={true}>
       <RequiresAuth>
-        <NextSeo title="Submit bounty" />
+        <NextSeo title="New Bounty" />
         <div className="lg:px-16 text-theme-text dark:text-theme-text-dark rounded-md">
           <div className="flex flex-col">
-            <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">Add Bounty</h1>
-            <p className="max-w-xl">Add a new bounty to the platform. Submissions are automatically published.</p>
+            <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">New Bounty</h1>
+            <p className="max-w-xl">
+              Create a new bounty to the platform. Submissions are not published automatically.
+            </p>
           </div>
           <div className="mt-10">
             <h2 className="font-semibold text-xl text-theme-title dark:text-theme-title-dark mb-6">Bounty Details</h2>
@@ -101,7 +103,7 @@ export default function Create() {
                 </div>
                 <div className="md:col-span-2">
                   <Input label="tags" name="tags" placeholder="multiversx,blockchain" type="text" />
-                  <p className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
+                  <p className="font-medium text-xs text-theme-text dark:text-theme-text-dark mt-1">
                     Tags will improve content discovery
                   </p>
                 </div>

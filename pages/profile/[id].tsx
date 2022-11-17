@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { FaDiscord, FaGithub, FaLinkedin, FaTelegram, FaTwitter } from 'react-icons/fa';
@@ -5,7 +6,6 @@ import { FaDiscord, FaGithub, FaLinkedin, FaTelegram, FaTwitter } from 'react-ic
 import Layout from '../../components/Layout';
 import ProfileImage from '../../components/profile/ProfileImage';
 import UserBounties from '../../components/profile/UserBounties';
-import RequiresAuth from '../../components/RequiresAuth';
 import Button from '../../components/shared/Button';
 import { useAuth } from '../../hooks/useAuth';
 import { User, UserReview } from '../../types/supabase';
@@ -59,44 +59,44 @@ export default function UserProfile() {
 
   return (
     <Layout hideRightBar={true}>
-      <RequiresAuth>
-        {user && (
-          <div className="flex flex-col w-full sm:pl-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <ProfileImage avatarUrl={user.avatar_url} size="xl" />
-                <div className="flex flex-col ml-3 space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">
-                      {user.name ?? getUserHandle(user)}
-                    </h1>
-                    {user.verified && <img src="/verified_icon.svg" className="mr-1" />}
-                  </div>
+      <NextSeo title={user?.name || user?.handle || user?.wallet} />
 
-                  {/*<UserRating reviews={reviews}/>*/}
-                  <div className="flex items-center space-x-2 pt-1">
-                    {user.social_links?.map((link) => {
-                      return <PlatformIcon key={link.platform} platform={link.platform} username={link.username} />;
-                    })}
-                  </div>
+      {user && (
+        <div className="flex flex-col w-full sm:pl-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <ProfileImage avatarUrl={user.avatar_url} size="xl" />
+              <div className="flex flex-col ml-3 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <h1 className="text-theme-title dark:text-theme-title-dark font-semibold">
+                    {user.name ?? getUserHandle(user)}
+                  </h1>
+                  {user.verified && <img src="/verified_icon.svg" className="mr-1" />}
+                </div>
+
+                {/*<UserRating reviews={reviews}/>*/}
+                <div className="flex items-center space-x-2 pt-1">
+                  {user.social_links?.map((link) => {
+                    return <PlatformIcon key={link.platform} platform={link.platform} username={link.username} />;
+                  })}
                 </div>
               </div>
-              {authUser && authUser.id === user.id && (
-                <Button label="Edit" onClick={() => router.push(`${profileSettingsPath}`)} />
-              )}
             </div>
-            <h3 className="text-theme-title dark:text-theme-title-dark font-semibold mt-10">Description</h3>
-            <div className="text-sm mt-2 text-theme-text dark:text-theme-text-dark">{user.description}</div>
-            <div className="mt-10">
-              <UserBounties user={user} />
-            </div>
-            <div className="mt-10">
-              <h3 className="text-theme-title dark:text-theme-title-dark font-semibold">Resources</h3>
-              <p className="text-sm mt-4 text-theme-text dark:text-theme-text-dark">Coming soon...</p>
-            </div>
+            {authUser && authUser.id === user.id && (
+              <Button label="Edit" onClick={() => router.push(`${profileSettingsPath}`)} />
+            )}
           </div>
-        )}
-      </RequiresAuth>
+          <h3 className="text-theme-title dark:text-theme-title-dark font-semibold mt-10">Description</h3>
+          <div className="text-sm mt-2 text-theme-text dark:text-theme-text-dark">{user.description}</div>
+          <div className="mt-10">
+            <UserBounties user={user} />
+          </div>
+          <div className="mt-10">
+            <h3 className="text-theme-title dark:text-theme-title-dark font-semibold">Resources</h3>
+            <p className="text-sm mt-4 text-theme-text dark:text-theme-text-dark">Coming soon...</p>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
