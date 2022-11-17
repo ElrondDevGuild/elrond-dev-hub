@@ -38,8 +38,14 @@ export default function ApplicationListItem({
   };
 
   const options = [
+    { label: "View application", onClick: () => openApplication(application) },
     { label: "Accept", onClick: () => acceptApplication(application) },
     { label: "Reject", onClick: () => rejectApplication(application) },
+  ];
+
+  const optionsCompleted = [
+    { label: "View application", onClick: () => openApplication(application) },
+    { label: "Leave Review", onClick: () => leaveReview(application) },
   ];
 
   return (
@@ -51,9 +57,10 @@ export default function ApplicationListItem({
           </p>
           <UserRating rating={application.user.ratings.applications} userId={application.user_id} />
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-6">
+          <ApplicationStatusInfo application={application} />
           <button
-            className="text-sm text-theme-text dark:text-theme-text-dark"
+            className="text-sm text-theme-text dark:text-theme-text-dark hidden lg:block"
             onClick={() => openApplication(application)}
             disabled={loading}
           >
@@ -61,15 +68,19 @@ export default function ApplicationListItem({
           </button>
           {application.approval_status === "accepted" && application.bounty?.status === "work_started" && (
             <>
-              <button
-                className="text-sm text-theme-text dark:text-theme-text-dark"
-                onClick={() => leaveReview(application)}
-              >
-                Leave Review
-              </button>
+              <div className="hidden lg:block">
+                <button
+                  className="text-sm text-theme-text dark:text-theme-text-dark"
+                  onClick={() => leaveReview(application)}
+                >
+                  Leave Review
+                </button>
+              </div>
+              <div className="lg:hidden">
+                <DropDown options={optionsCompleted} />
+              </div>
             </>
           )}
-          <ApplicationStatusInfo application={application} />
           {application.approval_status === "pending" && (
             <>
               <div className="hidden lg:flex items-center space-x-2">

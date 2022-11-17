@@ -90,6 +90,10 @@ export default function UserProfile() {
             <div className="mt-10">
               <UserBounties user={user} />
             </div>
+            <div className="mt-10">
+              <h3 className="text-theme-title dark:text-theme-title-dark font-semibold">Resources</h3>
+              <p className="text-sm mt-4 text-theme-text dark:text-theme-text-dark">Coming soon...</p>
+            </div>
           </div>
         )}
       </RequiresAuth>

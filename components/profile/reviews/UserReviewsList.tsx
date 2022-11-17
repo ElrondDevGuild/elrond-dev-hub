@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import Moment from 'react-moment';
 
 import { UserReview } from '../../../types/supabase';
 import { bountyPath, profilePath } from '../../../utils/routes';
@@ -44,11 +45,16 @@ export default function UserReviewsList({ reviews }: { reviews: UserReview[] }) 
             <div className="flex flex-col flex-grow mt-3">
               <p className="text-theme-text dark:text-theme-text-dark">{review.review}</p>
             </div>
-            <div className="flex items-center space-x-2 mt-3">
-              <ProfileImage avatarUrl={review.reviewer.avatar_url} size="md" />
-              <Link href={`${profilePath}/${review.reviewer_id}`}>
-                <a className="text-theme-text dark:text-theme-text-dark underline">{review.reviewer.name}</a>
-              </Link>
+            <div className="flex items-center justify-between w-full mt-3">
+              <div className="flex items-center space-x-2">
+                <ProfileImage avatarUrl={review.reviewer.avatar_url} size="md" />
+                <Link href={`${profilePath}/${review.reviewer_id}`}>
+                  <a className="text-theme-text dark:text-theme-text-dark underline">{review.reviewer.name}</a>
+                </Link>
+              </div>
+              <p className="text-theme-text dark:text-theme-text-dark text-xs">
+                <Moment fromNow>{review.created_at}</Moment>
+              </p>
             </div>
           </li>
         ))}

@@ -75,13 +75,15 @@ export default function UserBountyList({ user }: { user: User }) {
                 <span className="truncate">{bounty.title}</span>
               </a>
             </Link>
-            <div className="flex items-center justify-between w-3/5 sm:w-2/5 text-theme-text dark:text-theme-text-dark">
+            <div className="flex items-center justify-end sm:justify-between w-3/5 sm:w-2/5 text-theme-text dark:text-theme-text-dark">
               <BountyStatus bounty={bounty} />
-              <Link href={bountyPath(bounty.id)}>
-                <a className="underline">
-                  {bounty.applicationsCount} {bounty.applicationsCount === 1 ? "Applicant" : "Applicants"}
-                </a>
-              </Link>
+              <span className="hidden sm:inline-block">
+                <Link href={bountyPath(bounty.id)}>
+                  <a className="underline">
+                    {bounty.applicationsCount} {bounty.applicationsCount === 1 ? "Applicant" : "Applicants"}
+                  </a>
+                </Link>
+              </span>
             </div>
           </li>
         ))}

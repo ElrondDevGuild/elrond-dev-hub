@@ -33,7 +33,7 @@ export default class ReviewsRepository extends BaseRepository<UserReview> {
                     )
                    )`
       )
-      .order("created_at");
+      .order("created_at", { ascending: false });
 
     if (reviewerId) {
       query = query.eq("reviewer_id", reviewerId);

@@ -21,12 +21,14 @@ export default function ReviewSubmissionModal({
   bounty,
   application,
   forOwner = true,
+  onSuccess,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
   bounty: Bounty;
   application: BountyApplication;
   forOwner: boolean;
+  onSuccess: () => void;
 }) {
   const formMethods = useForm<FormValues>();
   const { handleSubmit, reset } = formMethods;
@@ -40,6 +42,7 @@ export default function ReviewSubmissionModal({
         application_id: application.id,
       });
       setOpen(false);
+      onSuccess();
     } catch (e) {
       alert(getApiErrorMessage(e));
     } finally {

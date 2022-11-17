@@ -108,25 +108,25 @@ export default function BountyDetails() {
 
   return (
     <Layout hideRightBar={true}>
-      <div className="flex flex-col w-full pl-6">
+      <div className="flex flex-col w-full sm:pl-6">
         <div className="flex justify-between pb-2 flex-col sm:flex-row items-center">
           <div className="text-theme-title dark:text-theme-title-dark font-semibold text-2xl order-last sm:order-first pr-6 sm:pr-0">
             <h1 className="max-w-2xl">{bounty.title}</h1>
           </div>
-          <div className="font-semibold text-sm  flex-shrink-0 w-1/3 self-end sm:w-auto sm:self-start pb-4 sm:pb-0">
+          <div className="font-semibold text-sm flex-shrink-0 w-full self-end sm:w-auto sm:self-start pb-2 sm:pb-0 text-center">
             <div className="text-secondary bg-theme-text dark:bg-theme-text-dark dark:text-secondary-dark-lighter py-1 px-6">
               {bounty.value} USDC
             </div>
           </div>
         </div>
-        <div className="flex items-center space-x-3 overflow-x-auto scrollbar-thin scrollbar-thumb-secondary dark:scrollbar-thumb-scrollbar-dark pb-6">
+        <div className="flex items-center space-x-3 overflow-x-auto scrollbar-thin scrollbar-thumb-secondary dark:scrollbar-thumb-scrollbar-dark pb-6 justify-center sm:justify-start">
           {bounty.tags?.map((tag) => (
             <span key={tag.details.id} className="text-sm text-primary dark:text-primary-dark">
               #{tag.details.title}
             </span>
           ))}
         </div>
-        <div className="flex flex-col sm:flex-row items-start sm:items-end sm:justify-between gap-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-6 sm:gap-y-0">
           <div className="flex flex-col items-start mt-4 font-semibold text-sm">
             <span className="text-xs text-primary dark:text-primary-dark uppercase">bounty owner</span>
             <div className="flex items-center space-x-2 mt-2 mb-1">
@@ -243,6 +243,10 @@ export default function BountyDetails() {
           bounty={bounty}
           application={currentApplication}
           forOwner={true}
+          onSuccess={async () => {
+            const { id } = router.query;
+            if (id) getBounty(id as string);
+          }}
         />
       )}
     </Layout>

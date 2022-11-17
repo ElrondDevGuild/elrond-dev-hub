@@ -98,6 +98,9 @@ export default function ApplicationsList({ bounty }: { bounty: Bounty }) {
           bounty={bounty}
           application={applicationForReview}
           forOwner={false}
+          onSuccess={async () => {
+            await loadApplications();
+          }}
         />
       )}
     </>
