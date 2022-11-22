@@ -35,6 +35,22 @@ const platforms = [
   { name: "Telegram", id: "telegram", icon: <FaTelegram /> },
 ];
 
+const mapSocialLinks = (link: Partial<UserSocialLink>) => {
+  switch (link.platform) {
+    case "twitter":
+      link.username = link?.username?.replace("https://twitter.com/", "");
+      break;
+    case "github":
+      link.username = link?.username?.replace("https://github.com/", "");
+      break;
+    case "linkedin":
+      link.username = link?.username?.replace("https://www.linkedin.com/in/", "");
+      break;
+  }
+
+  return link;
+};
+
 export default function Profile() {
   const formMethods = useForm<FormValues>();
   const { handleSubmit, setValue } = formMethods;
@@ -59,7 +75,7 @@ export default function Profile() {
     try {
       const { data } = await api.put("/user", {
         ...values,
-        social_links: socialLinks,
+        social_links: socialLinks.map(mapSocialLinks),
       });
       setUser(data);
       // await router.push(profilePath);
