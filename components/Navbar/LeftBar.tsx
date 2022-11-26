@@ -8,6 +8,7 @@ import {
   FiExternalLink,
   FiFolder,
   FiGithub,
+  FiHeadphones,
   FiHome,
   FiMail,
   FiMessageCircle,
@@ -32,6 +33,12 @@ const menuSection: ILinksGroupProps = {
       url: "#",
       icon: FiCheckSquare,
       disabled: true,
+    },
+    {
+      label: "Podcast",
+      url: "https://anchor.fm/xbuilders",
+      icon: FiHeadphones,
+      openInNewTab: true,
     },
     {
       label: "Newsletter",
