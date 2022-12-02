@@ -36,7 +36,7 @@ const menuSection: ILinksGroupProps = {
     },
     {
       label: "Podcast",
-      url: "https://anchor.fm/xbuilders",
+      url: "https://podcast.xdevhub.com/",
       icon: FiHeadphones,
       openInNewTab: true,
     },
