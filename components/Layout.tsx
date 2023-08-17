@@ -37,6 +37,13 @@ export default function Layout({ hideRightBar = false, children }: any) {
             <Leftbar />
           </div>
           <main className={`${columnClasses.centerColumn} pb-32 pt-10 sm:pb-10 main-content-height overflow-y-auto`}>
+            <a href="https://xday.com/hackathon" target="_blank" rel="noreferrer">
+              <img
+                src="/hackathon.png"
+                alt="MultiversX Hackathon 2023"
+                className="rounded-md mb-8 shadow-lg dark:shadow-2xl"
+              />
+            </a>
             {children}
           </main>
           <div className={`${columnClasses.rightColum} py-10 main-content-height overflow-y-auto`}>
@@ -49,6 +56,17 @@ export default function Layout({ hideRightBar = false, children }: any) {
 
             <div>
               <PostItemGrid
+                post={{
+                  title: "xDay2023 - Dev Tickets",
+                  description: "Developers and students have the opportunity to save 50% on their xDay 2023 tickets.",
+                  image_url: "/xday_2023.jpeg",
+                  resource_url: "https://form.typeform.com/to/T31Uoz9G?typeform-source=xdevhub",
+                  author: "MultiversX",
+                }}
+                imageHeight="h-42"
+                showLinks={false}
+              />
+              {/* <PostItemGrid
                 post={{
                   title: "xDevHub presentation at X Day",
                   description:
@@ -72,7 +90,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
                 }}
                 imageHeight="h-36"
                 showLinks={false}
-              />
+              /> */}
             </div>
 
             {/* <div className="mt-10">

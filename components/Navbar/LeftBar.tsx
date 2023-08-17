@@ -61,25 +61,25 @@ const firstSection: ILinksGroupProps = {
   links: [
     {
       label: "Docs",
-      url: "https://docs.elrond.com/",
+      url: "https://docs.multiversx.com/",
       icon: FiExternalLink,
       openInNewTab: true,
     },
     {
-      label: "erdjs",
-      url: "https://docs.elrond.com/sdk-and-tools/erdjs/erdjs/",
+      label: "sdk-js",
+      url: "https://docs.multiversx.com/sdk-and-tools/sdk-js/",
       icon: FiExternalLink,
       openInNewTab: true,
     },
     {
-      label: "erdpy",
-      url: "https://docs.elrond.com/sdk-and-tools/erdpy/erdpy/",
+      label: "mxpy",
+      url: "https://github.com/multiversx/mx-sdk-py-cli",
       icon: FiExternalLink,
       openInNewTab: true,
     },
     {
       label: "Validator Node",
-      url: "https://docs.elrond.com/validators/system-requirements/",
+      url: "https://docs.multiversx.com/validators/overview",
       icon: FiExternalLink,
       openInNewTab: true,
     },
@@ -103,7 +103,7 @@ const sourceCode: ILinksGroupProps = {
     },
     {
       label: "Contact",
-      url: "https://twitter.com/StatescuRazvan",
+      url: "https://twitter.com/egldhub",
       icon: FiMessageCircle,
       openInNewTab: true,
     },
@@ -125,7 +125,7 @@ const gettingStartedSection: ILinksGroupProps = {
     },
     {
       label: "Dev Group",
-      url: "https://t.me/ElrondDevelopers",
+      url: "https://t.me/MultiversXDevelopers",
       openInNewTab: true,
       icon: FaTelegramPlane,
     },
