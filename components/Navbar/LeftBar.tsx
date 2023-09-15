@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { FaStackOverflow, FaTelegramPlane } from 'react-icons/fa';
+import { useEffect, useState } from "react";
+import { FaStackOverflow, FaTelegramPlane } from "react-icons/fa";
 import {
   FiAlertCircle,
   FiBookOpen,
@@ -12,14 +12,15 @@ import {
   FiHome,
   FiMail,
   FiMessageCircle,
-} from 'react-icons/fi';
-import { SiPlausibleanalytics } from 'react-icons/si';
+  FiUsers,
+} from "react-icons/fi";
+import { SiPlausibleanalytics } from "react-icons/si";
 
-import { Category } from '../../types/supabase';
-import { api } from '../../utils/api';
-import { categoryPath, gettingStartedPath, homePath, submitPath } from '../../utils/routes';
-import Button from '../shared/Button';
-import LinksGroup, { ILinksGroupProps } from '../shared/LinksGroup';
+import { Category } from "../../types/supabase";
+import { api } from "../../utils/api";
+import { categoryPath, expertsPath, gettingStartedPath, homePath, submitPath } from "../../utils/routes";
+import Button from "../shared/Button";
+import LinksGroup, { ILinksGroupProps } from "../shared/LinksGroup";
 
 const menuSection: ILinksGroupProps = {
   links: [
@@ -27,6 +28,11 @@ const menuSection: ILinksGroupProps = {
       label: "Library",
       url: homePath,
       icon: FiHome,
+    },
+    {
+      label: "Experts",
+      url: expertsPath,
+      icon: FiUsers,
     },
     {
       label: "Bounties",

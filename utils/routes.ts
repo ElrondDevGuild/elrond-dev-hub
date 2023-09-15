@@ -1,4 +1,4 @@
-import { Category } from '../types/supabase';
+import { Category } from "../types/supabase";
 
 export const homePath = "/";
 export const submitPath = "/submit";
@@ -20,3 +20,4 @@ export const searchPath = (q?: string) => {
   return `/search?q=${q}`;
 };
 export const bountyPath = "/bounty";
+export const expertsPath = "/experts";

@@ -1,7 +1,7 @@
-import { NextSeo } from 'next-seo';
+import { NextSeo } from "next-seo";
 
-import Layout from '../components/Layout';
-import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
+import Layout from "../components/Layout";
+import PostItemGrid, { IPostItemGrid } from "../components/PostItemGrid";
 
 const resouresList: IPostItemGrid[] = [
   {
@@ -67,7 +67,7 @@ export default function GettingStarted() {
     <Layout hideRightBar={true}>
       <NextSeo title="Getting Started" />
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10 text-center">
-        Getting Started with Elrond development
+        Getting Started with MultiversX development
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {resouresList.map((post: IPostItemGrid, index) => {
