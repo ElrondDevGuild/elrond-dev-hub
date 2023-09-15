@@ -21,7 +21,19 @@ const expertsList: IExpertItem[] = [
 export default function ExpertsPage() {
   return (
     <Layout hideRightBar={true}>
-      <NextSeo title="Technical Experts" />
+      <NextSeo
+        title="Technical Experts"
+        openGraph={{
+          images: [
+            {
+              url: `https://xdevhub.com/og-image-experts.png`,
+              width: 1200,
+              height: 675,
+              type: "image/png",
+            },
+          ],
+        }}
+      />
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-2 text-center">
         MultiversX Technical Experts
       </p>

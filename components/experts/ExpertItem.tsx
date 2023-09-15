@@ -21,7 +21,7 @@ interface IExpertItemProps {
   showLinks?: boolean;
 }
 
-export default function ExpertItem({ expert, imageHeight = "h-48", showLinks = true }: IExpertItemProps) {
+export default function ExpertItem({ expert, imageHeight = "h-44", showLinks = true }: IExpertItemProps) {
   return (
     <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
       <div className="">
