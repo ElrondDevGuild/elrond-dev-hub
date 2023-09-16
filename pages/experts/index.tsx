@@ -80,6 +80,71 @@ const expertsList: IExpertItem[] = [
     },
     skills: ["Rust", "React Typescript", "Python"],
   },
+  {
+    name: "Philippe Martin",
+    image_url: "https://pbs.twimg.com/profile_images/1630972761773309972/C8Ud7AiW_400x400.jpg",
+    description:
+      "Versatile software engineer with expertise across multiple domains, dedicated staking provider for MultiversX, and entrepreneur offering Internal Development Platforms (IDP) to bootstrap new ideas and elevate existing projects.",
+    socials: {
+      twitter: "https://x.com/PhyByte",
+      github: "https://github.com/PhyByte",
+      linkedin: "https://www.linkedin.com/in/martinzphilippe/?locale=en_US",
+    },
+    skills: ["Dev/Sec Ops", "Fullstack", "Automation", "Management"],
+  },
+  {
+    name: "Aurélien Passion",
+    image_url: "https://pbs.twimg.com/profile_images/1665268372697673730/sLPIxHXg_400x400.jpg",
+    description: "Founder of JEXchangeDefi",
+    socials: {
+      twitter: "https://twitter.com/JavierNFT",
+      github: "https://github.com/javier-nft",
+    },
+    skills: ["Rust", "ReactJS", "Python"],
+  },
+  {
+    name: "Bucur David",
+    image_url: "https://pbs.twimg.com/profile_images/1695157716816158720/rWPXIUFQ_400x400.jpg",
+    description: "Builder on MvX",
+    socials: {
+      twitter: "https://twitter.com/BucurDavid_",
+      github: "https://github.com/bucurdavid",
+    },
+    skills: ["SmartContracts", "DApps", "Backend"],
+  },
+  {
+    name: "Martin Wagner",
+    image_url: "https://pbs.twimg.com/profile_images/1641362154392633344/7H5qaypC_400x400.jpg",
+    description:
+      "🛠 Building Knights of Cathena on MultiversX. 🥇 Winner of the MultiversX Most Valuable Developer Evangelist Award.",
+    socials: {
+      twitter: "https://twitter.com/mwfiae",
+      github: "https://github.com/mwfiae",
+      linkedin: "https://www.linkedin.com/in/martin-wagner-3b4519257",
+    },
+    skills: ["Smartcontracts", "Gaming", "Rust", "Typescript"],
+  },
+  {
+    name: "Marius Stoica",
+    image_url: "https://pbs.twimg.com/profile_images/1643900763611987969/p_QzXwRz_400x400.jpg",
+    description: "Software Engineer @ buidly",
+    socials: {
+      twitter: "https://twitter.com/mstoica95",
+      github: "https://github.com/stoicamarius",
+      linkedin: "https://www.linkedin.com/in/marius-stoica-9713b0b7/",
+    },
+    skills: ["Native Android & iOS development", "full-stack development"],
+  },
+  {
+    name: "Julian Ćwirko",
+    image_url: "https://pbs.twimg.com/profile_images/1398985202047803394/fVtUp8Vo_400x400.png",
+    description: "Web developer. Indie tools maintainer. xDevGuild member.",
+    socials: {
+      twitter: "https://twitter.com/theJulianIo",
+      github: "https://github.com/juliancwirko",
+    },
+    skills: ["Next.js", "React", "TypeScript", "Node", "Rust"],
+  },
 ].sort(() => Math.random() - 0.5);
 
 export default function ExpertsPage() {
