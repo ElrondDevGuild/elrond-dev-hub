@@ -21,3 +21,6 @@ export const searchPath = (q?: string) => {
 };
 export const bountyPath = "/bounty";
 export const expertsPath = "/experts";
+export const decenterPath = "/decenter";
+export const whishlistPath = "/whishlist";
+export const monthlyLeaderboardPath = "/monthly-leaderboard";

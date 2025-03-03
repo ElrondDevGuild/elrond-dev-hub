@@ -1,7 +1,7 @@
-import { IPostItem } from '../components/PostItem';
-import { IPostItemGrid } from '../components/PostItemGrid';
-import { MediaResource } from '../types/supabase';
-import { RESOURCE_BASE_URL } from './storage_buckets';
+import { IPostItem } from "../components/PostItem";
+import { IPostItemGrid } from "../components/PostItemGrid";
+import { MediaResource } from "../types/supabase";
+import { RESOURCE_BASE_URL } from "./storage_buckets";
 
 const WEBSITE_NAME = "xdevhub.com";
 
@@ -18,14 +18,27 @@ const getSharePostUrl = (post: IPostItem | IPostItemGrid | MediaResource) => {
   return getRefUrl(post.resource_url);
 };
 
-export const copyLinkToClipboard = (post: IPostItem | IPostItemGrid | MediaResource) => {
-  if (navigator?.clipboard?.writeText) navigator.clipboard.writeText(getSharePostUrl(post));
+export const copyLinkToClipboard = (
+  post: IPostItem | IPostItemGrid | MediaResource
+) => {
+  if (navigator?.clipboard?.writeText)
+    navigator.clipboard.writeText(getSharePostUrl(post));
 };
 
-export const getShareOnTwitterUrl = (post: IPostItemGrid | IPostItem | MediaResource) => {
-  const url = encodeURIComponent(getSharePostUrl(post) + "\n\n");
-  const text = `${post.title}\n`;
-  return `https://twitter.com/intent/tweet?url=${url}&hashtags=MultiversX,MultiversXNetwork,ElrondDevGuild,xDevHub,MultiversXDevs&text=${encodeURIComponent(
+export const getShareOnTwitterUrl = (
+  post: IPostItemGrid | IPostItem | MediaResource,
+  customMessage?: string,
+  customTags?: string
+) => {
+  const url = encodeURIComponent(post.resource_url + "\n\n");
+  const text = customMessage
+    ? customMessage
+    : `Check out what I found on xDevHub.io ~ ${post.title}\n`;
+  const hashtags = customTags
+    ? customTags.replace(/#/g, "").split(" ").join(",")
+    : "MultiversX,xDevHub,MultiversXDevs";
+
+  return `https://twitter.com/intent/tweet?url=${url}&hashtags=${hashtags}&text=${encodeURIComponent(
     text
   )}`;
 };

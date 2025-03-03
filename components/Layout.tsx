@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import Navbar from './Navbar';
-import Leftbar from './Navbar/LeftBar';
-import SearchBar from './Navbar/SearchBar';
-import PostItemGrid from './PostItemGrid';
+import Navbar from "./Navbar";
+import Leftbar from "./Navbar/LeftBar";
+import SearchBar from "./Navbar/SearchBar";
+import PostItemGrid from "./PostItemGrid";
+import MonthlyCodingLeaderboard from "./leaderboard/MonthlyLeaderboard";
 
 interface IColumnClasses {
   leftColumn: string;
@@ -26,6 +27,15 @@ export default function Layout({ hideRightBar = false, children }: any) {
       rightColum: "hidden sm:w-3/12 lg:block",
     };
   }, [hideRightBar]);
+
+  const mainBanner = {
+    title: "/AI_MegaWave Hackathon",
+    description:
+      "Join the AI MegaWave Hackathon and win up to $150,000 in prizes. The hackathon is organized by MultiversX and is open to all developers. Feb 12 - Mar 7, 2025.",
+    image_url: "/banner/top-banner.png",
+    resource_url: "https://multiversx.com/ai-megawave",
+  };
+
   return (
     <div>
       <Navbar />
@@ -36,17 +46,21 @@ export default function Layout({ hideRightBar = false, children }: any) {
           >
             <Leftbar />
           </div>
-          <main className={`${columnClasses.centerColumn} pb-32 pt-10 sm:pb-10 main-content-height overflow-y-auto`}>
-            <a href="https://xday.com/hackathon" target="_blank" rel="noreferrer">
+          <main
+            className={`${columnClasses.centerColumn} pb-32 pt-10 sm:pb-10 main-content-height overflow-y-auto`}
+          >
+            <a href={mainBanner.resource_url} target="_blank" rel="noreferrer">
               <img
-                src="/hackathon.png"
-                alt="MultiversX Hackathon 2023"
+                src={mainBanner.image_url}
+                alt={mainBanner.title}
                 className="rounded-md mb-8 shadow-lg dark:shadow-2xl"
               />
             </a>
             {children}
           </main>
-          <div className={`${columnClasses.rightColum} py-10 main-content-height overflow-y-auto`}>
+          <div
+            className={`${columnClasses.rightColum} py-10 main-content-height overflow-y-auto`}
+          >
             {/* <div className="p-6 bg-theme-title  dark:bg-secondary-dark-lighter rounded-md">
               <p className="font-semibold text-xl text-white dark:text-theme-title-dark mb-5">
                 Check out the official Telegram group for Elrond developers.
@@ -54,13 +68,14 @@ export default function Layout({ hideRightBar = false, children }: any) {
               <Button label="Join now" icon={FaTelegramPlane} href="https://t.me/ElrondDevelopers" />
             </div> */}
 
-            <div>
+            <div className="flex flex-col gap-10">
+              <MonthlyCodingLeaderboard></MonthlyCodingLeaderboard>
               <PostItemGrid
                 post={{
-                  title: "xDay2023 - Dev Tickets",
-                  description: "Developers and students have the opportunity to save 50% on their xDay 2023 tickets.",
-                  image_url: "/xday_2023.jpeg",
-                  resource_url: "https://form.typeform.com/to/T31Uoz9G?typeform-source=xdevhub",
+                  title: mainBanner.title,
+                  description: mainBanner.description,
+                  image_url: mainBanner.image_url,
+                  resource_url: mainBanner.resource_url,
                   author: "MultiversX",
                 }}
                 imageHeight="h-42"

@@ -12,6 +12,10 @@
   background-color: transparent;
 }
 
+* {
+  transition: all 0.3s ease-in-out;
+}
+
 /* Handle */
 // ::-webkit-scrollbar-thumb {
 //   @apply bg-theme-border;
@@ -48,5 +52,23 @@ a {
   @apply transition-opacity ease-in-out;
   &:hover {
     @apply opacity-75;
+  }
+
+  article &:hover {
+    @apply opacity-100;
+  }
+}
+
+article {
+  @apply transition-opacity ease-in-out;
+  img {
+    @apply transition-opacity ease-in-out;
+    @apply opacity-70;
+  }
+}
+
+.xdev-expert {
+  img {
+    @apply opacity-100;
   }
 }

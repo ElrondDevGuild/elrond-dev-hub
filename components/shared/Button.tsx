@@ -9,6 +9,7 @@ interface IButtonProps {
   href?: string;
   disabled?: boolean;
   theme?: BtnTheme;
+  class?: string;
 }
 
 const ButtonComponent = (btnProps: IButtonProps) => {
@@ -22,7 +23,7 @@ const ButtonComponent = (btnProps: IButtonProps) => {
   return (
     <button
       disabled={btnProps?.disabled}
-      className={`${btnClasses} border font-medium text-xs sm:text-sm py-2 px-4 rounded-md transition-opacity ease-in-out hover:opacity-80 flex items-center disabled:opacity-80 disabled:cursor-not-allowed`}
+      className={`${btnClasses} ${btnProps.class} border font-medium text-xs sm:text-sm py-2 px-4 rounded-md transition-opacity ease-in-out hover:opacity-80 flex items-center disabled:opacity-80 disabled:cursor-not-allowed`}
     >
       {btnProps.icon && (
         <span className="pr-2">

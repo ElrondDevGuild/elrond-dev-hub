@@ -42,7 +42,7 @@ export default function PostItemGrid({ post, imageHeight = "h-52", showLinks = t
   }, [post?.resource_url]);
 
   return (
-    <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
+    <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm overflow-hidden">
       <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark">
         <a href={readArticleUrl} target="_blank" rel="noreferrer">
           <img
@@ -52,7 +52,7 @@ export default function PostItemGrid({ post, imageHeight = "h-52", showLinks = t
           />
         </a>
       </div>
-      <div className="p-4 md:px-8 md:py-6 flex-grow">
+      <div className="p-4 md:px-6 md:py-6 flex-grow">
         {post?.author && (
           <div className="text-theme-title dark:text-theme-title-dark mb-2 text-xs sm:text-base">
             By <span className="text-primary dark:text-primary-dark">{post.author}</span>

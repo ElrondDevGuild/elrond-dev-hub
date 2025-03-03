@@ -1,5 +1,10 @@
 import { useMemo, useState } from "react";
-import { AiFillGithub, AiFillLinkedin, AiFillMail, AiFillTwitterSquare } from "react-icons/ai";
+import {
+  AiFillGithub,
+  AiFillLinkedin,
+  AiFillMail,
+  AiFillTwitterSquare,
+} from "react-icons/ai";
 
 export interface IExpertItem {
   name: string;
@@ -21,14 +26,21 @@ interface IExpertItemProps {
   showLinks?: boolean;
 }
 
-export default function ExpertItem({ expert, imageHeight = "h-44", showLinks = true }: IExpertItemProps) {
+export default function ExpertItem({
+  expert,
+  imageHeight = "h-44",
+  showLinks = true,
+}: IExpertItemProps) {
   return (
-    <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm">
-      <div className="">
+    <article className="xdev-expert flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm overflow-hidden">
+      <div className="w-full max-w-44 mx-auto mt-6">
         <img
-          src={expert.image_url}
+          src={expert.image_url || "/default/avatar-default.png"}
           alt={expert.name}
-          className={`object-square ${imageHeight} mx-auto rounded-full mt-6 shadow-lg`}
+          onError={(e) => {
+            e.currentTarget.src = "/default/default-avatar.png";
+          }}
+          className={`object-square object-cover ${imageHeight} mx-auto rounded-full shadow-lg w`}
         />
       </div>
       <div className="p-4 md:px-8 md:py-6 flex-grow">
@@ -48,21 +60,36 @@ export default function ExpertItem({ expert, imageHeight = "h-44", showLinks = t
       {showLinks && (
         <div className="flex text-theme-text dark:text-theme-text-dark py-5 border-t-0.5 border-theme-border dark:border-theme-border-dark divide-x-0.5 divide-theme-border dark:divide-theme-border-dark">
           {expert?.socials?.twitter && (
-            <a href={expert.socials.twitter} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
+            <a
+              href={expert.socials.twitter}
+              target="_blank"
+              className="flex-1 cursor-pointer"
+              rel="noreferrer"
+            >
               <div className="flex items-center justify-center">
                 <AiFillTwitterSquare className="text-2xl sm:text-xl" />
               </div>
             </a>
           )}
           {expert?.socials?.linkedin && (
-            <a href={expert.socials.linkedin} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
+            <a
+              href={expert.socials.linkedin}
+              target="_blank"
+              className="flex-1 cursor-pointer"
+              rel="noreferrer"
+            >
               <div className="flex items-center justify-center">
                 <AiFillLinkedin className="text-2xl sm:text-xl" />
               </div>
             </a>
           )}
           {expert?.socials?.github && (
-            <a href={expert.socials.github} target="_blank" className="flex-1 cursor-pointer" rel="noreferrer">
+            <a
+              href={expert.socials.github}
+              target="_blank"
+              className="flex-1 cursor-pointer"
+              rel="noreferrer"
+            >
               <div className="flex items-center justify-center">
                 <AiFillGithub className="text-2xl sm:text-xl" />
               </div>

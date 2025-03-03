@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { BiChevronRight } from 'react-icons/bi';
+import Link from "next/link";
+import { BiChevronRight } from "react-icons/bi";
 
 export interface ILink {
   label: string;
@@ -7,6 +7,7 @@ export interface ILink {
   icon?: any;
   openInNewTab?: boolean;
   disabled?: boolean;
+  customComponent?: boolean;
 }
 
 export interface ILinksGroupProps {
@@ -31,12 +32,21 @@ const LinkWrapper = ({ link, children }: { link: ILink; children: any }) => {
 export default function LinksGroup({ title, links }: ILinksGroupProps) {
   return (
     <div>
-      {title && <div className="uppercase text-primary dark:text-primary-dark font-semibold text-xs mb-4">{title}</div>}
+      {title && (
+        <div className="uppercase text-primary dark:text-primary-dark font-semibold text-xs mb-4 ">
+          {title}
+        </div>
+      )}
       <ul className="flex flex-col space-y-4">
         {links?.map((link, index) => {
+          console.log(link);
+          // If it's a custom component, render the icon directly without the usual menu item structure
+          if (link.customComponent && link.icon) {
+            return <li key={index}>{link.icon()}</li>;
+          }
           return (
             <LinkWrapper link={link} key={index}>
-              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark cursor-pointer relative">
+              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark cursor-pointer relative hover:!text-theme-text">
                 <span className="pr-2">
                   <link.icon className="text-lg" />
                 </span>

@@ -22,6 +22,7 @@ const fetchItems = async (page: number, category: string) => {
       category,
     },
   });
+  console.log(resources);
   return { resources, count };
 };
 

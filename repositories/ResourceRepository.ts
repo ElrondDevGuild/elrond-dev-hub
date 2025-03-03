@@ -1,8 +1,8 @@
-import { MediaResource } from '../types/supabase';
-import { RESOURCES_TABLE } from '../utils/dbtables';
-import { getFullImageUrl } from '../utils/post-item';
-import { supabaseAdmin } from '../utils/supabase';
-import { BaseRepository } from './base/BaseRepository';
+import { MediaResource } from "../types/supabase";
+import { RESOURCES_TABLE } from "../utils/dbtables";
+import { getFullImageUrl } from "../utils/post-item";
+import { supabaseAdmin } from "../utils/supabase";
+import { BaseRepository } from "./base/BaseRepository";
 
 export class ResourceRepository extends BaseRepository<MediaResource> {
   constructor() {
@@ -33,7 +33,7 @@ export class ResourceRepository extends BaseRepository<MediaResource> {
             *,
             tags(id, title),
             category:category_id(id, title),
-            resource_tag!inner(tag_id)
+            resource_tag(tag_id)
         `,
         { count: "exact" }
       )
