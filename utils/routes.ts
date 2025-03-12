@@ -24,3 +24,4 @@ export const expertsPath = "/experts";
 export const decenterPath = "/decenter";
 export const whishlistPath = "/whishlist";
 export const monthlyLeaderboardPath = "/monthly-leaderboard";
+export const teamFinder = "/team-finder";

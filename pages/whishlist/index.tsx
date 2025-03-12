@@ -5,187 +5,83 @@ import Button from "../../components/shared/Button";
 import CategoryBadge from "../../components/shared/CategoryBadge";
 import { useState } from "react";
 import Image from "next/image";
+import { createClient } from "@supabase/supabase-js";
+import { GetServerSideProps } from "next";
 
 // Interface for the project data structure
 interface ProjectItem {
   title: string;
   description: string;
   status: string;
-  bountyAmount: string | null;
-  estimatedDuration: string;
+  bounty_amount: string | null;
+  estimated_duration: string;
   category: string;
-  difficultyLevel: string;
+  difficulty_level: string;
   link: string | null;
   priority: "High" | "Medium" | "Low";
 }
 
-export default function WishlistPage() {
+interface WishlistPageProps {
+  wishlistData: ProjectItem[];
+}
+
+// Create a Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    // Fetch data from Supabase
+    const { data, error } = await supabase.from("wishlist").select("*");
+
+    if (error) {
+      console.error("Error fetching data from Supabase:", error);
+      return {
+        props: {
+          wishlistData: [],
+        },
+      };
+    }
+
+    return {
+      props: {
+        wishlistData: data || [],
+      },
+    };
+  } catch (err) {
+    console.error("Error in getServerSideProps:", err);
+    return {
+      props: {
+        wishlistData: [],
+      },
+    };
+  }
+};
+
+export default function WishlistPage({ wishlistData }: WishlistPageProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeDifficulty, setActiveDifficulty] = useState("all");
 
-  const wishlistData: ProjectItem[] = [
-    {
-      title: "ESDT Metadata Indexer",
-      description:
-        "Build a service that indexes and makes searchable all ESDT metadata across the network",
-      status: "Open for Applications",
-      bountyAmount: "5,000 EGLD",
-      estimatedDuration: "3-4 months",
-      category: "Infrastructure & Tools",
-      difficultyLevel: "Medium",
-      link: null,
-      priority: "High",
-    },
-    {
-      title: "Cross-chain Bridge UI Improvements",
-      description:
-        "Enhance the UI/UX of the MultiversX-ETH bridge with better transaction status updates",
-      status: "Open for Applications",
-      bountyAmount: "2,500 EGLD",
-      estimatedDuration: "1-2 months",
-      category: "DeFi",
-      difficultyLevel: "Medium",
-      link: "https://github.com/multiversx/mx-bridge-eth",
-      priority: "Medium",
-    },
-    {
-      title: "Mobile SDK for React Native",
-      description:
-        "Create a React Native SDK for mobile dApp development on MultiversX",
-      status: "Open for Applications",
-      bountyAmount: "7,500 EGLD",
-      estimatedDuration: "4-5 months",
-      category: "SDK",
-      difficultyLevel: "Hard",
-      link: null,
-      priority: "High",
-    },
-    {
-      title: "Automated Smart Contract Testing Framework",
-      description:
-        "Develop a comprehensive testing suite for MultiversX smart contracts",
-      status: "In Planning",
-      bountyAmount: "3,000 EGLD",
-      estimatedDuration: "2-3 months",
-      category: "Developer Tools",
-      difficultyLevel: "Medium",
-      link: null,
-      priority: "Medium",
-    },
-    {
-      title: "NFT Royalties Distribution System",
-      description:
-        "Build a system for automatic royalty distribution to NFT creators on secondary sales",
-      status: "Open for Applications",
-      bountyAmount: "4,000 EGLD",
-      estimatedDuration: "2 months",
-      category: "NFTs",
-      difficultyLevel: "Medium",
-      link: null,
-      priority: "Medium",
-    },
-    {
-      title: "Developer Documentation Improvements",
-      description:
-        "Expand and improve existing developer documentation with more examples and tutorials",
-      status: "Open for Applications",
-      bountyAmount: "1,500 EGLD",
-      estimatedDuration: "1-3 months",
-      category: "Documentation",
-      difficultyLevel: "Easy",
-      link: "https://github.com/multiversx/docs",
-      priority: "High",
-    },
-    {
-      title: "Staking Dashboard Enhancements",
-      description:
-        "Improve the staking dashboard with better analytics and APR predictions",
-      status: "In Planning",
-      bountyAmount: "3,500 EGLD",
-      estimatedDuration: "2 months",
-      category: "DeFi",
-      difficultyLevel: "Medium",
-      link: null,
-      priority: "Medium",
-    },
-    {
-      title: "dApp Request Batching SDK",
-      description:
-        "Create an SDK for batching multiple transactions into a single user request",
-      status: "Open for Applications",
-      bountyAmount: "2,000 EGLD",
-      estimatedDuration: "1-2 months",
-      category: "SDK",
-      difficultyLevel: "Medium",
-      link: null,
-      priority: "Low",
-    },
-    {
-      title: "On-Chain Governance Framework",
-      description:
-        "Develop a modular on-chain governance system for DAOs on MultiversX",
-      status: "In Planning",
-      bountyAmount: "6,000 EGLD",
-      estimatedDuration: "3-4 months",
-      category: "DAO",
-      difficultyLevel: "Hard",
-      link: null,
-      priority: "High",
-    },
-    {
-      title: "xExchange Analytics Dashboard",
-      description:
-        "Build an analytics dashboard for xExchange with trading metrics and LP analytics",
-      status: "Open for Applications",
-      bountyAmount: "4,500 EGLD",
-      estimatedDuration: "2-3 months",
-      category: "DeFi",
-      difficultyLevel: "Medium",
-      link: "https://github.com/multiversx/mx-exchange-docs",
-      priority: "Medium",
-    },
-    {
-      title: "Multi-Signature Wallet Improvements",
-      description:
-        "Enhance the existing multi-sig wallet with better security features and UX",
-      status: "Open for Applications",
-      bountyAmount: "3,000 EGLD",
-      estimatedDuration: "2 months",
-      category: "Wallets",
-      difficultyLevel: "Medium",
-      link: null,
-      priority: "Medium",
-    },
-    {
-      title: "Zero-Knowledge Proofs Integration",
-      description:
-        "Research and implement ZK proofs for privacy-preserving transactions",
-      status: "In Planning",
-      bountyAmount: "10,000 EGLD",
-      estimatedDuration: "6 months",
-      category: "Privacy",
-      difficultyLevel: "Hard",
-      link: null,
-      priority: "High",
-    },
-  ];
+  // Ensure wishlistData is defined
+  const validWishlistData = wishlistData || [];
 
   // Filter projects based on the activeCategory and activeDifficulty values
-  const filteredProjects = wishlistData
+  const filteredProjects = validWishlistData
     .filter(
       (item) => activeCategory === "all" || item.category === activeCategory
     )
     .filter(
       (item) =>
-        activeDifficulty === "all" || item.difficultyLevel === activeDifficulty
+        activeDifficulty === "all" || item.difficulty_level === activeDifficulty
     );
 
   // Get unique categories and difficulty levels for filter buttons
   const categories = Array.from(
-    new Set(wishlistData.map((item) => item.category))
+    new Set(validWishlistData.map((item) => item.category))
   );
   const difficultyLevels = Array.from(
-    new Set(wishlistData.map((item) => item.difficultyLevel))
+    new Set(validWishlistData.map((item) => item.difficulty_level))
   );
 
   return (
@@ -217,7 +113,8 @@ export default function WishlistPage() {
               className=""
             ></Image>{" "}
             MultiversX Foundation-curated list of desired development projects
-            with potential grants and bounties. Apply for a project or submit a proposal for your own idea.
+            with potential grants and bounties. Apply for a project or submit a
+            proposal for your own idea.
           </p>
         </div>
 
@@ -297,9 +194,9 @@ export default function WishlistPage() {
                 {/* Priority indicator */}
                 <div
                   className={`absolute top-0 left-0 w-full h-1 ${
-                    item.difficultyLevel === "Hard"
+                    item.difficulty_level === "Hard"
                       ? "bg-red-500"
-                      : item.difficultyLevel === "Medium"
+                      : item.difficulty_level === "Medium"
                       ? "bg-yellow-500"
                       : "bg-blue-500"
                   }`}
@@ -312,8 +209,12 @@ export default function WishlistPage() {
                   <div className="flex justify-between items-start mb-4">
                     <CategoryBadge
                       size="sm"
-                      category={item.category}
-                      className="z-10"
+                      category={
+                        item.category && item.category.length > 16
+                          ? `${item.category.slice(0, 16)}...`
+                          : item.category || "Unknown"
+                      }
+                      className="z-10 max-w-[150px] truncate"
                     />
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -340,7 +241,7 @@ export default function WishlistPage() {
                         <FiGift className="mr-1" /> Bounty:
                       </div>
                       <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                        {item.bountyAmount}
+                        {item.bounty_amount}
                       </div>
                     </div>
                     <div className="flex text-sm">
@@ -348,7 +249,7 @@ export default function WishlistPage() {
                         <FiCode className="mr-1" /> Difficulty:
                       </div>
                       <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                        {item.difficultyLevel}
+                        {item.difficulty_level}
                       </div>
                     </div>
                     <div className="flex text-sm">
@@ -356,7 +257,7 @@ export default function WishlistPage() {
                         Est. Duration:
                       </div>
                       <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                        {item.estimatedDuration}
+                        {item.estimated_duration}
                       </div>
                     </div>
                     <div className="flex text-sm">
@@ -398,7 +299,9 @@ export default function WishlistPage() {
             ))
           ) : (
             <p className="text-center col-span-full text-theme-text dark:text-theme-text-dark py-8">
-              No projects found matching your filters.
+              {validWishlistData.length === 0
+                ? "Loading projects..."
+                : "No projects found matching your filters or available right now."}
             </p>
           )}
         </div>

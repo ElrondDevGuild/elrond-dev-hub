@@ -5,27 +5,39 @@ import Button from "../../components/shared/Button";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
+import { createClient } from "@supabase/supabase-js";
+
+// Create a Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function MonthlyLeaderboardPage() {
-  const repos = [
-    {
-      url: "https://github.com/multiversx/mx-sdk-dapp",
-      description: "DApp development toolkit for MultiversX",
-    },
-    {
-      url: "https://github.com/multiversx/mx-sdk-rs",
-      description: "Rust-based SDK for MultiversX",
-    },
-  ];
-
   const [leaderboard, setLeaderboard] = useState<
-    { project: string; commits: number }[]
+    {
+      url: string;
+      project_name: string;
+      team_name: string;
+      category: string;
+      status: string;
+      commits?: number;
+    }[]
   >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCommits = async () => {
-      // Calculate the start of the month
+    const fetchLeaderboard = async () => {
+      const { data, error } = await supabase
+        .from("leaderboard_projects")
+        .select("url ,project_name, team_name, category, status")
+        .order("project_name", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching leaderboard data:", error);
+        setLoading(false);
+        return;
+      }
+
       const now = new Date();
       const monthStart = new Date(
         now.getFullYear(),
@@ -35,13 +47,11 @@ export default function MonthlyLeaderboardPage() {
 
       const projectsData: { project: string; commits: number }[] = [];
 
-      for (let repoUrl of repos) {
-        // Extract owner and repo name (e.g. https://github.com/owner/repo)
+      for (let repoUrl of data) {
         const parts = repoUrl.url.split("/");
         const owner = parts[3];
         const repo = parts[4];
 
-        // Build GitHub API endpoint
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?since=${monthStart}&per_page=100`;
 
         const headers = {
@@ -54,7 +64,6 @@ export default function MonthlyLeaderboardPage() {
           const commits = await response.json();
 
           if (Array.isArray(commits)) {
-            // Use the repo name as the project title and count commits
             projectsData.push({
               project: repo,
               commits: commits.length,
@@ -71,14 +80,22 @@ export default function MonthlyLeaderboardPage() {
         }
       }
 
-      // Sort by number of commits in descending order
-      const sortedProjects = projectsData.sort((a, b) => b.commits - a.commits);
-      setLeaderboard(sortedProjects);
+      // Update leaderboard with commit counts
+      const updatedLeaderboard = data.map((project) => {
+        const projectData = projectsData.find(
+          (p) => p.project === project.project_name
+        );
+        return projectData
+          ? { ...project, commits: projectData.commits }
+          : project;
+      });
+
+      setLeaderboard(updatedLeaderboard);
       setLoading(false);
     };
 
-    fetchCommits();
-  }, []); /*  */
+    fetchLeaderboard();
+  }, []);
 
   return (
     <Layout hideRightBar={true}>
@@ -112,20 +129,18 @@ export default function MonthlyLeaderboardPage() {
             This initiative aim to reward the most active contributors in the
             ecosystem by simply tracking the commits on GitHub.
           </p>
-          <div className="flex items-center justify-center">
+          {/* <div className="flex items-center justify-center">
             <Button
               class="mx-auto w-fit"
               label="Submit your project here"
               icon={FaPlus}
               href="#"
             ></Button>
-          </div>
+          </div> */}
         </div>
         <div className="p-6 border-theme-border dark:border-theme-border-dark rounded-md overflow-y-auto bg-white dark:bg-secondary-dark-lighter">
           {loading ? (
-            <p className="text-black dark:text-theme-text-dark">
-              Loading...
-            </p>
+            <p className="text-black dark:text-theme-text-dark">Loading...</p>
           ) : (
             <div className="overflow-x-auto min-h-32">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -138,16 +153,19 @@ export default function MonthlyLeaderboardPage() {
                       Project
                     </th>
                     <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
-                      Description
+                      Commits
                     </th>
                     <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
-                      Commits
+                      Category
+                    </th>
+                    <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
+                      Team Name
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-transparent text-black dark:text-theme-text-dark text-sm divide-y divide-gray-200 dark:divide-gray-700">
-                  {leaderboard.map((project, index) => (
-                    <tr key={project.project}>
+                  {leaderboard.map((projectData, index) => (
+                    <tr key={projectData.team_name}>
                       <td className="p-2 whitespace-nowrap text-center">
                         {index === 0
                           ? "🥇"
@@ -160,33 +178,27 @@ export default function MonthlyLeaderboardPage() {
                       <td className="p-2 whitespace-nowrap text-center">
                         <span className="font-semibold text-blue-500 dark:text-blue-300">
                           <Link
-                            href={repos[index].url}
+                            href={`https://github.com/${projectData.project_name}`}
                             target="_blank"
                             rel="noreferrer"
                           >
                             <a target="_blank" rel="noreferrer">
-                              {project.project}
+                              {projectData.project_name}
                             </a>
                           </Link>
                         </span>
                       </td>
-                      <td>
-                        <div className="flex items-center justify-center">
-                          <FiLink className="mr-2" />
-                          <Link
-                            href={repos[index].url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {repos[index].description}
-                          </Link>
-                        </div>
-                      </td>
                       <td className="p-2 whitespace-nowrap text-center">
                         <span className="font-semibold text-green-500 dark:text-green-300">
-                          {project.commits}
+                          {projectData.commits}
                         </span>{" "}
                         🚀
+                      </td>
+                      <td className="p-2 whitespace-nowrap text-center">
+                        {projectData.category}
+                      </td>
+                      <td className="p-2 whitespace-nowrap text-center">
+                        {projectData.team_name}
                       </td>
                     </tr>
                   ))}
@@ -194,6 +206,19 @@ export default function MonthlyLeaderboardPage() {
               </table>
             </div>
           )}
+        </div>
+        <div className="text-center mt-12">
+          <p className="text-theme-text dark:text-theme-text-dark mb-4">
+            Want to join the leaderboard? Submit your project on below.
+          </p>
+          <a
+            href="https://github.com/multiversx"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
+          >
+            Submit Project <FiLink className="inline-block ml-2" />
+          </a>
         </div>
       </section>
     </Layout>

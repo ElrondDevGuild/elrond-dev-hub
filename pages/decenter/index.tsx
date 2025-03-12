@@ -3,156 +3,42 @@ import Layout from "../../components/Layout";
 import { FiLink } from "react-icons/fi";
 import Button from "../../components/shared/Button";
 import CategoryBadge from "../../components/shared/CategoryBadge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 // Interface for the project data structure
 interface ProjectItem {
   title: string;
   assignees: string | null;
   status: string;
-  openSource: string;
-  estimatedCompletion: string;
+  open_source: string;
+  estimated_completion: string;
   category: string;
   team: string;
   link: string | null;
 }
 
+// Create a Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 export default function DecenterPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortBy, setSortBy] = useState("title");
+  const [projectData, setProjectData] = useState<ProjectItem[]>([]);
 
-  const projectData: ProjectItem[] = [
-    {
-      title: "MultiversX DeCenter",
-      assignees: "schmim and xAllianceMVX",
-      status: "In Development",
-      openSource: "Open Source",
-      estimatedCompletion: "Oct 28, 2024",
-      category: "Community",
-      team: "xAlliance",
-      link: null,
-    },
-    {
-      title: "Ecosystem Calendar",
-      assignees: "Joetinks56 and xAllianceMVX",
-      status: "Live",
-      openSource: "Open Source",
-      estimatedCompletion: "Oct 9, 2024",
-      category: "Infrastructure & Tools",
-      team: "xAlliance",
-      link: "https://calendar.xalliance.io",
-    },
-    {
-      title: "Saturn",
-      assignees: "BubuMVX and xAllianceMVX",
-      status: "Live",
-      openSource: "Closed Source",
-      estimatedCompletion: "Sep 6, 2023",
-      category: "Infrastructure & Tools",
-      team: "Project X",
-      link: null,
-    },
-    {
-      title: "EDGE",
-      assignees: "BubuMVX and xAllianceMVX",
-      status: "Live",
-      openSource: "Closed Source",
-      estimatedCompletion: "Apr 1, 2024",
-      category: "Infrastructure & Tools",
-      team: "Project X",
-      link: null,
-    },
-    {
-      title: "Flutter SDK",
-      assignees: "schmim and xAllianceMVX",
-      status: "Maintenance",
-      openSource: "Open Source",
-      estimatedCompletion: "Jan 1, 2025",
-      category: "Infrastructure & Tools",
-      team: "N/A (solo dev)",
-      link: null,
-    },
-    {
-      title: "Bounty Payout Module",
-      assignees: "michavie",
-      status: "Live",
-      openSource: "Open Source",
-      estimatedCompletion: "Jun 13, 2024",
-      category: "Infrastructure & Tools",
-      team: "PeerMe",
-      link: null,
-    },
-    {
-      title: "Vanity Wallet Address Generator",
-      assignees: "BubuMVX",
-      status: "Live",
-      openSource: "Open Source",
-      estimatedCompletion: "Jun 13, 2024",
-      category: "Wallets",
-      team: "Project X",
-      link: "https://wallet.artmakers.io/",
-    },
-    {
-      title: "xPortal Daily Task",
-      assignees: "BubuMVX",
-      status: "In Development",
-      openSource: "Partly Open Source",
-      estimatedCompletion: "Oct 28, 2024",
-      category: "Gaming",
-      team: "Project X",
-      link: "https://xportal.artmakers.io/",
-    },
-    {
-      title: "Easy Faucet for Desktop",
-      assignees: "BubuMVX",
-      status: "Live",
-      openSource: "Open Source",
-      estimatedCompletion: "Oct 28, 2024",
-      category: "Infrastructure & Tools",
-      team: "Project X",
-      link: "https://github.com/BubuMVX/easy-faucet",
-    },
-    {
-      title: "Alias Export Key",
-      assignees: "BubuMVX",
-      status: "Live",
-      openSource: "Open Source",
-      estimatedCompletion: "Sep 6, 2024",
-      category: "Wallets",
-      team: "Project X",
-      link: "https://github.com/BubuMVX/alias-export-key",
-    },
-    {
-      title: "MultiversX Wallet for Telegram",
-      assignees: "BubuMVX",
-      status: "In Development",
-      openSource: "Closed Source",
-      estimatedCompletion: "Apr 6, 2025",
-      category: "Wallets",
-      team: "Project X",
-      link: "https://t.me/MultiversX_Wallet_Bot",
-    },
-    {
-      title: "Rug Royalties",
-      assignees: "BubuMVX",
-      status: "Live",
-      openSource: "Closed Source",
-      estimatedCompletion: "Jun 13, 2024",
-      category: "Others",
-      team: "Divergent Club",
-      link: "https://rug.divergentclub.xyz/",
-    },
-    {
-      title: "Mx Native Stablecoin",
-      assignees: null,
-      status: "In Development",
-      openSource: "Open Source",
-      estimatedCompletion: "Oct 28, 2024",
-      category: "Defi",
-      team: "Hatom",
-      link: null,
-    },
-  ];
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const { data, error } = await supabase.from("decenter").select("*");
+      if (error) {
+        console.error("Error fetching projects:", error);
+      } else {
+        setProjectData(data);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   // Filter projects based on the activeCategory value.
   const filteredProjects =
@@ -189,7 +75,8 @@ export default function DecenterPage() {
           </h1>
           <p className="text-md md:text-lg text-theme-text dark:text-theme-text-dark max-w-2xl mx-auto pb-4">
             A hub for ongoing open-source development efforts in the MultiversX
-            ecosystem. Everyone can contribute to the projects listed below or submit their own projects for review.
+            ecosystem. Everyone can contribute to the projects listed below or
+            submit their own projects for review.
           </p>
         </div>
 
@@ -276,7 +163,7 @@ export default function DecenterPage() {
                           Source:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                          {item.openSource}
+                          {item.open_source}
                         </div>
                       </div>
                       <div className="flex text-sm">
@@ -292,7 +179,7 @@ export default function DecenterPage() {
                           Est. <br></br>Completion:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                          {item.estimatedCompletion}
+                          {item.estimated_completion}
                         </div>
                       </div>
                     </div>
@@ -325,7 +212,8 @@ export default function DecenterPage() {
         </div>
         <div className="text-center mt-12">
           <p className="text-theme-text dark:text-theme-text-dark mb-4">
-            Want to contribute? Join the MultiversX DeCenter open-source community!
+            Want to contribute? Join the MultiversX DeCenter open-source
+            community!
           </p>
           <a
             href="https://github.com/multiversx"

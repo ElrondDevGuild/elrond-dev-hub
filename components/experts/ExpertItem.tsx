@@ -40,7 +40,7 @@ export default function ExpertItem({
           onError={(e) => {
             e.currentTarget.src = "/default/default-avatar.png";
           }}
-          className={`object-square object-cover ${imageHeight} mx-auto rounded-full shadow-lg w`}
+          className={`object-square object-cover ${imageHeight} mx-auto w-36 max-w-36 max-h-36 rounded-full shadow-lg overflow-hidden bg-gray-200 dark:bg-gray-700 border-2 border-primary/20`}
         />
       </div>
       <div className="p-4 md:px-8 md:py-6 flex-grow">

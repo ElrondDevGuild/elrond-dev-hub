@@ -5,6 +5,38 @@ import PostItemGrid, { IPostItemGrid } from "../components/PostItemGrid";
 
 const resouresList: IPostItemGrid[] = [
   {
+    title: "Chapter 1: Create a smart contract",
+    image_url:
+      "https://s3.amazonaws.com/cdn.multiversx.com/webflow/tutorials_chapter-1.webp",
+    resource_url:
+      "https://multiversx.com/builders/tutorials/in-depth/part-1-install-required-dependencies",
+    author: "Multiversx",
+  },
+  {
+    title: "Chapter 2: Build a backend to interact with your smart contract",
+    image_url:
+      "https://s3.amazonaws.com/cdn.multiversx.com/webflow/tutorials_chapter-2.webp",
+    resource_url:
+      "https://multiversx.com/builders/tutorials/in-depth/part-1-setup-your-development-environment",
+    author: "Multiversx",
+  },
+  {
+    title: "Chapter 3: Build a frontend for your escrow app",
+    image_url:
+      "https://s3.amazonaws.com/cdn.multiversx.com/webflow/tutorials_chapter-3.webp",
+    resource_url:
+      "https://multiversx.com/builders/tutorials/in-depth/part-1-setup-your-development-environment-2",
+    author: "Multiversx",
+  },
+  {
+    title: "Get Started with AI and AI Agents",
+    image_url:
+      "https://cdn.multiversx.com/webflow/tutorial-ai-agents-thumb.webp",
+    resource_url:
+      "https://multiversx.com/builders/tutorials/in-depth/ai-agents-on-multiversx-with-eliza-framework",
+    author: "Multiversx",
+  },
+  {
     title: "Elrond Network (EGLD): An Internet Scale Blockchain",
     image_url:
       "https://images.ctfassets.net/0idwgenf7ije/66MkRJSanHWi1oBkIZkgzF/d5ec1932fa64688cab01d9017d57065f/Elrond_Network__EGLD_-_An_Internet_Scale_Blockchain.jpg?fm=webp",
@@ -38,13 +70,13 @@ const resouresList: IPostItemGrid[] = [
     image_url:
       "https://dj9u8d5veywz7.cloudfront.net/content/images/size/w700/2021/09/elrond-dapp-in-15-minutes-3.1-1.jpg",
     resource_url: "https://elrond.com/blog/elrond-dapp-fifteen-minutes/",
-    author: "Elrond Team",
+    author: "Multiversx",
   },
   {
     title: "Elrond VCCode IDE Presentation & Tutorial",
     image_url: "https://i.ytimg.com/vi/bXbBfJCRVqE/maxresdefault.jpg",
     resource_url: "https://www.youtube.com/watch?v=bXbBfJCRVqE",
-    author: "Elrond Team",
+    author: "Multiversx",
   },
   {
     title: "Build your first Microservice",
@@ -52,14 +84,14 @@ const resouresList: IPostItemGrid[] = [
       "https://dj9u8d5veywz7.cloudfront.net/content/images/size/w700/2021/10/web3-microservices-1.jpg",
     resource_url:
       "https://elrond.com/blog/build-elrond-dapps-microservice-guide/",
-    author: "Elrond Team",
+    author: "Multiversx",
   },
   {
     title: "Smart Contracts in minutes with the Elrond Play web IDE",
     image_url:
       "https://dj9u8d5veywz7.cloudfront.net/content/images/size/w700/2021/12/Elrond-Play-preview.jpg",
     resource_url: "https://elrond.com/blog/elrond-play-web-ide/",
-    author: "Elrond Team",
+    author: "Multiversx",
   },
   {
     title:
@@ -67,7 +99,7 @@ const resouresList: IPostItemGrid[] = [
     image_url:
       "https://dj9u8d5veywz7.cloudfront.net/content/images/2021/04/time-to-build-nfts-esdt.jpg",
     resource_url: "https://elrond.com/blog/elrond-tokens-esdt-nft-sft-specs/",
-    author: "Elrond Team",
+    author: "Multiversx",
   },
 ];
 

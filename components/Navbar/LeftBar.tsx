@@ -50,6 +50,11 @@ const menuSection: ILinksGroupProps = {
       icon: FiUsers,
     },
     {
+      label: "Team Finder [🆕]",
+      url: "/team-finder",
+      icon: FiUsers,
+    },
+    {
       label: "Decenter [🆕]",
       url: "/decenter",
       icon: FiAlignCenter,
@@ -77,6 +82,12 @@ const menuSection: ILinksGroupProps = {
     {
       label: "Podcast ↗️",
       url: "https://podcast.xdevhub.com/",
+      icon: FiHeadphones,
+      openInNewTab: true,
+    },
+    {
+      label: "Momentum Podcast ↗️",
+      url: "https://youtube.com/playlist?list=PLQVcheGWwBRVIDczUGjpx60NDfBEWl7xh&feature=shared",
       icon: FiHeadphones,
       openInNewTab: true,
     },
@@ -212,7 +223,7 @@ export default function Leftbar() {
     Podcasts: FiHeadphones,
     Courses: FiBookOpen,
     Projects: FiBriefcase,
-    "Others": FiOctagon,
+    Others: FiOctagon,
     "Dev Tools": FiTool,
     // Add more mappings as needed
   };

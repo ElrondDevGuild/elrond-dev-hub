@@ -1,21 +1,38 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// Create a Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const MonthlyCodingLeaderboard = () => {
-  // repositories to check for commits
-  const repos = [
-    "https://github.com/multiversx/mx-sdk-dapp",
-    "https://github.com/multiversx/mx-sdk-rs",
-  ];
-
   const [leaderboard, setLeaderboard] = useState<
-    { project: string; commits: number }[]
+    {
+      url: string;
+      project_name: string;
+      team_name: string;
+      category: string;
+      status: string;
+      commits?: number;
+    }[]
   >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCommits = async () => {
-      // Calculate the start of the month
+    const fetchLeaderboard = async () => {
+      const { data, error } = await supabase
+        .from("leaderboard_projects")
+        .select("url ,project_name, team_name, category, status")
+        .order("project_name", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching leaderboard data:", error);
+        setLoading(false);
+        return;
+      }
+
       const now = new Date();
       const monthStart = new Date(
         now.getFullYear(),
@@ -25,13 +42,11 @@ const MonthlyCodingLeaderboard = () => {
 
       const projectsData: { project: string; commits: number }[] = [];
 
-      for (let repoUrl of repos) {
-        // Extract owner and repo name (e.g. https://github.com/owner/repo)
-        const parts = repoUrl.split("/");
+      for (let repoUrl of data) {
+        const parts = repoUrl.url.split("/");
         const owner = parts[3];
         const repo = parts[4];
 
-        // Build GitHub API endpoint
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?since=${monthStart}&per_page=100`;
 
         const headers = {
@@ -44,26 +59,45 @@ const MonthlyCodingLeaderboard = () => {
           const commits = await response.json();
 
           if (Array.isArray(commits)) {
-            // Use the repo name as the project title and count commits
             projectsData.push({
               project: repo,
               commits: commits.length,
             });
           } else {
-            console.error("Error fetching commits for repo:", repoUrl, commits);
+            console.error(
+              "Error fetching commits for repo:",
+              repoUrl.url,
+              commits
+            );
           }
         } catch (error) {
-          console.error("Error during fetch for repo:", repoUrl, error);
+          console.error("Error during fetch for repo:", repoUrl.url, error);
         }
       }
 
-      // Sort by number of commits in descending order
-      const sortedProjects = projectsData.sort((a, b) => b.commits - a.commits);
-      setLeaderboard(sortedProjects);
+      // Update leaderboard with commit counts
+      const updatedLeaderboard = data.map(
+        (project: {
+          url: string;
+          project_name: string;
+          team_name: string;
+          category: string;
+          status: string;
+        }) => {
+          const projectData = projectsData.find(
+            (p) => p.project === project.project_name
+          );
+          return projectData
+            ? { ...project, commits: projectData.commits }
+            : project;
+        }
+      );
+
+      setLeaderboard(updatedLeaderboard);
       setLoading(false);
     };
 
-    fetchCommits();
+    fetchLeaderboard();
   }, []);
 
   return (
@@ -102,8 +136,8 @@ const MonthlyCodingLeaderboard = () => {
                 </tr>
               </thead>
               <tbody className="bg-transparent text-black dark:text-theme-text-dark text-sm divide-y divide-gray-200 dark:divide-gray-700">
-                {leaderboard.map((project, index) => (
-                  <tr key={project.project}>
+                {leaderboard.map((projectData, index) => (
+                  <tr key={projectData.team_name}>
                     <td className="p-2 whitespace-nowrap text-center">
                       {index === 0
                         ? "🥇"
@@ -115,16 +149,20 @@ const MonthlyCodingLeaderboard = () => {
                     </td>
                     <td className="p-2 whitespace-nowrap text-center">
                       <span className="font-semibold text-blue-500 dark:text-blue-300">
-                        <Link href={repos[index]} target="_blank" rel="noreferrer">
+                        <Link
+                          href={`https://github.com/${projectData.project_name}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           <a target="_blank" rel="noreferrer">
-                            {project.project}
+                            {projectData.project_name}
                           </a>
                         </Link>
                       </span>
                     </td>
                     <td className="p-2 whitespace-nowrap text-center">
                       <span className="font-semibold text-green-500 dark:text-green-300">
-                        {project.commits}
+                        {projectData.commits}
                       </span>{" "}
                       🚀
                     </td>
