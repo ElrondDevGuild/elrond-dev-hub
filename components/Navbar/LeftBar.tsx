@@ -44,16 +44,12 @@ const menuSection: ILinksGroupProps = {
       url: homePath,
       icon: FiHome,
     },
-    {
-      label: "Experts",
-      url: expertsPath,
-      icon: FiUsers,
-    },
-    {
-      label: "Team Finder [🆕]",
-      url: "/team-finder",
-      icon: FiUsers,
-    },
+    // {
+    //   label: "Experts",
+    //   url: expertsPath,
+    //   icon: FiUsers,
+    // },
+
     {
       label: "Decenter [🆕]",
       url: "/decenter",
@@ -65,7 +61,12 @@ const menuSection: ILinksGroupProps = {
       icon: FiGift,
     },
     {
-      label: "Monthly Leaderboard [🆕]",
+      label: "Team Finder [🆕]",
+      url: "/team-finder",
+      icon: FiUsers,
+    },
+    {
+      label: "Monthly L..Board [🆕]",
       url: monthlyLeaderboardPath,
       icon: FiList,
     },
@@ -79,9 +80,15 @@ const menuSection: ILinksGroupProps = {
       ),
       customComponent: true,
     },
+    // {
+    //   label: "Podcast ↗️",
+    //   url: "https://podcast.xdevhub.com/",
+    //   icon: FiHeadphones,
+    //   openInNewTab: true,
+    // },
     {
-      label: "Podcast ↗️",
-      url: "https://podcast.xdevhub.com/",
+      label: "Full Shard Podcast ↗️",
+      url: "https://www.youtube.com/@FullShardPodcast",
       icon: FiHeadphones,
       openInNewTab: true,
     },
@@ -109,10 +116,11 @@ const menuSection: ILinksGroupProps = {
     },
 
     {
-      label: "Bounties",
-      url: "#",
+      label: "Grants",
+      url: "https://multiversx.com/growthgames",
       icon: FiCheckSquare,
-      disabled: true,
+      disabled: false,
+      openInNewTab: true,
     },
     {
       label: "Jobs",
@@ -199,7 +207,7 @@ const gettingStartedSection: ILinksGroupProps = {
     },
     {
       label: "Ask Questions",
-      url: "https://stackoverflow.com/questions/tagged/elrond",
+      url: "https://stackoverflow.com/questions/tagged/multiversx",
       openInNewTab: true,
       icon: FaStackOverflow,
     },
@@ -265,14 +273,14 @@ export default function Leftbar() {
       <div className="mb-8">
         <LinksGroup {...gettingStartedSection} />
       </div>
-      <div className="mb-8">
-        <LinksGroup {...firstSection} />
-      </div>
       {categoriesSection && (
         <div className="mb-8">
           <LinksGroup {...categoriesSection} />
         </div>
       )}
+      <div className="mb-8">
+        <LinksGroup {...firstSection} />
+      </div>
       <div className="mb-8">
         <LinksGroup {...sourceCode} />
       </div>

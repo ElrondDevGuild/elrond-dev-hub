@@ -212,7 +212,7 @@ export default function MonthlyLeaderboardPage() {
             Want to join the leaderboard? Submit your project on below.
           </p>
           <a
-            href="https://github.com/multiversx"
+            href="https://forms.gle/SX8Kgw7go4WmS5eP9"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"

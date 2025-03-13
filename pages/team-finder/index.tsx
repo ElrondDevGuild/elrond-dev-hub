@@ -103,8 +103,7 @@ export default function TeamFinderPage() {
   const staticDeveloperData: DeveloperProfile[] = [
     {
       name: "Cool Developer",
-      description:
-        "#C#O#O#L#D#E#V#E#L#O#P#E#R#",
+      description: "#C#O#O#L#D#E#V#E#L#O#P#E#R#",
       profileImageUrl: "/team-finder/alex-johnson.jpg",
       skills: ["Rust", "TypeScript", "Smart Contracts"],
       mainExpertise: "be the first",
@@ -128,9 +127,15 @@ export default function TeamFinderPage() {
 
         // Use data from Supabase if available, otherwise use static data
         if (supabaseDevelopers.length > 0) {
-          setDevelopers(supabaseDevelopers);
+          const randomizedDevelopers = [...supabaseDevelopers].sort(
+            () => Math.random() - 0.5
+          );
+          setDevelopers(randomizedDevelopers);
         } else {
-          setDevelopers(staticDeveloperData);
+          const randomizedStaticData = [...staticDeveloperData].sort(
+            () => Math.random() - 0.5
+          );
+          setDevelopers(randomizedStaticData);
         }
       } catch (error) {
         console.error("Error loading developers:", error);
@@ -287,7 +292,7 @@ export default function TeamFinderPage() {
 
                     <div className="space-y-4 mb-6">
                       <div className="flex text-sm">
-                        <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
+                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                           Experience:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -312,7 +317,7 @@ export default function TeamFinderPage() {
                       </div>
 
                       <div className="flex text-sm">
-                        <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
+                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                           Interests:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -397,10 +402,12 @@ export default function TeamFinderPage() {
             Are you a developer looking to join exciting MultiversX projects?
           </p>
           <a
-            href="#"
+            href="https://forms.gle/N8ZZuCWZca2dcNQo8"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
           >
-            Join as a Developer
+            Join as a Builder
           </a>
         </div>
       </section>

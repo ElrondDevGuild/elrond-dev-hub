@@ -121,9 +121,9 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
         <div className="mb-8">
           <div className="flex flex-col space-y-4 items-center">
             <div className="w-full max-w-4xl">
-              <h3 className="text-sm font-medium text-theme-text/70 dark:text-theme-text-dark/70 mb-2 text-center">
+              {/* <h3 className="text-sm font-medium text-theme-text/70 dark:text-theme-text-dark/70 mb-2 text-center">
                 Filter by Category
-              </h3>
+              </h3> */}
               <div className="flex flex-wrap justify-center gap-3 mb-6">
                 <button
                   onClick={() => setActiveCategory("all")}
@@ -237,7 +237,7 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
 
                   <div className="space-y-1 mb-6">
                     <div className="flex text-sm">
-                      <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60 flex items-center">
+                      <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60 flex items-center">
                         <FiGift className="mr-1" /> Bounty:
                       </div>
                       <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -245,7 +245,7 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
                       </div>
                     </div>
                     <div className="flex text-sm">
-                      <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60 flex items-center">
+                      <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60 flex items-center">
                         <FiCode className="mr-1" /> Difficulty:
                       </div>
                       <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -253,7 +253,7 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
                       </div>
                     </div>
                     <div className="flex text-sm">
-                      <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
+                      <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                         Est. Duration:
                       </div>
                       <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -261,7 +261,7 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
                       </div>
                     </div>
                     <div className="flex text-sm">
-                      <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
+                      <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                         Priority:
                       </div>
                       <div
@@ -316,12 +316,12 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
             foundation for potential grants.
           </p>
           <a
-            href="https://github.com/multiversx/mx-grants/issues/new?assignees=&labels=proposal&projects=&template=grant-proposal.md&title=%5BPROPOSAL%5D"
+            href="https://forms.gle/Nhnoef48MBpEv9f57"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
           >
-            Submit a Proposal
+            Submit a Proposal <FiLink className="inline-block ml-2" />
           </a>
         </div>
       </section>

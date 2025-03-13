@@ -5,6 +5,7 @@ import Button from "../../components/shared/Button";
 import CategoryBadge from "../../components/shared/CategoryBadge";
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { stat } from "fs";
 
 // Interface for the project data structure
 interface ProjectItem {
@@ -30,7 +31,14 @@ export default function DecenterPage() {
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const { data, error } = await supabase.from("decenter").select("*");
+      const today = new Date().toISOString();
+
+      const { data, error } = await supabase
+        .from("decenter")
+        .select("*")
+        .lte("publish_date", today) // Only get profiles with publish_date <= current date
+        .not("publish_date", "is", null) // Exclude unpublished profiles
+        .order("status", { ascending: true });
       if (error) {
         console.error("Error fetching projects:", error);
       } else {
@@ -151,7 +159,7 @@ export default function DecenterPage() {
 
                     <div className="space-y-1 mb-6">
                       <div className="flex text-sm">
-                        <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
+                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                           Team:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -159,7 +167,7 @@ export default function DecenterPage() {
                         </div>
                       </div>
                       <div className="flex text-sm">
-                        <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
+                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                           Source:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -167,7 +175,7 @@ export default function DecenterPage() {
                         </div>
                       </div>
                       <div className="flex text-sm">
-                        <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
+                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                           Assignees:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
@@ -175,8 +183,8 @@ export default function DecenterPage() {
                         </div>
                       </div>
                       <div className="flex text-sm">
-                        <div className="w-28 text-theme-text/60 dark:text-theme-text-dark/60">
-                          Est. <br></br>Completion:
+                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
+                          Est. Completion:
                         </div>
                         <div className="font-medium text-theme-text dark:text-theme-text-dark">
                           {item.estimated_completion}
@@ -212,16 +220,16 @@ export default function DecenterPage() {
         </div>
         <div className="text-center mt-12">
           <p className="text-theme-text dark:text-theme-text-dark mb-4">
-            Want to contribute? Join the MultiversX DeCenter open-source
+            Want to contribute? Submit your project to the MultiversX DeCenter open-source
             community!
           </p>
           <a
-            href="https://github.com/multiversx"
+            href="https://forms.gle/WbywYMjCqbuhKfsVA"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
           >
-            Explore on GitHub
+            Submit Project <FiLink className="inline-block ml-2" />
           </a>
         </div>
       </section>
