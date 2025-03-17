@@ -220,8 +220,8 @@ export default function DecenterPage() {
         </div>
         <div className="text-center mt-12">
           <p className="text-theme-text dark:text-theme-text-dark mb-4">
-            Want to contribute? Submit your project to the MultiversX DeCenter open-source
-            community!
+            Want to contribute? Submit your project to the MultiversX DeCenter
+            open-source community!
           </p>
           <a
             href="https://forms.gle/WbywYMjCqbuhKfsVA"

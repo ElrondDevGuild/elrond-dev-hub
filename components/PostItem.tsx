@@ -26,6 +26,7 @@ export interface IPostItem {
   author: string;
   tags?: IPostItemTag[];
   slug?: string;
+  published_at: string;
 }
 
 export default function PostItem({ post }: { post: IPostItem }) {
@@ -44,8 +45,7 @@ export default function PostItem({ post }: { post: IPostItem }) {
     if (!post?.resource_url) return "";
 
     // Create a more engaging Twitter message
-    const tags =
-      "#MultiversX #MultiversXNetwork #ElrondDevGuild #xDevHub #MultiversXDevs";
+    const tags = "#MultiversX #MultiversXNetwork #MultiversXDevs #xDevHub";
     const customMessage = `🔥 Just discovered this amazing resource: "${post.title}" 🚀\n\nCheck it out and level up your MultiversX development skills! 💻✨\n\n`;
 
     return getShareOnTwitterUrl(post, customMessage, tags);
@@ -66,18 +66,33 @@ export default function PostItem({ post }: { post: IPostItem }) {
     return "";
   }, [post?.tags]);
 
-  console.log(post.category.toLowerCase().trim());
   return (
     <article className="flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm overflow-hidden">
       <div className="border-b-0.5 border-theme-border dark:border-theme-border-dark relative">
-        <a href={readArticleUrl} target="_blank" rel="noreferrer" className="z-50">
+        <a
+          href={readArticleUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="z-50"
+        >
           <img
             src={post.image_url}
             alt={post.title}
             className="object-cover h-44 md:h-64 w-full object-center rounded-t-md"
           />
         </a>
-        <div className="flex justify-between items-start absolute bottom-0 right-0 m-5">
+        <div className="flex justify-between items-start absolute bottom-0 right-0 m-5 gap-2">
+          <CategoryBadge
+            size="lg"
+            category={new Date(post.published_at)
+              .toLocaleString("default", {
+                month: "2-digit",
+                year: "numeric",
+                day: "numeric",
+              })
+              .toLowerCase()}
+            className="z-10 opacity-50"
+          />
           <CategoryBadge
             size="lg"
             category={post.category.toLowerCase()}
