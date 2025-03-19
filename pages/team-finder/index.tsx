@@ -6,6 +6,7 @@ import Button from "../../components/shared/Button";
 import CategoryBadge from "../../components/shared/CategoryBadge";
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
+import SubmitTeamFinder from "../../components/SubmitTeamFinder";
 
 // Table name: tf_developers (using specific prefix to avoid conflicts)
 // Table structure:
@@ -98,6 +99,7 @@ export default function TeamFinderPage() {
   const [sortBy, setSortBy] = useState("name");
   const [developers, setDevelopers] = useState<DeveloperProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   // Static developer data as fallback
   const staticDeveloperData: DeveloperProfile[] = [
@@ -286,8 +288,16 @@ export default function TeamFinderPage() {
                     </div>
 
                     {/* Developer description */}
-                    <div className="mb-4 text-sm text-theme-text dark:text-theme-text-dark">
-                      {dev.description}
+                    <div className="mb-4">
+                      <div className="relative">
+                        <div className="text-sm text-theme-text dark:text-theme-text-dark max-h-[4em] group-hover:max-h-[1000px] transition-all duration-500 ease-in-out overflow-hidden">
+                          {dev.description}
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-secondary dark:from-secondary-dark via-secondary/90 dark:via-secondary-dark/90 to-transparent group-hover:opacity-0 transition-opacity duration-500"></div>
+                      </div>
+                      <div className="text-xs text-theme-text/60 dark:text-theme-text-dark/60 mt-1 group-hover:opacity-0 transition-opacity duration-500">
+                        Hover to read more
+                      </div>
                     </div>
 
                     <div className="space-y-4 mb-6">
@@ -378,9 +388,9 @@ export default function TeamFinderPage() {
                       <Button
                         label="Connect"
                         href={
+                          dev.socials.twitter ||
                           dev.socials.telegram ||
                           dev.socials.github ||
-                          dev.socials.twitter ||
                           dev.socials.website ||
                           "#"
                         }
@@ -402,7 +412,7 @@ export default function TeamFinderPage() {
             Are you a developer looking to join exciting MultiversX projects?
           </p>
           <a
-            href="https://forms.gle/N8ZZuCWZca2dcNQo8"
+            onClick={() => setShowForm(true)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
@@ -410,6 +420,8 @@ export default function TeamFinderPage() {
             Join as a Builder
           </a>
         </div>
+
+        {showForm && <SubmitTeamFinder onClose={() => setShowForm(false)} />}
       </section>
     </Layout>
   );
