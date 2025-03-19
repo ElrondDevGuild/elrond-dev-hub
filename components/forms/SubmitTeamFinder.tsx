@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CategoryBadge from "./shared/CategoryBadge";
+import CategoryBadge from "../shared/CategoryBadge";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -151,10 +151,14 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Fields marked with <span className="text-red-500">*</span> are
+              required
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Full Name
+                  Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -169,7 +173,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
 
               <div>
                 <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Main Expertise
+                  Main Expertise <span className="text-red-500">*</span>
                 </label>
                 <select
                   required
@@ -192,7 +196,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Availability
+                  Availability <span className="text-red-500">*</span>
                 </label>
                 <select
                   required
@@ -232,7 +236,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
 
             <div>
               <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Description
+                Description <span className="text-red-500">*</span>
               </label>
               <textarea
                 required
@@ -279,7 +283,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
 
             <div>
               <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Experience
+                Experience <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -295,7 +299,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
 
             <div>
               <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Interests
+                Interests <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -321,22 +325,23 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, github_url: e.target.value })
                   }
-                  placeholder="https://github.com/username"
+                  placeholder="github.com/username"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Twitter URL
+                  Twitter URL <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="url"
+                  required
                   className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
                   value={formData.twitter_url}
                   onChange={(e) =>
                     setFormData({ ...formData, twitter_url: e.target.value })
                   }
-                  placeholder="https://twitter.com/username"
+                  placeholder="twitter.com/username"
                 />
               </div>
 
@@ -351,7 +356,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, telegram_url: e.target.value })
                   }
-                  placeholder="https://t.me/username"
+                  placeholder="t.me/username"
                 />
               </div>
 
@@ -366,7 +371,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, website_url: e.target.value })
                   }
-                  placeholder="https://your-website.com"
+                  placeholder="www.your-website.com"
                 />
               </div>
             </div>

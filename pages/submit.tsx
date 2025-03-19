@@ -1,18 +1,17 @@
-import axios from 'axios';
-import { NextSeo } from 'next-seo';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import axios from "axios";
+import { NextSeo } from "next-seo";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
-import Layout from '../components/Layout';
-import Button from '../components/shared/Button';
-import Input from '../components/shared/form/Input';
-import Select from '../components/shared/form/Select';
-import { IOption } from '../components/shared/form/SelectElement';
-import Textarea from '../components/shared/form/Textarea';
-import { Category } from '../types/supabase';
-import { api } from '../utils/api';
-import { thankYouPath } from '../utils/routes';
+import Layout from "../components/Layout";
+import Input from "../components/shared/form/Input";
+import Select from "../components/shared/form/Select";
+import { IOption } from "../components/shared/form/SelectElement";
+import Textarea from "../components/shared/form/Textarea";
+import { Category } from "../types/supabase";
+import { api } from "../utils/api";
+import { thankYouPath } from "../utils/routes";
 
 interface ISubmitResource {
   title: string;
@@ -35,7 +34,12 @@ export default function Submit() {
     const fetchCategories = async () => {
       try {
         const { data } = await api.get("categories");
-        setCategories(data.map((category: Category) => ({ id: category.id, name: category.title })));
+        setCategories(
+          data.map((category: Category) => ({
+            id: category.id,
+            name: category.title,
+          }))
+        );
       } catch (e) {}
     };
 
@@ -68,73 +72,106 @@ export default function Submit() {
   return (
     <Layout hideRightBar={true}>
       <NextSeo title="Submit content" />
-      <div className="lg:px-16 text-theme-text dark:text-theme-text-dark rounded-md">
-        <div className="flex flex-col">
-          <h1 className="font-semibold text-4xl text-theme-title dark:text-theme-title-dark mb-4">
-            Submit new content
-          </h1>
-          <p className="max-w-xl">
-            Share new content with other MultiversX Devs. Submissions will be manually reviewed before publishing them
-            to the platform.
-          </p>
-        </div>
+      <div className="lg:px-16 text-theme-text dark:text-theme-text-dark">
+        <div className="bg-secondary dark:bg-secondary-dark p-8 rounded-xl shadow-lg border border-theme-border/30 dark:border-theme-border-dark/30">
+          <div className="flex flex-col mb-8">
+            <h1 className="font-bold text-2xl text-theme-title dark:text-theme-title-dark mb-4">
+              Submit New Content
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Share new content with other MultiversX Devs. Fields marked with <span className="text-red-500">*</span> are required.
+              Submissions will be manually reviewed before publishing.
+            </p>
+          </div>
 
-        <div className="mt-10">
           <FormProvider {...formMethods}>
-            <form onSubmit={handleSubmit(submitResource)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <Input
-                  label="Content URL*"
-                  name="resource_url"
-                  placeholder="https://exmaple.com"
-                  type="url"
-                  options={{ required: true }}
-                />
+            <form onSubmit={handleSubmit(submitResource)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Input
+                    label="CONTENT URL"
+                    name="resource_url"
+                    placeholder="https://example.com"
+                    type="url"
+                    options={{ required: true }}
+                  />
+                </div>
+
+                <div>
+                  <Input
+                    label="TITLE"
+                    name="title"
+                    placeholder="My awesome resource"
+                    type="text"
+                    options={{ required: true }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Input
+                    label="AUTHOR"
+                    name="author"
+                    placeholder="John Doe"
+                    type="text"
+                    options={{ required: true }}
+                  />
+                </div>
+
+                <div>
+                  <Input
+                    label="WALLET ADDRESS"
+                    name="curator_address"
+                    placeholder="erd123..."
+                    type="text"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    We will use this to link the resource to your account later
+                  </p>
+                </div>
               </div>
 
               <div>
-                <Input
-                  label="Title*"
-                  name="title"
-                  placeholder="My awesome resource"
-                  type="text"
-                  options={{ required: true }}
-                />
-              </div>
-
-              <div>
-                <Input label="Author*" name="author" placeholder="John Doe" type="text" options={{ required: true }} />
-              </div>
-
-              <div>
-                <Input label="Wallet address" name="curator_address" placeholder="erd123..." type="text" />
-                <p className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
-                  We will use this to link the resource to your account later
-                </p>
-              </div>
-
-              <div className="md:col-span-2">
                 <Textarea
-                  label="Description*"
+                  label="DESCRIPTION"
                   name="description"
-                  placeholder="My awesome description"
+                  placeholder="Describe your resource in 30-256 characters..."
                   options={{ required: true, maxLength: 256, minLength: 30 }}
                 />
-                <span className="font-medium text-xs text-theme-border dark:text-theme-border-dark mt-1">
+                <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
                   30-256 characters
                 </span>
               </div>
 
-              <div>
-                <Select name="category_id" options={{ required: true }} label="Category*" selectOptions={categories} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Select
+                    label="CATEGORY"
+                    name="category_id"
+                    options={{ required: true }}
+                    selectOptions={categories}
+                  />
+                </div>
+
+                <div>
+                  <Input
+                    label="TAGS"
+                    name="tags"
+                    placeholder="multiversx, blockchain"
+                    type="text"
+                  />
+                </div>
               </div>
 
-              <div>
-                <Input label="tags" name="tags" placeholder="multiversx,blockchain" type="text" />
-              </div>
-
-              <div>
-                <Button label={submitting ? "Loading..." : "Submit"} disabled={submitting} />
+              <div className="flex justify-end space-x-4 pt-4">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary dark:bg-primary-dark rounded-md hover:bg-primary-dark dark:hover:bg-primary disabled:opacity-50"
+                >
+                  {submitting ? "Submitting..." : "Submit Content"}
+                </button>
               </div>
             </form>
           </FormProvider>

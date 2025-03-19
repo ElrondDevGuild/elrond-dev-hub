@@ -4,29 +4,10 @@ import { FiLink, FiGithub } from "react-icons/fi";
 import { FaXTwitter, FaTelegram, FaGlobe } from "react-icons/fa6";
 import Button from "../../components/shared/Button";
 import CategoryBadge from "../../components/shared/CategoryBadge";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
-import SubmitTeamFinder from "../../components/SubmitTeamFinder";
+import SubmitTeamFinder from "../../components/forms/SubmitTeamFinder";
 
-// Table name: tf_developers (using specific prefix to avoid conflicts)
-// Table structure:
-// id: uuid (primary key)
-// name: string
-// description: text (developer bio or short description)
-// profile_image_url: string (URL to profile image)
-// skills: string[] (array of strings)
-// main_expertise: string
-// availability: string
-// experience: string
-// interests: string
-// github_url: string (nullable)
-// twitter_url: string (nullable)
-// telegram_url: string (nullable)
-// website_url: string (nullable)
-// publish_date: timestamp with timezone (nullable, used to determine if profile is published)
-// created_at: timestamp with timezone
-
-// Interface for the developer profile data structure
 interface DeveloperProfile {
   name: string;
   description: string;
@@ -162,6 +143,199 @@ export default function TeamFinderPage() {
     "filtered developers"
   );
 
+  const DeveloperCard = ({ dev }: { dev: DeveloperProfile }) => {
+    const descriptionRef = useRef<HTMLDivElement>(null);
+    const [isTextOverflowing, setIsTextOverflowing] = useState(false);
+
+    useEffect(() => {
+      if (descriptionRef.current) {
+        const lineHeight = parseInt(
+          window.getComputedStyle(descriptionRef.current).lineHeight
+        );
+        const height = descriptionRef.current.scrollHeight;
+        setIsTextOverflowing(height > lineHeight * 2);
+      }
+    }, [dev.description]);
+
+    return (
+      <div className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 border border-theme-border/30 dark:border-theme-border-dark/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
+        <div
+          className={`absolute top-0 left-0 w-full h-1 ${
+            dev.availability === "Available"
+              ? "bg-green-500"
+              : dev.availability === "Part-time"
+              ? "bg-blue-500"
+              : "bg-amber-500"
+          }`}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <div className="relative">
+          {/* Badges positioned at top */}
+          <div className="flex justify-between mb-4">
+            <CategoryBadge
+              size="sm"
+              category={dev.mainExpertise}
+              className="z-10"
+            />
+            <span
+              className={`px-2 py-1 text-xs font-medium rounded-full ${
+                dev.availability === "Available"
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                  : dev.availability === "Part-time"
+                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                  : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+              }`}
+            >
+              {dev.availability}
+            </span>
+          </div>
+
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center">
+              <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mr-3 border-2 border-primary/20">
+                <img
+                  src={dev.profileImageUrl}
+                  alt={dev.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default/default-avatar.png";
+                  }}
+                />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-theme-title dark:text-theme-title-dark group-hover:text-primary dark:group-hover:text-primary-dark transition-colors duration-200">
+                  {dev.name}
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <div className="relative">
+              <div
+                ref={descriptionRef}
+                className={`text-sm text-theme-text dark:text-theme-text-dark ${
+                  isTextOverflowing
+                    ? "max-h-[2.5rem] group-hover:max-h-[1000px]"
+                    : ""
+                } transition-all duration-500 ease-in-out overflow-hidden`}
+              >
+                {dev.description}
+              </div>
+              {isTextOverflowing && (
+                <>
+                  <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-secondary dark:from-secondary-dark via-secondary/90 dark:via-secondary-dark/90 to-transparent group-hover:opacity-0 transition-opacity duration-500"></div>
+                  <div className="text-xs text-theme-text/60 dark:text-theme-text-dark/60 mt-1 group-hover:opacity-0 transition-opacity duration-500">
+                    Hover to read more
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-4 mb-6">
+            <div className="flex text-sm">
+              <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
+                Experience:
+              </div>
+              <div className="font-medium text-theme-text dark:text-theme-text-dark">
+                {dev.experience}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-2 text-sm text-theme-text/60 dark:text-theme-text-dark/60">
+                Skills:
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {dev.skills.map((skill, i) => (
+                  <span
+                    key={i}
+                    className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs font-medium text-theme-text dark:text-theme-text-dark"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex text-sm">
+              <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
+                Interests:
+              </div>
+              <div className="font-medium text-theme-text dark:text-theme-text-dark">
+                {dev.interests}
+              </div>
+            </div>
+
+            {/* Social Media Links */}
+            <div className="flex flex-wrap gap-3 pt-2">
+              {dev.socials.github && (
+                <a
+                  href={dev.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  title="GitHub Profile"
+                >
+                  <FiGithub className="w-4 h-4" />
+                </a>
+              )}
+              {dev.socials.twitter && (
+                <a
+                  href={dev.socials.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  title="Twitter/X Profile"
+                >
+                  <FaXTwitter className="w-4 h-4" />
+                </a>
+              )}
+              {dev.socials.telegram && (
+                <a
+                  href={dev.socials.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  title="Telegram"
+                >
+                  <FaTelegram className="w-4 h-4" />
+                </a>
+              )}
+              {dev.socials.website && (
+                <a
+                  href={dev.socials.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  title="Personal Website"
+                >
+                  <FaGlobe className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6 z-10">
+            <Button
+              label="Connect"
+              href={
+                dev.socials.twitter ||
+                dev.socials.telegram ||
+                dev.socials.github ||
+                dev.socials.website ||
+                "#"
+              }
+              class="w-fit"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Layout hideRightBar>
       <NextSeo
@@ -229,176 +403,7 @@ export default function TeamFinderPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDevelopers.length > 0 ? (
               filteredDevelopers.map((dev, index) => (
-                <div
-                  key={index}
-                  className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 border border-theme-border/30 dark:border-theme-border-dark/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
-                >
-                  <div
-                    className={`absolute top-0 left-0 w-full h-1 ${
-                      dev.availability === "Available"
-                        ? "bg-green-500"
-                        : dev.availability === "Part-time"
-                        ? "bg-blue-500"
-                        : "bg-amber-500"
-                    }`}
-                  ></div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                  <div className="relative">
-                    {/* Badges positioned at top */}
-                    <div className="flex justify-between mb-4">
-                      <CategoryBadge
-                        size="sm"
-                        category={dev.mainExpertise}
-                        className="z-10"
-                      />
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          dev.availability === "Available"
-                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                            : dev.availability === "Part-time"
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                            : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                        }`}
-                      >
-                        {dev.availability}
-                      </span>
-                    </div>
-
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center">
-                        {/* Profile image */}
-                        <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mr-3 border-2 border-primary/20">
-                          <img
-                            src={dev.profileImageUrl}
-                            alt={dev.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.src =
-                                "/default/default-avatar.png";
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <h2 className="text-xl font-bold text-theme-title dark:text-theme-title-dark group-hover:text-primary dark:group-hover:text-primary-dark transition-colors duration-200">
-                            {dev.name}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Developer description */}
-                    <div className="mb-4">
-                      <div className="relative">
-                        <div className="text-sm text-theme-text dark:text-theme-text-dark max-h-[4em] group-hover:max-h-[1000px] transition-all duration-500 ease-in-out overflow-hidden">
-                          {dev.description}
-                        </div>
-                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-secondary dark:from-secondary-dark via-secondary/90 dark:via-secondary-dark/90 to-transparent group-hover:opacity-0 transition-opacity duration-500"></div>
-                      </div>
-                      <div className="text-xs text-theme-text/60 dark:text-theme-text-dark/60 mt-1 group-hover:opacity-0 transition-opacity duration-500">
-                        Hover to read more
-                      </div>
-                    </div>
-
-                    <div className="space-y-4 mb-6">
-                      <div className="flex text-sm">
-                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
-                          Experience:
-                        </div>
-                        <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                          {dev.experience}
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="mb-2 text-sm text-theme-text/60 dark:text-theme-text-dark/60">
-                          Skills:
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {dev.skills.map((skill, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs font-medium text-theme-text dark:text-theme-text-dark"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex text-sm">
-                        <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
-                          Interests:
-                        </div>
-                        <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                          {dev.interests}
-                        </div>
-                      </div>
-
-                      {/* Social Media Links */}
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        {dev.socials.github && (
-                          <a
-                            href={dev.socials.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                            title="GitHub Profile"
-                          >
-                            <FiGithub className="w-4 h-4" />
-                          </a>
-                        )}
-                        {dev.socials.twitter && (
-                          <a
-                            href={dev.socials.twitter}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                            title="Twitter/X Profile"
-                          >
-                            <FaXTwitter className="w-4 h-4" />
-                          </a>
-                        )}
-                        {dev.socials.telegram && (
-                          <a
-                            href={dev.socials.telegram}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                            title="Telegram"
-                          >
-                            <FaTelegram className="w-4 h-4" />
-                          </a>
-                        )}
-                        {dev.socials.website && (
-                          <a
-                            href={dev.socials.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                            title="Personal Website"
-                          >
-                            <FaGlobe className="w-4 h-4" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mt-6 z-10">
-                      <Button
-                        label="Connect"
-                        href={
-                          dev.socials.twitter ||
-                          dev.socials.telegram ||
-                          dev.socials.github ||
-                          dev.socials.website ||
-                          "#"
-                        }
-                        class="w-fit"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <DeveloperCard key={index} dev={dev} />
               ))
             ) : (
               <p className="text-center col-span-full text-theme-text dark:text-theme-text-dark">
@@ -415,7 +420,7 @@ export default function TeamFinderPage() {
             onClick={() => setShowForm(true)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
+            className="hover:cursor-pointer inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
           >
             Join as a Builder
           </a>

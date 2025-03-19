@@ -24,7 +24,8 @@ const MonthlyCodingLeaderboard = () => {
     const fetchLeaderboard = async () => {
       const { data, error } = await supabase
         .from("leaderboard_projects")
-        .select("url ,project_name, team_name, category, status")
+        .select("url ,project_name, team_name, category")
+        .not("publish_date", "is", null)
         .order("project_name", { ascending: false });
 
       if (error) {

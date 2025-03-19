@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { createClient } from "@supabase/supabase-js";
+import SubmitProject from "../../components/forms/SubmitProject";
 
 // Create a Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -19,17 +20,18 @@ export default function MonthlyLeaderboardPage() {
       project_name: string;
       team_name: string;
       category: string;
-      status: string;
       commits?: number;
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [showSubmitProject, setShowSubmitProject] = useState(false);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const { data, error } = await supabase
         .from("leaderboard_projects")
-        .select("url ,project_name, team_name, category, status")
+        .select("url, project_name, team_name, category")
+        .not("publish_date", "is", null)
         .order("project_name", { ascending: false });
 
       if (error) {
@@ -47,48 +49,49 @@ export default function MonthlyLeaderboardPage() {
 
       const projectsData: { project: string; commits: number }[] = [];
 
-      for (let repoUrl of data) {
-        const parts = repoUrl.url.split("/");
-        const owner = parts[3];
-        const repo = parts[4];
-
-        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?since=${monthStart}&per_page=100`;
-
-        const headers = {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_API_KEY}`,
-          Accept: "application/vnd.github.v3+json",
-        };
-
+      for (const project of data || []) {
         try {
+          const parts = project.url.split("/");
+          const owner = parts[3];
+          const repo = parts[4];
+
+          const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?since=${monthStart}&per_page=100`;
+
+          const headers = {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_API_KEY}`,
+            Accept: "application/vnd.github.v3+json",
+          };
+
           const response = await fetch(apiUrl, { headers });
           const commits = await response.json();
 
           if (Array.isArray(commits)) {
             projectsData.push({
-              project: repo,
+              project: project.project_name,
               commits: commits.length,
             });
-          } else {
-            console.error(
-              "Error fetching commits for repo:",
-              repoUrl.url,
-              commits
-            );
           }
         } catch (error) {
-          console.error("Error during fetch for repo:", repoUrl.url, error);
+          console.error(
+            "Error fetching commits for project:",
+            project.url,
+            error
+          );
         }
       }
 
-      // Update leaderboard with commit counts
-      const updatedLeaderboard = data.map((project) => {
-        const projectData = projectsData.find(
-          (p) => p.project === project.project_name
-        );
-        return projectData
-          ? { ...project, commits: projectData.commits }
-          : project;
-      });
+      // Update leaderboard with commit counts and sort by commits
+      const updatedLeaderboard = data
+        .map((project) => {
+          const projectData = projectsData.find(
+            (p) => p.project === project.project_name
+          );
+          return {
+            ...project,
+            commits: projectData?.commits || 0,
+          };
+        })
+        .sort((a, b) => (b.commits || 0) - (a.commits || 0));
 
       setLeaderboard(updatedLeaderboard);
       setLoading(false);
@@ -141,6 +144,10 @@ export default function MonthlyLeaderboardPage() {
         <div className="p-6 border-theme-border dark:border-theme-border-dark rounded-md overflow-y-auto bg-white dark:bg-secondary-dark-lighter">
           {loading ? (
             <p className="text-black dark:text-theme-text-dark">Loading...</p>
+          ) : leaderboard.length === 0 ? (
+            <p className="text-center text-black dark:text-theme-text-dark">
+              No projects found. Be the first to submit your project!
+            </p>
           ) : (
             <div className="overflow-x-auto min-h-32">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -165,7 +172,9 @@ export default function MonthlyLeaderboardPage() {
                 </thead>
                 <tbody className="bg-transparent text-black dark:text-theme-text-dark text-sm divide-y divide-gray-200 dark:divide-gray-700">
                   {leaderboard.map((projectData, index) => (
-                    <tr key={projectData.team_name}>
+                    <tr
+                      key={`${projectData.team_name}-${projectData.project_name}`}
+                    >
                       <td className="p-2 whitespace-nowrap text-center">
                         {index === 0
                           ? "🥇"
@@ -178,19 +187,17 @@ export default function MonthlyLeaderboardPage() {
                       <td className="p-2 whitespace-nowrap text-center">
                         <span className="font-semibold text-blue-500 dark:text-blue-300">
                           <Link
-                            href={`https://github.com/${projectData.project_name}`}
+                            href={projectData.url}
                             target="_blank"
                             rel="noreferrer"
                           >
-                            <a target="_blank" rel="noreferrer">
-                              {projectData.project_name}
-                            </a>
+                            {projectData.project_name}
                           </Link>
                         </span>
                       </td>
                       <td className="p-2 whitespace-nowrap text-center">
                         <span className="font-semibold text-green-500 dark:text-green-300">
-                          {projectData.commits}
+                          {projectData.commits || 0}
                         </span>{" "}
                         🚀
                       </td>
@@ -212,14 +219,17 @@ export default function MonthlyLeaderboardPage() {
             Want to join the leaderboard? Submit your project on below.
           </p>
           <a
-            href="https://forms.gle/SX8Kgw7go4WmS5eP9"
+            onClick={() => setShowSubmitProject(true)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
+            className="hover:cursor-pointer inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
           >
             Submit Project <FiLink className="inline-block ml-2" />
           </a>
         </div>
+        {showSubmitProject && (
+          <SubmitProject onClose={() => setShowSubmitProject(false)} />
+        )}
       </section>
     </Layout>
   );
