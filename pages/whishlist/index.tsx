@@ -282,7 +282,7 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
                       label="Apply for Grant"
                       href="https://github.com/multiversx/mx-grants"
                     />
-                    {item.link && (
+                    {/* {item.link && (
                       <a
                         href={item.link}
                         target="_blank"
@@ -292,7 +292,7 @@ export default function WishlistPage({ wishlistData }: WishlistPageProps) {
                       >
                         <FiLink className="w-4 h-4" />
                       </a>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

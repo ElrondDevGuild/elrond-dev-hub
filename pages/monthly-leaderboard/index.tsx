@@ -4,9 +4,9 @@ import { FiLink } from "react-icons/fi";
 import Button from "../../components/shared/Button";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaGithub, FaTrophy, FaCheckCircle } from "react-icons/fa";
 import { createClient } from "@supabase/supabase-js";
-import SubmitProject from "../../components/forms/SubmitProject";
+import SubmitLeaderboardProject from "../../components/forms/SubmitLeaderboardProject";
 
 // Create a Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -118,6 +118,14 @@ export default function MonthlyLeaderboardPage() {
       />
       <section className="container mx-auto">
         <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="px-3 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+              Monthly Rewards
+            </span>
+            <span className="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+              GitHub Activity
+            </span>
+          </div>
           <p className="text-xs text-gray-700 dark:text-gray-300 mb-4">
             Project with most commits will earn{" "}
             <span className="text-xs font-semibold text-orange-500 dark:text-orange-300">
@@ -129,17 +137,9 @@ export default function MonthlyLeaderboardPage() {
             Monthly Leaderboard
           </h1>
           <p className="text-md md:text-lg text-theme-text dark:text-theme-text-dark max-w-2xl mx-auto pb-4">
-            This initiative aim to reward the most active contributors in the
+            This initiative aims to reward the most active contributors in the
             ecosystem by simply tracking the commits on GitHub.
           </p>
-          {/* <div className="flex items-center justify-center">
-            <Button
-              class="mx-auto w-fit"
-              label="Submit your project here"
-              icon={FaPlus}
-              href="#"
-            ></Button>
-          </div> */}
         </div>
         <div className="p-6 border-theme-border dark:border-theme-border-dark rounded-md overflow-y-auto bg-white dark:bg-secondary-dark-lighter">
           {loading ? (
@@ -153,20 +153,20 @@ export default function MonthlyLeaderboardPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="text-black dark:text-theme-text-dark border-b dark:border-gray-700">
                   <tr>
-                    <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
-                      Position
+                    <th className="rounded-md p-3 text-center text-xs font-medium uppercase tracking-wider bg-primary/5 dark:bg-primary-dark/5">
+                      Rank
                     </th>
-                    <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
+                    <th className="rounded-md p-3 text-center text-xs font-medium uppercase tracking-wider bg-primary/5 dark:bg-primary-dark/5">
                       Project
                     </th>
-                    <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
+                    <th className="rounded-md p-3 text-center text-xs font-medium uppercase tracking-wider bg-primary/5 dark:bg-primary-dark/5">
                       Commits
                     </th>
-                    <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
+                    <th className="rounded-md p-3 text-center text-xs font-medium uppercase tracking-wider bg-primary/5 dark:bg-primary-dark/5">
                       Category
                     </th>
-                    <th className="rounded-md p-2 text-center text-xs font-medium uppercase tracking-wider">
-                      Team Name
+                    <th className="rounded-md p-3 text-center text-xs font-medium uppercase tracking-wider bg-primary/5 dark:bg-primary-dark/5">
+                      Team
                     </th>
                   </tr>
                 </thead>
@@ -174,18 +174,21 @@ export default function MonthlyLeaderboardPage() {
                   {leaderboard.map((projectData, index) => (
                     <tr
                       key={`${projectData.team_name}-${projectData.project_name}`}
+                      className="hover:bg-primary/5 dark:hover:bg-primary-dark/5 transition-colors duration-150"
                     >
-                      <td className="p-2 whitespace-nowrap text-center">
-                        {index === 0
-                          ? "🥇"
-                          : index === 1
-                          ? "🥈"
-                          : index === 2
-                          ? "🥉"
-                          : index + 1}
+                      <td className="p-3 whitespace-nowrap text-center">
+                        <span className="text-lg">
+                          {index === 0
+                            ? "🥇"
+                            : index === 1
+                            ? "🥈"
+                            : index === 2
+                            ? "🥉"
+                            : `#${index + 1}`}
+                        </span>
                       </td>
-                      <td className="p-2 whitespace-nowrap text-center">
-                        <span className="font-semibold text-blue-500 dark:text-blue-300">
+                      <td className="p-3 whitespace-nowrap text-center">
+                        <span className="font-semibold text-blue-500 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150">
                           <Link
                             href={projectData.url}
                             target="_blank"
@@ -195,16 +198,18 @@ export default function MonthlyLeaderboardPage() {
                           </Link>
                         </span>
                       </td>
-                      <td className="p-2 whitespace-nowrap text-center">
+                      <td className="p-3 whitespace-nowrap text-center">
                         <span className="font-semibold text-green-500 dark:text-green-300">
                           {projectData.commits || 0}
                         </span>{" "}
-                        🚀
+                        <span className="text-sm">commits</span>
                       </td>
-                      <td className="p-2 whitespace-nowrap text-center">
-                        {projectData.category}
+                      <td className="p-3 whitespace-nowrap text-center">
+                        <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary dark:bg-primary-dark/10 dark:text-primary-dark">
+                          {projectData.category}
+                        </span>
                       </td>
-                      <td className="p-2 whitespace-nowrap text-center">
+                      <td className="p-3 whitespace-nowrap text-center">
                         {projectData.team_name}
                       </td>
                     </tr>
@@ -214,9 +219,54 @@ export default function MonthlyLeaderboardPage() {
             </div>
           )}
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12">
+          <div className="p-6 rounded-lg bg-white dark:bg-secondary-dark-lighter border border-theme-border dark:border-theme-border-dark hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center mb-4">
+              <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 mr-3">
+                <FaGithub className="text-blue-500 dark:text-blue-300 text-xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark">
+                How It Works
+              </h3>
+            </div>
+            <p className="text-sm text-theme-text dark:text-theme-text-dark">
+              Submit your MultiversX project and we'll automatically track your
+              GitHub commits. The most active project wins the monthly reward.
+            </p>
+          </div>
+          <div className="p-6 rounded-lg bg-white dark:bg-secondary-dark-lighter border border-theme-border dark:border-theme-border-dark hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center mb-4">
+              <div className="p-3 rounded-full bg-green-100 dark:bg-green-900/30 mr-3">
+                <FaCheckCircle className="text-green-500 dark:text-green-300 text-xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark">
+                Eligibility
+              </h3>
+            </div>
+            <p className="text-sm text-theme-text dark:text-theme-text-dark">
+              Any open-source MultiversX project can participate. Projects must
+              be actively maintained and have public GitHub repositories.
+            </p>
+          </div>
+          <div className="p-6 rounded-lg bg-white dark:bg-secondary-dark-lighter border border-theme-border dark:border-theme-border-dark hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center mb-4">
+              <div className="p-3 rounded-full bg-orange-100 dark:bg-orange-900/30 mr-3">
+                <FaTrophy className="text-orange-500 dark:text-orange-300 text-xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark">
+                Rewards
+              </h3>
+            </div>
+            <p className="text-sm text-theme-text dark:text-theme-text-dark">
+              Top projects receive 15 EGLD monthly. Rewards are distributed
+              based on GitHub commit activity during the current month.
+            </p>
+          </div>
+        </div>
         <div className="text-center mt-12">
-          <p className="text-theme-text dark:text-theme-text-dark mb-4">
-            Want to join the leaderboard? Submit your project on below.
+          <p className="text-theme-text dark:text-theme-text-dark mb-4 max-w-2xl mx-auto">
+            Submit your MultiversX project and compete for monthly rewards. We
+            track GitHub commits to reward the most active contributors.
           </p>
           <a
             onClick={() => setShowSubmitProject(true)}
@@ -228,7 +278,9 @@ export default function MonthlyLeaderboardPage() {
           </a>
         </div>
         {showSubmitProject && (
-          <SubmitProject onClose={() => setShowSubmitProject(false)} />
+          <SubmitLeaderboardProject
+            onClose={() => setShowSubmitProject(false)}
+          />
         )}
       </section>
     </Layout>

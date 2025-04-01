@@ -55,9 +55,14 @@ const menuSection: ILinksGroupProps = {
       url: "/decenter",
       icon: FiAlignCenter,
     },
+    // {
+    //   label: "Whishlist [🆕]",
+    //   url: "/whishlist",
+    //   icon: FiGift,
+    // },
     {
-      label: "Whishlist [🆕]",
-      url: "/whishlist",
+      label: "Bounties [🆕]",
+      url: "/bounties",
       icon: FiGift,
     },
     {

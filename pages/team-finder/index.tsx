@@ -7,6 +7,17 @@ import CategoryBadge from "../../components/shared/CategoryBadge";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 import SubmitTeamFinder from "../../components/forms/SubmitTeamFinder";
+import DeveloperBadge from "../../components/shared/DeveloperBadge";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
+
+interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+}
 
 interface DeveloperProfile {
   name: string;
@@ -17,11 +28,13 @@ interface DeveloperProfile {
   availability: string;
   experience: string;
   interests: string;
+  badges: Badge[];
   socials: {
     github: string | null;
     twitter: string | null;
     telegram: string | null;
     website: string | null;
+    email: string | null;
   };
 }
 
@@ -29,6 +42,14 @@ interface DeveloperProfile {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+const defaultBadge: Badge = {
+  id: "xdev-member",
+  name: "xDev Member",
+  description: "Active member of the MultiversX Developer Hub community",
+  imageUrl: "/badges/xdev-member.svg",
+  category: "Community",
+};
 
 // Function to fetch developers from Supabase
 const fetchDevelopers = async (): Promise<DeveloperProfile[]> => {
@@ -39,13 +60,13 @@ const fetchDevelopers = async (): Promise<DeveloperProfile[]> => {
     const { data, error } = await supabase
       .from("tf_developers")
       .select("*")
-      .lte("publish_date", today) // Only get profiles with publish_date <= current date
-      .not("publish_date", "is", null) // Exclude unpublished profiles
+      .lte("publish_date", today)
+      .not("publish_date", "is", null)
       .order("name");
 
     if (error) {
       console.error("Error fetching developers from Supabase:", error);
-      return []; // Return empty array on error
+      return [];
     }
 
     // Transform the data from Supabase format to our DeveloperProfile interface
@@ -60,22 +81,26 @@ const fetchDevelopers = async (): Promise<DeveloperProfile[]> => {
       availability: dev.availability,
       experience: dev.experience,
       interests: dev.interests,
+      badges: dev.badges ? [...dev.badges, defaultBadge] : [defaultBadge],
       socials: {
         github: dev.github_url,
         twitter: dev.twitter_url,
         telegram: dev.telegram_url,
         website: dev.website_url,
+        email: dev.email,
       },
     }));
 
     return developers;
   } catch (error) {
     console.error("Failed to fetch developers:", error);
-    return []; // Return empty array on any error
+    return [];
   }
 };
 
 export default function TeamFinderPage() {
+  const router = useRouter();
+  const { developer } = router.query;
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
   const [developers, setDevelopers] = useState<DeveloperProfile[]>([]);
@@ -93,11 +118,22 @@ export default function TeamFinderPage() {
       availability: "always",
       experience: "☺ years",
       interests: "DeFi and NFTs",
+      badges: [
+        {
+          id: "xdev-member",
+          name: "xDev Member",
+          description:
+            "Active member of the MultiversX Developer Hub community",
+          imageUrl: "/badges/xdev-member.png",
+          category: "Community",
+        },
+      ],
       socials: {
         github: "https://github.com/",
         twitter: "https://twitter.com/",
         telegram: "https://t.me/",
         website: "https://multiversx.com/",
+        email: null,
       },
     },
   ];
@@ -131,11 +167,16 @@ export default function TeamFinderPage() {
     loadDevelopers();
   }, []);
 
-  // Filter developers based on the activeCategory value.
-  const filteredDevelopers =
-    activeCategory === "all"
-      ? developers
-      : developers.filter((item) => item.mainExpertise === activeCategory);
+  // Filter developers based on the activeCategory value and URL parameter
+  const filteredDevelopers = developers
+    .filter((item) => {
+      // If developer parameter is present, only show that developer
+      if (developer) {
+        return item.name.toLowerCase() === (developer as string).toLowerCase();
+      }
+      // Otherwise, filter by category
+      return activeCategory === "all" || item.mainExpertise === activeCategory;
+    });
 
   console.log(
     "Rendering TeamFinderPage with",
@@ -146,6 +187,7 @@ export default function TeamFinderPage() {
   const DeveloperCard = ({ dev }: { dev: DeveloperProfile }) => {
     const descriptionRef = useRef<HTMLDivElement>(null);
     const [isTextOverflowing, setIsTextOverflowing] = useState(false);
+    const [group, setGroup] = useState(false);
 
     useEffect(() => {
       if (descriptionRef.current) {
@@ -158,7 +200,11 @@ export default function TeamFinderPage() {
     }, [dev.description]);
 
     return (
-      <div className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 border border-theme-border/30 dark:border-theme-border-dark/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
+      <div
+        className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 border border-theme-border/30 dark:border-theme-border-dark/30 hover:shadow-xl transition-all duration-300 flex flex-col h-full group relative overflow-hidden"
+        onMouseEnter={() => setGroup(true)}
+        onMouseLeave={() => setGroup(false)}
+      >
         <div
           className={`absolute top-0 left-0 w-full h-1 ${
             dev.availability === "Available"
@@ -170,8 +216,8 @@ export default function TeamFinderPage() {
         ></div>
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        <div className="relative">
-          {/* Badges positioned at top */}
+        <div className="flex flex-col h-full">
+          {/* Top section with badges */}
           <div className="flex justify-between mb-4">
             <CategoryBadge
               size="sm"
@@ -191,6 +237,7 @@ export default function TeamFinderPage() {
             </span>
           </div>
 
+          {/* Profile section */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center">
               <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mr-3 border-2 border-primary/20">
@@ -211,30 +258,61 @@ export default function TeamFinderPage() {
             </div>
           </div>
 
+          {/* Description section */}
           <div className="mb-4">
             <div className="relative">
-              <div
+              <motion.div
                 ref={descriptionRef}
-                className={`text-sm text-theme-text dark:text-theme-text-dark ${
-                  isTextOverflowing
-                    ? "max-h-[2.5rem] group-hover:max-h-[1000px]"
-                    : ""
-                } transition-all duration-500 ease-in-out overflow-hidden`}
+                initial={false}
+                animate={{
+                  height: isTextOverflowing
+                    ? group
+                      ? descriptionRef.current?.scrollHeight || "auto"
+                      : "2.5rem"
+                    : "auto",
+                }}
+                transition={{
+                  duration: 0.7,
+                  ease: [0.4, 0, 0.2, 1],
+                  opacity: { duration: 0.3 },
+                }}
+                className="text-sm text-theme-text dark:text-theme-text-dark overflow-hidden"
               >
                 {dev.description}
-              </div>
+              </motion.div>
               {isTextOverflowing && (
                 <>
-                  <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-secondary dark:from-secondary-dark via-secondary/90 dark:via-secondary-dark/90 to-transparent group-hover:opacity-0 transition-opacity duration-500"></div>
-                  <div className="text-xs text-theme-text/60 dark:text-theme-text-dark/60 mt-1 group-hover:opacity-0 transition-opacity duration-500">
+                  <motion.div
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: group ? 0 : 1 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: [0.4, 0, 0.2, 1],
+                    }}
+                    className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-secondary dark:from-secondary-dark via-secondary/90 dark:via-secondary-dark/90 to-transparent"
+                  />
+                  <motion.div
+                    initial={{ opacity: 1 }}
+                    animate={{
+                      opacity: group ? 0 : 1,
+                      height: group ? 0 : "auto",
+                      marginTop: group ? 0 : 8,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      ease: [0.4, 0, 0.2, 1],
+                    }}
+                    className="absolute bottom-0 left-0 right-0 text-xs text-theme-text/60 dark:text-theme-text-dark/60 overflow-hidden text-left pb-1"
+                  >
                     Hover to read more
-                  </div>
+                  </motion.div>
                 </>
               )}
             </div>
           </div>
 
-          <div className="space-y-4 mb-6">
+          {/* Info section */}
+          <div className="space-y-4">
             <div className="flex text-sm">
               <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
                 Experience:
@@ -249,10 +327,10 @@ export default function TeamFinderPage() {
                 Skills:
               </div>
               <div className="flex flex-wrap gap-2">
-                {dev.skills.map((skill, i) => (
+                {dev.skills.map((skill, index) => (
                   <span
-                    key={i}
-                    className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs font-medium text-theme-text dark:text-theme-text-dark"
+                    key={index}
+                    className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 rounded-full text-theme-text dark:text-theme-text-dark"
                   >
                     {skill}
                   </span>
@@ -268,68 +346,80 @@ export default function TeamFinderPage() {
                 {dev.interests}
               </div>
             </div>
-
-            {/* Social Media Links */}
-            <div className="flex flex-wrap gap-3 pt-2">
-              {dev.socials.github && (
-                <a
-                  href={dev.socials.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                  title="GitHub Profile"
-                >
-                  <FiGithub className="w-4 h-4" />
-                </a>
-              )}
-              {dev.socials.twitter && (
-                <a
-                  href={dev.socials.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                  title="Twitter/X Profile"
-                >
-                  <FaXTwitter className="w-4 h-4" />
-                </a>
-              )}
-              {dev.socials.telegram && (
-                <a
-                  href={dev.socials.telegram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                  title="Telegram"
-                >
-                  <FaTelegram className="w-4 h-4" />
-                </a>
-              )}
-              {dev.socials.website && (
-                <a
-                  href={dev.socials.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                  title="Personal Website"
-                >
-                  <FaGlobe className="w-4 h-4" />
-                </a>
-              )}
-            </div>
           </div>
 
-          <div className="mt-6 z-10">
-            <Button
-              label="Connect"
-              href={
-                dev.socials.twitter ||
-                dev.socials.telegram ||
-                dev.socials.github ||
-                dev.socials.website ||
-                "#"
-              }
-              class="w-fit"
-            />
+          {/* Badges section */}
+          {dev.badges && dev.badges.length > 0 && (
+            <div className="mt-2 mb-4">
+              <div className="text-sm text-theme-text/60 dark:text-theme-text-dark/60 mb-1">
+                Badges & Achievements
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {dev.badges.map((badge) => (
+                  <DeveloperBadge key={badge.id} badge={badge} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Social links and contact button */}
+          <div className="mt-auto z-50">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-4">
+                {dev.socials.github && (
+                  <a
+                    href={dev.socials.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  >
+                    <FiGithub className="w-5 h-5" />
+                  </a>
+                )}
+                {dev.socials.twitter && (
+                  <a
+                    href={dev.socials.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  >
+                    <FaXTwitter className="w-5 h-5" />
+                  </a>
+                )}
+                {dev.socials.telegram && (
+                  <a
+                    href={dev.socials.telegram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  >
+                    <FaTelegram className="w-5 h-5" />
+                  </a>
+                )}
+                {dev.socials.website && (
+                  <a
+                    href={dev.socials.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
+                  >
+                    <FaGlobe className="w-5 h-5" />
+                  </a>
+                )}
+              </div>
+
+              <Button
+                label="Contact"
+                href={
+                  dev.socials.twitter ||
+                  dev.socials.telegram ||
+                  dev.socials.website ||
+                  dev.socials.github ||
+                  "#"
+                }
+                class="w-24 justify-center"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -339,8 +429,10 @@ export default function TeamFinderPage() {
   return (
     <Layout hideRightBar>
       <NextSeo
-        title="Team Finder - Connect with MultiversX Developers"
-        description="Find collaborators for your MultiversX project. Connect with developers who share your vision and accelerate your development journey."
+        title={developer ? `${developer} - MultiversX Developer Profile` : "Team Finder - Connect with MultiversX Developers"}
+        description={developer 
+          ? `View the developer profile of ${developer} in the MultiversX ecosystem.`
+          : "Find collaborators for your MultiversX project. Connect with developers who share your vision and accelerate your development journey."}
         openGraph={{
           images: [
             {
@@ -355,45 +447,56 @@ export default function TeamFinderPage() {
       <section className="container mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4">
-            Team Finder
+            {developer ? developer : "Team Finder"}
           </h1>
           <p className="text-md md:text-lg text-theme-text dark:text-theme-text-dark max-w-2xl mx-auto pb-4">
-            Great ideas need great teams. Connect with developers who share your
-            vision. Whether you're building tools, dApps, or blockchain
-            infrastructure, find collaborators to accelerate your progress.
+            {developer 
+              ? `View the developer profile of ${developer} in the MultiversX ecosystem.`
+              : "Great ideas need great teams. Connect with developers who share your vision. Whether you're building tools, dApps, or blockchain infrastructure, find collaborators to accelerate your progress."}
           </p>
+          {developer && (
+            <a
+              href="/team-finder"
+              className="inline-block mt-4 px-4 py-2 text-sm font-medium text-primary hover:text-primary-dark dark:text-primary-dark dark:hover:text-primary transition-colors duration-200"
+            >
+              ← View All Developers
+            </a>
+          )}
         </div>
 
-        <div className="mb-8">
-          <div className="flex flex-wrap justify-center gap-3 mb-6">
-            <button
-              onClick={() => setActiveCategory("all")}
-              className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
-                activeCategory === "all"
-                  ? "bg-primary text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
-              }`}
-            >
-              All Developers
-            </button>
-            {developers.length > 0 &&
-              Array.from(
-                new Set(developers.map((item) => item.mainExpertise))
-              ).map((expertise) => (
-                <button
-                  key={expertise}
-                  onClick={() => setActiveCategory(expertise)}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
-                    activeCategory === expertise
-                      ? "bg-primary text-white"
-                      : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {expertise}
-                </button>
-              ))}
+        {/* Only show category filters if no specific developer is selected */}
+        {!developer && (
+          <div className="mb-8">
+            <div className="flex flex-wrap justify-center gap-3 mb-6">
+              <button
+                onClick={() => setActiveCategory("all")}
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
+                  activeCategory === "all"
+                    ? "bg-primary text-white"
+                    : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
+                }`}
+              >
+                All Developers
+              </button>
+              {developers.length > 0 &&
+                Array.from(
+                  new Set(developers.map((item) => item.mainExpertise))
+                ).map((expertise) => (
+                  <button
+                    key={expertise}
+                    onClick={() => setActiveCategory(expertise)}
+                    className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
+                      activeCategory === expertise
+                        ? "bg-primary text-white"
+                        : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
+                    }`}
+                  >
+                    {expertise}
+                  </button>
+                ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -407,24 +510,30 @@ export default function TeamFinderPage() {
               ))
             ) : (
               <p className="text-center col-span-full text-theme-text dark:text-theme-text-dark">
-                No developers found matching the selected criteria.
+                {developer 
+                  ? `Developer "${developer}" not found.`
+                  : "No developers found matching the selected criteria."}
               </p>
             )}
           </div>
         )}
-        <div className="text-center mt-12">
-          <p className="text-theme-text dark:text-theme-text-dark mb-4">
-            Are you a developer looking to join exciting MultiversX projects?
-          </p>
-          <a
-            onClick={() => setShowForm(true)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:cursor-pointer inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
-          >
-            Join as a Builder
-          </a>
-        </div>
+
+        {/* Only show the "Join as a Builder" section if no specific developer is selected */}
+        {!developer && (
+          <div className="text-center mt-12">
+            <p className="text-theme-text dark:text-theme-text-dark mb-4">
+              Are you a developer looking to join exciting MultiversX projects?
+            </p>
+            <a
+              onClick={() => setShowForm(true)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:cursor-pointer inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
+            >
+              Join as a Builder
+            </a>
+          </div>
+        )}
 
         {showForm && <SubmitTeamFinder onClose={() => setShowForm(false)} />}
       </section>
