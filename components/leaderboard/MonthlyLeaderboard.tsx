@@ -77,7 +77,7 @@ const MonthlyCodingLeaderboard = () => {
       }
 
       // Update leaderboard with commit counts
-      const updatedLeaderboard = data.map(
+      const updatedLeaderboard = data!.map(
         (project: {
           url: string;
           project_name: string;

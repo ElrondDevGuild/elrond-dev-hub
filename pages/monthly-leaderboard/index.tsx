@@ -81,7 +81,7 @@ export default function MonthlyLeaderboardPage() {
       }
 
       // Update leaderboard with commit counts and sort by commits
-      const updatedLeaderboard = data
+      const updatedLeaderboard = data!
         .map((project) => {
           const projectData = projectsData.find(
             (p) => p.project === project.project_name
