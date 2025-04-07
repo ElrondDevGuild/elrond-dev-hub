@@ -10,6 +10,7 @@ import SubmitTeamFinder from "../../components/forms/SubmitTeamFinder";
 import DeveloperBadge from "../../components/shared/DeveloperBadge";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface Badge {
   id: string;
@@ -168,15 +169,14 @@ export default function TeamFinderPage() {
   }, []);
 
   // Filter developers based on the activeCategory value and URL parameter
-  const filteredDevelopers = developers
-    .filter((item) => {
-      // If developer parameter is present, only show that developer
-      if (developer) {
-        return item.name.toLowerCase() === (developer as string).toLowerCase();
-      }
-      // Otherwise, filter by category
-      return activeCategory === "all" || item.mainExpertise === activeCategory;
-    });
+  const filteredDevelopers = developers.filter((item) => {
+    // If developer parameter is present, only show that developer
+    if (developer) {
+      return item.name.toLowerCase() === (developer as string).toLowerCase();
+    }
+    // Otherwise, filter by category
+    return activeCategory === "all" || item.mainExpertise === activeCategory;
+  });
 
   console.log(
     "Rendering TeamFinderPage with",
@@ -429,10 +429,16 @@ export default function TeamFinderPage() {
   return (
     <Layout hideRightBar>
       <NextSeo
-        title={developer ? `${developer} - MultiversX Developer Profile` : "Team Finder - Connect with MultiversX Developers"}
-        description={developer 
-          ? `View the developer profile of ${developer} in the MultiversX ecosystem.`
-          : "Find collaborators for your MultiversX project. Connect with developers who share your vision and accelerate your development journey."}
+        title={
+          developer
+            ? `${developer} - MultiversX Developer Profile`
+            : "Team Finder - Connect with MultiversX Developers"
+        }
+        description={
+          developer
+            ? `View the developer profile of ${developer} in the MultiversX ecosystem.`
+            : "Find collaborators for your MultiversX project. Connect with developers who share your vision and accelerate your development journey."
+        }
         openGraph={{
           images: [
             {
@@ -450,17 +456,17 @@ export default function TeamFinderPage() {
             {developer ? developer : "Team Finder"}
           </h1>
           <p className="text-md md:text-lg text-theme-text dark:text-theme-text-dark max-w-2xl mx-auto pb-4">
-            {developer 
+            {developer
               ? `View the developer profile of ${developer} in the MultiversX ecosystem.`
               : "Great ideas need great teams. Connect with developers who share your vision. Whether you're building tools, dApps, or blockchain infrastructure, find collaborators to accelerate your progress."}
           </p>
           {developer && (
-            <a
+            <Link
               href="/team-finder"
               className="inline-block mt-4 px-4 py-2 text-sm font-medium text-primary hover:text-primary-dark dark:text-primary-dark dark:hover:text-primary transition-colors duration-200"
             >
               ← View All Developers
-            </a>
+            </Link>
           )}
         </div>
 
@@ -510,7 +516,7 @@ export default function TeamFinderPage() {
               ))
             ) : (
               <p className="text-center col-span-full text-theme-text dark:text-theme-text-dark">
-                {developer 
+                {developer
                   ? `Developer "${developer}" not found.`
                   : "No developers found matching the selected criteria."}
               </p>
