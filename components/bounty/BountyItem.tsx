@@ -1,6 +1,6 @@
-import { AiFillClockCircle } from 'react-icons/ai';
-import { BsFillPersonFill } from 'react-icons/bs';
-import { GoDotFill } from 'react-icons/go';
+import { AiFillClockCircle } from "react-icons/ai";
+import { BsFillPersonFill } from "react-icons/bs";
+import { GoDotFill } from "react-icons/go";
 
 export default function BountyItem() {
   return (

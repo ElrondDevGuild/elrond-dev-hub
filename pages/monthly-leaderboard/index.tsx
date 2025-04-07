@@ -230,8 +230,8 @@ export default function MonthlyLeaderboardPage() {
               </h3>
             </div>
             <p className="text-sm text-theme-text dark:text-theme-text-dark">
-              Submit your MultiversX project and we'll automatically track your
-              GitHub commits. The most active project wins the monthly reward.
+Submit your MultiversX project and we will automatically track your
+GitHub commits. The most active project wins the monthly reward.
             </p>
           </div>
           <div className="p-6 rounded-lg bg-white dark:bg-secondary-dark-lighter border border-theme-border dark:border-theme-border-dark hover:shadow-lg transition-all duration-300">

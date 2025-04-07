@@ -118,7 +118,7 @@ const MonthlyCodingLeaderboard = () => {
       <div className="p-6 border-theme-border dark:border-theme-border-dark rounded-md overflow-y-auto bg-white dark:bg-secondary-dark-lighter">
         {loading ? (
           <p className="text-black dark:text-theme-text-dark">
-            Loding cool projects...
+Loading cool projects...
           </p>
         ) : (
           <div className="overflow-x-auto min-h-32">
