@@ -409,7 +409,7 @@ export default function BountyPage({ bountyData }: BountyPageProps) {
               Have a Bounty to List?
             </h2>
             <p className="text-theme-text dark:text-theme-text-dark mb-6 max-w-2xl mx-auto">
-              If you're a company or project looking to hire developers, submit
+If you are a company or project looking to hire developers, submit
               your bounty to reach our community of talented MultiversX
               developers.
             </p>
