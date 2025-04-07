@@ -1,6 +1,6 @@
 import { AiFillClockCircle } from 'react-icons/ai';
 import { BsFillPersonFill } from 'react-icons/bs';
-import { GoPrimitiveDot } from 'react-icons/go';
+import { GoDotFill } from 'react-icons/go';
 
 export default function BountyItem() {
   return (
@@ -25,7 +25,7 @@ export default function BountyItem() {
             </li>
             <li>•</li>
             <li className="text-primary dark:text-primary-dark uppercase flex items-center">
-              <GoPrimitiveDot className="text-primary dark:text-primary-dark mr-1 text-lg" /> ready to work
+              <GoDotFill className="text-primary dark:text-primary-dark mr-1 text-lg" /> ready to work
             </li>
             <li>•</li>
             <li>Traditional</li>
