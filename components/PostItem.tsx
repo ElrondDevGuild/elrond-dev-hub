@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { FiBook, FiLink, FiTwitter, FiX } from "react-icons/fi";
+import { FiBook, FiShare2, FiCopy, FiCheck } from "react-icons/fi";
 
 import {
   copyLinkToClipboard,
@@ -125,36 +125,48 @@ export default function PostItem({ post }: { post: IPostItem }) {
         <a
           href={readArticleUrl}
           target="_blank"
-          className="flex-1 cursor-pointer"
+          className="flex-1 cursor-pointer group relative hover:text-primary dark:hover:text-primary-dark transition-colors"
           rel="noreferrer"
+          title="Read original article"
         >
-          <div className="flex items-center justify-center">
-            <FiBook className="mr-2 text-2xl sm:text-xl" />{" "}
-            <span className="hidden md:block">Discover more</span>
+          <div className="flex flex-col items-center justify-center">
+            <FiBook className="text-xl sm:text-lg mb-1" />
+            <span className="text-xs font-medium">Read More</span>
           </div>
         </a>
         <a
           href={twitterShareUrl}
           target="_blank"
-          className="flex-1 cursor-pointer hover:text-primary dark:hover:text-primary-dark transition-colors"
+          className="flex-1 cursor-pointer group relative hover:text-primary dark:hover:text-primary-dark transition-colors"
           rel="noreferrer"
-          title="Share this awesome content with the MultiversX community!"
+          title="Share on Twitter"
         >
-          <div className="flex items-center justify-center">
-            <FiTwitter className="mr-2 text-2xl sm:text-xl " />{" "}
-            <span className="hidden md:block font-medium">Spread the word</span>
+          <div className="flex flex-col items-center justify-center">
+            <FiShare2 className="text-xl sm:text-lg mb-1" />
+            <span className="text-xs font-medium">Share</span>
           </div>
         </a>
         <a
-          className={`flex-1 flex items-center justify-center cursor-pointer hover:text-primary dark:hover:text-primary-dark transition-colors ${
-            copyClicked &&
-            "pointer-events-none text-primary dark:text-primary-dark"
-          }`}
-          onClick={onCopyClicked}
-          title="Copy link to share anywhere"
+          className="flex-1 cursor-pointer group relative hover:text-primary dark:hover:text-primary-dark transition-colors"
+          onClick={(e) => {
+            e.preventDefault();
+            onCopyClicked();
+          }}
+          title="Copy link to clipboard"
         >
-          <FiLink className="mr-2 text-2xl sm:text-xl" />{" "}
-          <span className="hidden md:block">Copy link</span>
+          <div
+            className={`flex flex-col items-center justify-center ${
+              copyClicked &&
+              "pointer-events-none text-primary dark:text-primary-dark"
+            }`}
+          >
+            {copyClicked ? (
+              <FiCheck className="text-xl sm:text-lg mb-1" />
+            ) : (
+              <FiCopy className="text-xl sm:text-lg mb-1" />
+            )}
+            <span className="text-xs font-medium">{copyClicked ? "Copied!" : "Copy Link"}</span>
+          </div>
         </a>
       </div>
     </article>

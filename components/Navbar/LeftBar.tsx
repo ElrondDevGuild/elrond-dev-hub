@@ -51,8 +51,8 @@ const menuSection: ILinksGroupProps = {
     // },
 
     {
-      label: "Decenter [🆕]",
-      url: "/decenter",
+      label: "ToolIndex [🆕]",
+      url: "/toolindex",
       icon: FiAlignCenter,
     },
     // {

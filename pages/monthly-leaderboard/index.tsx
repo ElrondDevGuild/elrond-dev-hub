@@ -103,8 +103,8 @@ export default function MonthlyLeaderboardPage() {
   return (
     <Layout hideRightBar={true}>
       <NextSeo
-        title="DeCenter - Ongoing Open Source Development Efforts"
-        description="Explore and contribute to open-source MultiversX projects. Streamline tool and application building with the DeCenter community."
+        title="ToolIndex - Ongoing Open Source Development Efforts"
+        description="Explore and contribute to open-source MultiversX projects. Streamline tool and application building with the ToolIndex community."
         openGraph={{
           images: [
             {

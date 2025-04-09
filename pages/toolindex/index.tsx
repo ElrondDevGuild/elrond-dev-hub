@@ -231,7 +231,7 @@ export default function DecenterPage() {
   return (
     <Layout hideRightBar>
       <NextSeo
-        title="DeCenter - Ongoing Open Source Development Efforts"
+        title="ToolIndex - Ongoing Open Source Development Efforts"
         description="Explore and contribute to open-source MultiversX projects. Streamline tool and application building with the DeCenter community."
         openGraph={{
           images: [
@@ -247,7 +247,7 @@ export default function DecenterPage() {
       <section className="container mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4">
-            DeCenter
+            ToolIndex
           </h1>
           <p className="text-md md:text-lg text-theme-text dark:text-theme-text-dark max-w-2xl mx-auto pb-4">
             A hub for ongoing open-source development efforts in the MultiversX

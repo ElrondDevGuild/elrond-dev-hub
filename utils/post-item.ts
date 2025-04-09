@@ -14,15 +14,19 @@ export const getRefUrl = (url: string): string => {
 };
 
 const getSharePostUrl = (post: IPostItem | IPostItemGrid | MediaResource) => {
-  if (post?.slug) return `${appOrigin}/post/${post.slug}`;
-  return getRefUrl(post.resource_url);
+  if (post?.resource_url) {
+    return getRefUrl(post.resource_url);
+  }
+  return "";
 };
 
 export const copyLinkToClipboard = (
   post: IPostItem | IPostItemGrid | MediaResource
 ) => {
-  if (navigator?.clipboard?.writeText)
-    navigator.clipboard.writeText(getSharePostUrl(post));
+  const url = getSharePostUrl(post);
+  if (url && navigator?.clipboard?.writeText) {
+    navigator.clipboard.writeText(url);
+  }
 };
 
 export const getShareOnTwitterUrl = (

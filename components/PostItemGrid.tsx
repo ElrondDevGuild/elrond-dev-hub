@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FiBook, FiLink, FiTwitter } from "react-icons/fi";
+import { FiBook, FiShare2, FiCopy, FiCheck } from "react-icons/fi";
 import CategoryBadge from "./shared/CategoryBadge";
 
 import {
@@ -117,32 +117,47 @@ export default function PostItemGrid({
           <a
             href={readArticleUrl}
             target="_blank"
-            className="flex-1 cursor-pointer"
+            className="flex-1 cursor-pointer group relative hover:text-primary dark:hover:text-primary-dark transition-colors"
             rel="noreferrer"
+            title="Read original article"
           >
-            <div className="flex items-center justify-center">
-              <FiBook className="text-2xl sm:text-xl" />
+            <div className="flex flex-col items-center justify-center">
+              <FiBook className="text-xl sm:text-lg mb-1" />
+              <span className="text-xs font-medium">Read Article</span>
             </div>
           </a>
           <a
             href={twitterShareUrl}
             target="_blank"
-            className="flex-1 cursor-pointer"
+            className="flex-1 cursor-pointer group relative hover:text-primary dark:hover:text-primary-dark transition-colors"
             rel="noreferrer"
+            title="Share on Twitter"
           >
-            <div className="flex items-center justify-center">
-              <FiTwitter className="text-2xl sm:text-xl" />
+            <div className="flex flex-col items-center justify-center">
+              <FiShare2 className="text-xl sm:text-lg mb-1" />
+              <span className="text-xs font-medium">Share</span>
             </div>
           </a>
-          <a className="flex-1 cursor-pointer">
+          <a 
+            className="flex-1 cursor-pointer group relative hover:text-primary dark:hover:text-primary-dark transition-colors" 
+            title="Copy link to clipboard"
+            onClick={(e) => {
+              e.preventDefault();
+              onCopyClicked();
+            }}
+          >
             <div
-              className={`flex items-center justify-center cursor-pointer ${
+              className={`flex flex-col items-center justify-center ${
                 copyClicked &&
                 "pointer-events-none text-primary dark:text-primary-dark"
               }`}
-              onClick={onCopyClicked}
             >
-              <FiLink className="text-2xl sm:text-xl" />
+              {copyClicked ? (
+                <FiCheck className="text-xl sm:text-lg mb-1" />
+              ) : (
+                <FiCopy className="text-xl sm:text-lg mb-1" />
+              )}
+              <span className="text-xs font-medium">{copyClicked ? "Copied!" : "Copy Link"}</span>
             </div>
           </a>
         </div>
