@@ -80,7 +80,6 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
         project_name: formData.project_name,
         team_name: formData.team_members[0] || "",
         category: formData.category,
-        status: "pending",
         publish_date: null, // Sarà impostato dall'admin quando approva il progetto
       };
 
@@ -110,9 +109,14 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
       setTimeout(() => {
         onClose();
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting project:", error);
-      setSubmitStatus("error");
+      if (error.code === "23505") {
+        setSubmitStatus("error");
+        console.error("Duplicate key violation detected.");
+      } else {
+        setSubmitStatus("error");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -226,9 +230,10 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
 
             <div>
               <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Project Description
+                Project Description <span className="text-red-500">*</span>
               </label>
               <textarea
+                required
                 rows={3}
                 className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
                 value={formData.description}
@@ -242,7 +247,7 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Development Status
+                  Development Status <span className="text-red-500">*</span>
                 </label>
                 <select
                   required
