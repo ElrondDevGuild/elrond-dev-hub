@@ -118,7 +118,7 @@ const MonthlyCodingLeaderboard = () => {
       <div className="p-6 border-theme-border dark:border-theme-border-dark rounded-md overflow-y-auto bg-white dark:bg-secondary-dark-lighter">
         {loading ? (
           <p className="text-black dark:text-theme-text-dark">
-Loading cool projects...
+            Loading cool projects...
           </p>
         ) : (
           <div className="overflow-x-auto min-h-32">
@@ -151,7 +151,7 @@ Loading cool projects...
                     <td className="p-2 whitespace-nowrap text-center">
                       <span className="font-semibold text-blue-500 dark:text-blue-300">
                         <Link
-                          href={`https://github.com/${projectData.project_name}`}
+                          href={projectData.url}
                           target="_blank"
                           rel="noreferrer"
                         >

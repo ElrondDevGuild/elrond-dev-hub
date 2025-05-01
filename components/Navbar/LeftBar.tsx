@@ -104,9 +104,10 @@ const menuSection: ILinksGroupProps = {
       openInNewTab: true,
     },
     {
-      label: "Newsletter ↗️",
-      url: "https://newsletter.statescu.net/",
-      icon: FiMail,
+      label: "Growth Games ↗️",
+      url: "https://multiversx.com/growthgames",
+      icon: FiCheckSquare,
+      disabled: false,
       openInNewTab: true,
     },
     {
@@ -119,13 +120,12 @@ const menuSection: ILinksGroupProps = {
       ),
       customComponent: true,
     },
-
     {
-      label: "Grants",
-      url: "https://multiversx.com/growthgames",
-      icon: FiCheckSquare,
-      disabled: false,
+      label: "Newsletter ↗️",
+      url: "https://newsletter.statescu.net/",
+      icon: FiMail,
       openInNewTab: true,
+      disabled: true,
     },
     {
       label: "Jobs",

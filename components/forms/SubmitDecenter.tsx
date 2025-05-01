@@ -6,6 +6,9 @@ import Input from "../shared/form/Input";
 import Select from "../shared/form/Select";
 import Textarea from "../shared/form/Textarea";
 import { IOption } from "../shared/form/SelectElement";
+import Button from "../shared/Button";
+import { FiX, FiSend } from "react-icons/fi";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ISubmitProject {
   title: string;
@@ -54,12 +57,14 @@ const openSourceOptions: IOption[] = [
 export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
   const formMethods = useForm<ISubmitProject>();
   const { handleSubmit } = formMethods;
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const router = useRouter();
 
   const submitProject = async (formData: ISubmitProject) => {
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
     try {
-      setSubmitting(true);
       const { error } = await supabase.from("decenter").insert([
         {
           title: formData.title,
@@ -78,14 +83,15 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
 
       if (error) throw error;
 
+      setSubmitStatus("success");
       formMethods.reset();
-      onClose();
-      router.push("/thank-you");
+      setTimeout(() => { onClose(); }, 2000);
+
     } catch (error) {
       console.error("Error submitting project:", error);
-      alert("Something went wrong. Please try again.");
+      setSubmitStatus("error");
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -95,7 +101,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
       onClick={onClose}
     >
       <div
-        className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 max-w-2xl w-full border border-theme-border/30 dark:border-theme-border-dark/30"
+        className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 max-w-2xl w-full border border-theme-border/30 dark:border-theme-border-dark/30 overflow-y-auto max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
@@ -105,20 +111,45 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
           <button
             onClick={onClose}
             className="text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark"
+            aria-label="Close modal"
           >
-            ✕
+            <FiX className="w-5 h-5" />
           </button>
         </div>
 
+        <AnimatePresence mode="wait">
+          {submitStatus === "success" ? (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="text-center text-green-600 dark:text-green-400 p-4 bg-green-100 dark:bg-green-900/50 rounded-md mb-4"
+            >
+              Project submitted successfully! Thank you.
+            </motion.div>
+          ) : submitStatus === "error" ? (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="text-center text-red-600 dark:text-red-400 p-4 bg-red-100 dark:bg-red-900/50 rounded-md mb-4"
+            >
+              Submission failed. Please try again.
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+
         <FormProvider {...formMethods}>
-          <form onSubmit={handleSubmit(submitProject)} className="space-y-6">
+          <form onSubmit={handleSubmit(submitProject)} className="space-y-6 mt-4">
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Fields marked with <span className="text-red-500">*</span> are required
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Input
-                  label="PROJECT TITLE"
+                  label="Project title"
                   name="title"
                   placeholder="My awesome project"
                   type="text"
@@ -128,7 +159,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
 
               <div>
                 <Input
-                  label="TEAM NAME"
+                  label="Team name"
                   name="team"
                   placeholder="My Team"
                   type="text"
@@ -139,7 +170,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
 
             <div>
               <Textarea
-                label="DESCRIPTION"
+                label="Description"
                 name="description"
                 placeholder="Describe your project..."
                 options={{ required: true }}
@@ -149,7 +180,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Select
-                  label="CATEGORY"
+                  label="Category"
                   name="category"
                   options={{ required: true }}
                   selectOptions={categories}
@@ -158,7 +189,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
 
               <div>
                 <Select
-                  label="STATUS"
+                  label="Status"
                   name="status"
                   options={{ required: true }}
                   selectOptions={statusOptions}
@@ -169,7 +200,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Select
-                  label="OPEN SOURCE"
+                  label="Open source"
                   name="open_source"
                   options={{ required: true }}
                   selectOptions={openSourceOptions}
@@ -178,7 +209,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
 
               <div>
                 <Input
-                  label="ESTIMATED COMPLETION"
+                  label="Estimated completion"
                   name="estimated_completion"
                   placeholder="2024-12-31"
                   type="date"
@@ -190,7 +221,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Input
-                  label="PROJECT LINK"
+                  label="Project link"
                   name="link"
                   placeholder="https://github.com/..."
                   type="url"
@@ -199,7 +230,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
 
               <div>
                 <Input
-                  label="ASSIGNEES"
+                  label="Assignees"
                   name="assignees"
                   placeholder="John Doe, Jane Smith"
                   type="text"
@@ -215,13 +246,11 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
               >
                 Cancel
               </button>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-primary dark:bg-primary-dark rounded-md hover:bg-primary-dark dark:hover:bg-primary disabled:opacity-50"
-              >
-                {submitting ? "Submitting..." : "Submit Project"}
-              </button>
+              <Button
+                label={isSubmitting ? "Submitting..." : "Submit Project"}
+                icon={FiSend}
+                disabled={isSubmitting}
+              />
             </div>
           </form>
         </FormProvider>

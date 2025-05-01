@@ -42,24 +42,24 @@ export default function Layout({ hideRightBar = false, children }: any) {
       <div className="px-8">
         <div className="max-w-screen-xl mx-auto flex">
           <div
-            className={`${columnClasses.leftColumn} py-10 border-r-0.5 border-theme-border dark:border-theme-border-dark main-content-height overflow-y-auto`}
+            className={`${columnClasses.leftColumn} py-10 border-theme-border dark:border-theme-border-dark main-content-height overflow-y-auto`}
           >
             <Leftbar />
           </div>
           <main
             className={`${columnClasses.centerColumn} pb-32 pt-10 sm:pb-10 main-content-height overflow-y-auto`}
           >
-            <a href={mainBanner.resource_url} target="_blank" rel="noreferrer">
+            {/* <a href={mainBanner.resource_url} target="_blank" rel="noreferrer">
               <img
                 src={mainBanner.image_url}
                 alt={mainBanner.title}
                 className="rounded-md mb-8 shadow-lg dark:shadow-2xl"
               />
-            </a>
+            </a> */}
             {children}
           </main>
           <div
-            className={`${columnClasses.rightColum} py-10 main-content-height overflow-y-auto`}
+            className={`${columnClasses.rightColum} py-10 px-2 main-content-height overflow-y-auto`}
           >
             {/* <div className="p-6 bg-theme-title  dark:bg-secondary-dark-lighter rounded-md">
               <p className="font-semibold text-xl text-white dark:text-theme-title-dark mb-5">
@@ -70,7 +70,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
 
             <div className="flex flex-col gap-10">
               <MonthlyCodingLeaderboard></MonthlyCodingLeaderboard>
-              <PostItemGrid
+              {/* <PostItemGrid
                 post={{
                   title: mainBanner.title,
                   description: mainBanner.description,
@@ -80,7 +80,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
                 }}
                 imageHeight="h-42"
                 showLinks={false}
-              />
+              /> */}
               {/* <PostItemGrid
                 post={{
                   title: "xDevHub presentation at X Day",

@@ -9,6 +9,9 @@ import Textarea from "../shared/form/Textarea";
 import { Category } from "../../types/supabase";
 import { api } from "../../utils/api";
 import { thankYouPath } from "../../utils/routes";
+import Button from "../shared/Button";
+import { FiSend } from "react-icons/fi";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ISubmitResource {
   title: string;
@@ -24,7 +27,9 @@ export default function SubmitContent() {
   const formMethods = useForm<ISubmitResource>();
   const [categories, setCategories] = useState<Array<IOption>>([]);
   const { handleSubmit, setValue } = formMethods;
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitErrorMsg, setSubmitErrorMsg] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -46,12 +51,15 @@ export default function SubmitContent() {
   const submitResource = async (formData: ISubmitResource) => {
     const tags = formData.tags?.split(",");
 
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+    setSubmitErrorMsg("");
+
     try {
-      setSubmitting(true);
       const { data } = await api.post("resources", { ...formData, tags });
+      setSubmitStatus("success");
       formMethods.reset();
 
-      router.push(thankYouPath);
     } catch (e) {
       let errMessage: string;
       if (axios.isAxiosError(e) && e.response?.status === 422) {
@@ -60,9 +68,10 @@ export default function SubmitContent() {
       } else {
         errMessage = "Something went wrong. Please try again in a few moments";
       }
-      alert(errMessage);
+      setSubmitErrorMsg(errMessage);
+      setSubmitStatus("error");
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -78,12 +87,36 @@ export default function SubmitContent() {
         </p>
       </div>
 
+      <AnimatePresence mode="wait">
+        {submitStatus === "success" ? (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="text-center text-green-600 dark:text-green-400 p-4 bg-green-100 dark:bg-green-900/50 rounded-md mb-6"
+          >
+            Content submitted successfully! Thank you for your contribution.
+          </motion.div>
+        ) : submitStatus === "error" ? (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="text-center text-red-600 dark:text-red-400 p-4 bg-red-100 dark:bg-red-900/50 rounded-md mb-6"
+          >
+            {submitErrorMsg || "Submission failed. Please try again."}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(submitResource)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Input
-                label="CONTENT URL"
+                label="Content URL"
                 name="resource_url"
                 placeholder="https://example.com"
                 type="url"
@@ -93,7 +126,7 @@ export default function SubmitContent() {
 
             <div>
               <Input
-                label="TITLE"
+                label="Title"
                 name="title"
                 placeholder="My awesome resource"
                 type="text"
@@ -105,7 +138,7 @@ export default function SubmitContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Input
-                label="AUTHOR"
+                label="Author"
                 name="author"
                 placeholder="John Doe"
                 type="text"
@@ -115,7 +148,7 @@ export default function SubmitContent() {
 
             <div>
               <Input
-                label="WALLET ADDRESS"
+                label="Wallet address"
                 name="curator_address"
                 placeholder="erd123..."
                 type="text"
@@ -128,7 +161,7 @@ export default function SubmitContent() {
 
           <div>
             <Textarea
-              label="DESCRIPTION"
+              label="Description"
               name="description"
               placeholder="Describe your resource in 30-256 characters..."
               options={{ required: true, maxLength: 256, minLength: 30 }}
@@ -141,7 +174,7 @@ export default function SubmitContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Select
-                label="CATEGORY"
+                label="Category"
                 name="category_id"
                 options={{ required: true }}
                 selectOptions={categories}
@@ -150,7 +183,7 @@ export default function SubmitContent() {
 
             <div>
               <Input
-                label="TAGS"
+                label="Tags"
                 name="tags"
                 placeholder="multiversx, blockchain"
                 type="text"
@@ -159,13 +192,11 @@ export default function SubmitContent() {
           </div>
 
           <div className="flex justify-end space-x-4 pt-4">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-4 py-2 text-sm font-medium text-white bg-primary dark:bg-primary-dark rounded-md hover:bg-primary-dark dark:hover:bg-primary disabled:opacity-50"
-            >
-              {submitting ? "Submitting..." : "Submit Content"}
-            </button>
+            <Button
+              label={isSubmitting ? "Submitting..." : "Submit Content"}
+              icon={FiSend}
+              disabled={isSubmitting}
+            />
           </div>
         </form>
       </FormProvider>

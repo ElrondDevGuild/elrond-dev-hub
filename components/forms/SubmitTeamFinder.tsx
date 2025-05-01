@@ -1,6 +1,13 @@
 import { useState } from "react";
 import CategoryBadge from "../shared/CategoryBadge";
 import { createClient } from "@supabase/supabase-js";
+import { useForm, FormProvider } from "react-hook-form";
+import Input from "../shared/form/Input";
+import Select from "../shared/form/Select";
+import Textarea from "../shared/form/Textarea";
+import Button from "../shared/Button";
+import { FiX, FiSend } from "react-icons/fi";
+import { AnimatePresence, motion } from "framer-motion";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,8 +18,22 @@ interface SubmitTeamFinderProps {
   onClose: () => void;
 }
 
+interface ITeamFinderForm {
+  name: string;
+  description: string;
+  profile_image_url: string;
+  skills: string;
+  main_expertise: string;
+  availability: string;
+  experience: string;
+  interests: string;
+  github_url: string;
+  twitter_url: string;
+  telegram_url: string;
+  website_url: string;
+}
+
 const EXPERTISE_OPTIONS = [
-  // Development
   "Smart Contract Development",
   "Frontend Development",
   "Backend Development",
@@ -21,33 +42,25 @@ const EXPERTISE_OPTIONS = [
   "Security & Auditing",
   "Testing & QA",
   "Mobile Development",
-
-  // Design & UX
   "UI/UX Design",
   "Graphic Design",
   "Product Design",
-
-  // Business & Community
   "Community Management",
   "Marketing & Growth",
   "Business Development",
   "Project Management",
   "Technical Writing",
   "Documentation",
-
-  // Blockchain Specific
   "Blockchain Architecture",
   "Token Economics",
   "DeFi Development",
   "NFT Development",
   "GameFi Development",
   "Cross-chain Integration",
-
-  // Other
   "Research & Development",
   "Technical Support",
   "Other",
-];
+].map(opt => ({ id: opt, name: opt }));
 
 const AVAILABILITY_OPTIONS = [
   "Full-time Available",
@@ -58,54 +71,25 @@ const AVAILABILITY_OPTIONS = [
   "Available for specific projects",
   "Currently busy",
   "Available for mentoring only",
-];
+].map(opt => ({ id: opt, name: opt }));
 
 export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    profile_image_url: "",
-    skills: [] as string[],
-    main_expertise: "",
-    availability: "",
-    experience: "",
-    interests: "",
-    github_url: "",
-    twitter_url: "",
-    telegram_url: "",
-    website_url: "",
-  });
-  const [newSkill, setNewSkill] = useState("");
+  const formMethods = useForm<ITeamFinderForm>();
+  const { handleSubmit } = formMethods;
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
 
-  const handleAddSkill = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && newSkill.trim()) {
-      e.preventDefault();
-      setFormData((prev) => ({
-        ...prev,
-        skills: [...prev.skills, newSkill.trim()],
-      }));
-      setNewSkill("");
-    }
-  };
-
-  const removeSkill = (skillToRemove: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      skills: prev.skills.filter((skill) => skill !== skillToRemove),
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: ITeamFinderForm) => {
     setIsSubmitting(true);
+    setSubmitStatus("idle");
     try {
       const { error } = await supabase.from("tf_developers").insert([
         {
-          ...formData,
+          ...data,
+          skills: data.skills.split(",").map(skill => skill.trim()),
           publish_date: null,
           created_at: new Date().toISOString(),
         },
@@ -113,6 +97,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
 
       if (error) throw error;
       setSubmitStatus("success");
+      formMethods.reset();
       setTimeout(() => {
         onClose();
       }, 2000);
@@ -130,7 +115,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
       onClick={onClose}
     >
       <div
-        className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 max-w-2xl w-full border border-theme-border/30 dark:border-theme-border-dark/30"
+        className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 max-w-2xl w-full border border-theme-border/30 dark:border-theme-border-dark/30 overflow-y-auto max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-6">
@@ -140,241 +125,138 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
           <button
             onClick={onClose}
             className="text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark"
+             aria-label="Close modal"
           >
-            ✕
+            <FiX className="w-5 h-5" />
           </button>
         </div>
 
-        {submitStatus === "success" ? (
-          <div className="text-green-600 dark:text-green-400">
-            Thank you for your submission! Your profile is pending approval.
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
+         <AnimatePresence mode="wait">
+           {submitStatus === "success" ? (
+             <motion.div
+               key="success"
+               initial={{ opacity: 0, y: 10 }}
+               animate={{ opacity: 1, y: 0 }}
+               exit={{ opacity: 0, y: -10 }}
+               className="text-center text-green-600 dark:text-green-400 p-4 bg-green-100 dark:bg-green-900/50 rounded-md mb-4"
+             >
+               Thank you for your submission! Your profile is pending approval.
+             </motion.div>
+           ) : submitStatus === "error" ? (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="text-center text-red-600 dark:text-red-400 p-4 bg-red-100 dark:bg-red-900/50 rounded-md mb-4"
+              >
+                Submission failed. Please try again.
+              </motion.div>
+           ) : null}
+         </AnimatePresence>
+
+        <FormProvider {...formMethods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-4">
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Fields marked with <span className="text-red-500">*</span> are
-              required
+              Fields marked with <span className="text-red-500">*</span> are required
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Main Expertise <span className="text-red-500">*</span>
-                </label>
-                <select
-                  required
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.main_expertise}
-                  onChange={(e) =>
-                    setFormData({ ...formData, main_expertise: e.target.value })
-                  }
-                >
-                  <option value="">Select expertise</option>
-                  {EXPERTISE_OPTIONS.map((expertise) => (
-                    <option key={expertise} value={expertise}>
-                      {expertise}
-                    </option>
-                  ))}
-                </select>
-              </div>
+               <Input
+                 label="Full Name"
+                 name="name"
+                 placeholder="Your Full Name"
+                 options={{ required: true }}
+               />
+               <Select
+                 label="Main Expertise"
+                 name="main_expertise"
+                 options={{ required: true }}
+                 selectOptions={[{ id: "", name: "Select expertise" }, ...EXPERTISE_OPTIONS]}
+               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Availability <span className="text-red-500">*</span>
-                </label>
-                <select
-                  required
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.availability}
-                  onChange={(e) =>
-                    setFormData({ ...formData, availability: e.target.value })
-                  }
-                >
-                  <option value="">Select availability</option>
-                  {AVAILABILITY_OPTIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Profile Image URL
-                </label>
-                <input
-                  type="url"
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.profile_image_url}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      profile_image_url: e.target.value,
-                    })
-                  }
-                  placeholder="https://example.com/your-image.jpg"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Description <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                required
-                rows={3}
-                className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                placeholder="Tell us about yourself and your experience..."
+              <Select
+                label="Availability"
+                name="availability"
+                options={{ required: true }}
+                selectOptions={[{ id: "", name: "Select availability" }, ...AVAILABILITY_OPTIONS]}
+              />
+              <Input
+                label="Profile Image URL"
+                name="profile_image_url"
+                type="url"
+                placeholder="https://example.com/your-image.jpg"
+                options={{}}
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Skills
-              </label>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {formData.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs font-medium text-theme-text dark:text-theme-text-dark flex items-center"
-                  >
-                    {skill}
-                    <button
-                      type="button"
-                      onClick={() => removeSkill(skill)}
-                      className="ml-1 text-gray-500 hover:text-red-500"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-              <input
-                type="text"
-                className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                value={newSkill}
-                onChange={(e) => setNewSkill(e.target.value)}
-                onKeyPress={handleAddSkill}
-                placeholder="Type a skill and press Enter"
-              />
-            </div>
+            <Textarea
+              label="Description"
+              name="description"
+              placeholder="Tell us about yourself and your experience..."
+              options={{ required: true }}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Experience <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                value={formData.experience}
-                onChange={(e) =>
-                  setFormData({ ...formData, experience: e.target.value })
-                }
-                placeholder="e.g., 5 years of experience"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                Interests <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                value={formData.interests}
-                onChange={(e) =>
-                  setFormData({ ...formData, interests: e.target.value })
-                }
-                placeholder="e.g., DeFi, NFTs, Gaming"
-              />
-            </div>
+            <Input
+              label="Skills"
+              name="skills"
+              placeholder="e.g., React, Node.js, Smart Contracts (comma-separated)"
+              options={{ required: true }}
+            />
+             <p className="text-xs text-gray-500 dark:text-gray-400 -mt-4 ml-1">Comma-separated list</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  GitHub URL
-                </label>
-                <input
-                  type="url"
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.github_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, github_url: e.target.value })
-                  }
-                  placeholder="github.com/username"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Twitter URL <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="url"
-                  required
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.twitter_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, twitter_url: e.target.value })
-                  }
-                  placeholder="twitter.com/username"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Telegram URL
-                </label>
-                <input
-                  type="url"
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.telegram_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, telegram_url: e.target.value })
-                  }
-                  placeholder="t.me/username"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-text dark:text-theme-text-dark mb-1">
-                  Website URL
-                </label>
-                <input
-                  type="url"
-                  className="w-full rounded-md border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:border-primary dark:focus:border-primary-dark focus:ring-primary dark:focus:ring-primary-dark"
-                  value={formData.website_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, website_url: e.target.value })
-                  }
-                  placeholder="www.your-website.com"
-                />
-              </div>
+              <Input
+                label="Years of Experience (Optional)"
+                name="experience"
+                type="number"
+                placeholder="e.g., 5"
+                options={{ min: 0 }}
+              />
+               <Input
+                 label="Interests / Areas to Contribute (Optional)"
+                 name="interests"
+                 placeholder="e.g., DeFi, NFTs, Tooling"
+                 options={{}}
+               />
             </div>
+
+            <h3 className="text-lg font-medium text-theme-text dark:text-theme-text-dark pt-2 border-t border-theme-border/30 dark:border-theme-border-dark/30">
+              Social Links (Optional)
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                label="GitHub URL"
+                name="github_url"
+                type="url"
+                placeholder="https://github.com/yourusername"
+                options={{}}
+              />
+              <Input
+                label="Twitter URL"
+                name="twitter_url"
+                type="url"
+                placeholder="https://twitter.com/yourusername"
+                options={{}}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <Input
+                 label="Telegram URL/Handle"
+                 name="telegram_url"
+                 placeholder="https://t.me/yourusername or @yourusername"
+                 options={{}}
+               />
+               <Input
+                 label="Personal Website/Portfolio URL"
+                 name="website_url"
+                 type="url"
+                 placeholder="https://yourwebsite.com"
+                 options={{}}
+               />
+             </div>
 
             <div className="flex justify-end space-x-4 pt-4">
               <button
@@ -384,16 +266,14 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
               >
                 Cancel
               </button>
-              <button
-                type="submit"
+              <Button
+                label={isSubmitting ? "Submitting..." : "Submit Profile"}
+                icon={FiSend}
                 disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-primary dark:bg-primary-dark rounded-md hover:bg-primary-dark dark:hover:bg-primary disabled:opacity-50"
-              >
-                {isSubmitting ? "Submitting..." : "Submit"}
-              </button>
+              />
             </div>
           </form>
-        )}
+        </FormProvider>
       </div>
     </div>
   );
