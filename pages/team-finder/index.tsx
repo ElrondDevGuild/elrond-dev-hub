@@ -244,7 +244,7 @@ export default function TeamFinderPage() {
               <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mr-3 border-2 border-primary/20">
                 <img
                   src={dev.profileImageUrl}
-                  alt={dev.name}
+                  alt={`${dev.name}&apos;s profile`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = "/default/default-avatar.png";
@@ -626,7 +626,7 @@ export default function TeamFinderPage() {
                         <div className="w-16 h-16 rounded-full overflow-hidden">
                           <img
                             src={dev.profileImageUrl}
-                            alt={`${dev.name}'s profile`}
+                            alt={`${dev.name}&apos;s profile`}
                             className="w-full h-full object-cover"
                           />
                         </div>

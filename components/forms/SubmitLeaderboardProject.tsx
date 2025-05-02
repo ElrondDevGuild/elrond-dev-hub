@@ -138,7 +138,7 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
           <FiInfo className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
           <div>
             <p className="mb-1"><strong>Who can participate?</strong> Everyone!</p>
-            <p>Whether you're an individual developer or a large team, as long as you're building on MultiversX, you're eligible to earn 15 EGLD. Just submit your public GitHub repository and keep committing code throughout the month.</p>
+            <p>Whether you&apos;re an individual developer or a large team, as long as you&apos;re building on MultiversX, you&apos;re eligible to earn 15 EGLD. Just submit your public GitHub repository and keep committing code throughout the month.</p>
           </div>
         </div>
 
@@ -203,7 +203,7 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
                   placeholder="John Doe or Team Awesome"
                   options={{ required: true }}
                 />
-                <HelperText text="Your name or your team's name" />
+                <HelperText text="Your name or your team&apos;s name" />
               </div>
               <div>
                 <Select
@@ -244,7 +244,7 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
                   placeholder="https://my-project.com"
                   options={{}}
                 />
-                <HelperText text="Optional: Your project's website" />
+                <HelperText text="Optional: Your project&apos;s website" />
               </div>
             </div>
 

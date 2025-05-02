@@ -93,7 +93,7 @@ export default function BountyDetailPage({ bounty }: BountyDetailPageProps) {
             Bounty not found
           </h1>
           <p className="text-theme-text dark:text-theme-text-dark mb-6">
-            The bounty you're looking for doesn't exist or has been removed.
+            The bounty you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
           <Link href="/bounties">
             <Button label="Back to Bounties" icon={FiArrowLeft} />

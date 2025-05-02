@@ -544,13 +544,13 @@ export default function MonthlyLeaderboardPage() {
             </div>
           ) : error ? (
             <div className="text-center text-red-600 dark:text-red-400 p-4 bg-red-100 dark:bg-red-900/40 rounded-lg border border-red-200 dark:border-red-800/50 m-4">
-              <p className="font-semibold text-sm">Oops! Couldn't load the leaderboard.</p>
+              <p className="font-semibold text-sm">Oops! Couldn&apos;t load the leaderboard.</p>
               <p className="mt-1 text-xs">{error}</p>
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-400 p-6 m-4 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700/50">
               <p className="font-semibold text-sm">No projects are currently competing.</p>
-              <p className="mt-2 text-xs">Be the first to submit your project for next month's leaderboard!</p>
+              <p className="mt-2 text-xs">Be the first to submit your project for next month&apos;s leaderboard!</p>
               <div className="mt-4">
                 <CustomButton 
                   label="Submit Your Project" 

@@ -114,7 +114,7 @@ export default function NewsletterPopup({ onClose }: NewsletterPopupProps) {
             class="w-full justify-center"
           />
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
-            You'll be redirected to complete your subscription
+            You&apos;ll be redirected to complete your subscription
           </p>
         </form>
       </div>
