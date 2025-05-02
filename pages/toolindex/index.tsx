@@ -1,6 +1,6 @@
 import { NextSeo } from "next-seo";
 import Layout from "../../components/Layout";
-import { FiLink, FiStar, FiClock, FiDownload, FiBook } from "react-icons/fi";
+import { FiLink, FiStar, FiClock, FiDownload, FiBook, FiSearch, FiX, FiPlusCircle, FiGrid, FiList, FiRefreshCw } from "react-icons/fi";
 import { FaLink } from "react-icons/fa";
 import Button from "../../components/shared/Button";
 import CategoryBadge from "../../components/shared/CategoryBadge";
@@ -81,6 +81,9 @@ export default function DecenterPage() {
     null
   );
   const [showSubmitForm, setShowSubmitForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     // Get user's IP address
@@ -229,10 +232,10 @@ export default function DecenterPage() {
     });
 
   return (
-    <Layout hideRightBar>
+    <Layout hideRightBar={true}>
       <NextSeo
-        title="ToolIndex - Ongoing Open Source Development Efforts"
-        description="Explore and contribute to open-source MultiversX projects. Streamline tool and application building with the DeCenter community."
+        title="MultiversX Developer Tools | Build Better, Faster"
+        description="Discover essential tools and frameworks for building on MultiversX. Find everything from smart contract libraries to frontend SDKs and more."
         openGraph={{
           images: [
             {
@@ -244,67 +247,157 @@ export default function DecenterPage() {
           ],
         }}
       />
-      <section className="container mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4">
-            ToolIndex
-          </h1>
-          <p className="text-md md:text-lg text-theme-text dark:text-theme-text-dark max-w-2xl mx-auto pb-4">
-            A hub for ongoing open-source development efforts in the MultiversX
-            ecosystem. Everyone can contribute to the projects listed below or
-            submit their own projects for review.
-          </p>
+
+      <div className="container mx-auto px-4">
+        {/* Header section with slightly reduced padding */}
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/10 dark:to-primary-dark/20 rounded-2xl p-6 mb-8">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4 relative">
+              MultiversX Dev Tools
+              <div className="absolute w-14 h-0.5 bg-primary dark:bg-primary-dark left-1/2 transform -translate-x-1/2 bottom-0"></div>
+            </h1>
+            <p className="text-sm md:text-base text-theme-text dark:text-theme-text-dark max-w-3xl mx-auto">
+              Discover the best tools, libraries, and frameworks for building on MultiversX. From smart contract development to frontend integration, find everything you need to accelerate your blockchain projects.
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-3 mt-4">
+            <div onClick={() => setShowSubmitForm(true)}>
+              <Button
+                label="Submit a Tool"
+                icon={FiPlusCircle}
+                class="text-sm py-2 px-4"
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
-          <button
-            onClick={() => setActiveCategory("all")}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
-              activeCategory === "all"
-                ? "bg-primary text-white"
-                : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
-            }`}
-          >
-            All Projects
-          </button>
-          {Array.from(new Set(projectData.map((item) => item.category))).map(
-            (category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
-                  activeCategory === category
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
+        {/* Compact filters section */}
+        <div className="mb-5 bg-white dark:bg-secondary-dark rounded-xl shadow-lg p-3 border border-theme-border dark:border-theme-border-dark">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-3">
+            <div className="mb-3 md:mb-0">
+              <h2 className="text-base font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
+                <span className="mr-2">Tools Directory</span>
+                {filteredProjects.length > 0 && (
+                  <span className="text-xs font-normal text-theme-text/60 dark:text-theme-text-dark/60">
+                    ({filteredProjects.length} found)
+                  </span>
+                )}
+              </h2>
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Search box */}
+              <div className="relative w-full md:w-auto">
+                <input
+                  type="text"
+                  placeholder="Search tools..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-7 pr-7 py-1.5 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark w-full md:w-auto"
+                />
+                <FiSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-theme-text/50 dark:text-theme-text-dark/50 w-3 h-3" />
+                {searchTerm && (
+                  <button 
+                    onClick={() => setSearchTerm("")}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-text/50 dark:text-theme-text-dark/50 hover:text-theme-text dark:hover:text-theme-text-dark"
+                  >
+                    <FiX size={12} />
+                  </button>
+                )}
+              </div>
+
+              {/* View mode toggle */}
+              <div className="flex items-center text-xs font-medium">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`flex items-center gap-1 px-2 py-1.5 rounded-l-md ${
+                    viewMode === "grid"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <FiGrid size={12} /> Grid
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`flex items-center gap-1 px-2 py-1.5 rounded-r-md ${
+                    viewMode === "list"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <FiList size={12} /> List
+                </button>
+              </div>
+
+              {/* Sort selector */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="py-1.5 px-2 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark"
+              >
+                <option value="title">Sort by Name</option>
+                <option value="stars">Sort by Stars</option>
+                <option value="completion">Sort by Completion</option>
+              </select>
+
+              {/* Filter toggle */}
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-200 ${
+                  showFilters 
+                    ? "bg-primary/10 text-primary dark:bg-primary-dark/10 dark:text-primary-dark" 
+                    : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
                 }`}
               >
-                {category}
+                <FiSearch className={`w-3 h-3 ${showFilters ? "text-primary dark:text-primary-dark" : ""}`} />
+                {showFilters ? "Hide Filters" : "More Filters"}
               </button>
-            )
+            </div>
+          </div>
+
+          {/* Advanced filters panel */}
+          {showFilters && (
+            <div className="pt-2 border-t border-theme-border/30 dark:border-theme-border-dark/30">
+              <div className="flex flex-wrap gap-2 mb-2">
+                {/* Category filters */}
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {Array.from(new Set(projectData.map((item) => item.category)))
+                    .filter((category) => category !== "Idle")
+                    .map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => setActiveCategory(category)}
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                          activeCategory === category
+                            ? "bg-primary text-white"
+                            : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                </div>
+
+                {/* Reset filters button */}
+                <button
+                  onClick={() => {
+                    setActiveCategory("all");
+                    setSearchTerm("");
+                    setSortBy("title");
+                  }}
+                  className="flex items-center gap-1 py-1 px-2 text-xs bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+                >
+                  <FiRefreshCw size={10} />
+                  Reset Filters
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-6">
-          <div className="w-full max-w-sm">
-            <input
-              type="text"
-              placeholder="Search projects..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 rounded-full border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-            />
-          </div>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 rounded-full border border-theme-border dark:border-theme-border-dark bg-white dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-          >
-            <option value="title">Sort by Title</option>
-            <option value="stars">Sort by Stars</option>
-            <option value="completion">Sort by Completion Date</option>
-          </select>
-        </div>
-
+        {/* Project grid/list view with improved styling */}
         {selectedProject && (
           <RequestUpdate
             projectId={selectedProject.id.toString()}
@@ -312,205 +405,328 @@ export default function DecenterPage() {
             onClose={() => setSelectedProject(null)}
           />
         )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.length > 0 ? (
-            filteredProjects.map((item, index) => (
-              <div
-                key={index}
-                className={`bg-secondary dark:bg-secondary-dark rounded-xl shadow-lg p-6 border border-theme-border/30 dark:border-theme-border-dark/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden ${
-                  item.status === "Idle" ? "opacity-50" : ""
-                }`}
+        
+        {filteredProjects.length === 0 ? (
+          <div className="text-center text-gray-500 dark:text-gray-400 p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700/50 max-w-3xl mx-auto">
+            <p className="font-semibold text-sm mb-2">No tools found matching your criteria</p>
+            <p className="text-xs mb-4">Try adjusting your search or browse all categories</p>
+            <div className="flex justify-center gap-3">
+              <button 
+                onClick={() => setActiveCategory("all")}
+                className="flex items-center gap-1 py-1.5 px-3 text-xs bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
               >
-                <div
-                  className={`absolute top-0 left-0 w-full h-1 ${
-                    item.status === "Live"
-                      ? "bg-green-500"
-                      : item.status === "Idle"
-                      ? "bg-gray-500"
-                      : "bg-blue-500"
-                  }`}
-                ></div>
-
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-
-                <div className="relative">
-                  <div className="flex justify-between items-start mb-4">
-                    <CategoryBadge
-                      size="sm"
-                      category={item.category}
-                      className="z-10 max-w-[150px] truncate"
-                    />
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        item.status === "Live"
-                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                          : item.status === "Idle"
-                          ? "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                          : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                      }`}
-                    >
-                      {item.status}
-                    </span>
-                  </div>
-                </div>
-
-                <h2 className="text-xl font-bold text-theme-title dark:text-theme-title-dark mb-2 group-hover:text-primary dark:group-hover:text-primary-dark transition-colors duration-200 relative">
-                  {item.title}
-                </h2>
-
-                {/* Add project description */}
-                {item.description && (
-                  <p className="text-sm text-theme-text/80 dark:text-theme-text-dark/80 mb-3 line-clamp-2">
-                    {item.description}
-                  </p>
-                )}
-
-                {/* Add project metrics */}
-                <div className="flex items-center space-x-4 text-sm text-theme-text/60 dark:text-theme-text-dark/60 mb-3">
-                  {item.last_activity && (
-                    <span className="flex items-center">
-                      <FiClock className="w-4 h-4 mr-1" />
-                      Last Activity:{" "}
-                      {new Date(item.last_activity).toLocaleDateString()}
-                    </span>
-                  )}
-                  {item.github_stars && (
-                    <span className="flex items-center">
-                      <FiStar className="w-4 h-4 mr-1" />
-                      {item.github_stars}
-                    </span>
-                  )}
-                  {item.downloads && (
-                    <span className="flex items-center">
-                      <FiDownload className="w-4 h-4 mr-1" />
-                      {item.downloads}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex text-sm">
-                    <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
-                      Team:
-                    </div>
-                    <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                      {item.team}
+                <FiSearch size={10} />
+                Browse All Tools
+              </button>
+              <button 
+                onClick={() => setShowSubmitForm(true)}
+                className="flex items-center gap-1 py-1.5 px-3 text-xs bg-primary dark:bg-primary-dark text-white rounded-md hover:bg-primary-dark"
+              >
+                <FiPlusCircle size={10} />
+                Submit a Tool
+              </button>
+            </div>
+          </div>
+        ) : viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            {filteredProjects.map((project) => (
+              <div
+                key={project.id}
+                className="bg-white dark:bg-secondary-dark rounded-lg border border-theme-border dark:border-theme-border-dark shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
+              >
+                <div className="p-4">
+                  {/* Status and Category Tags */}
+                  <div className="flex justify-between items-start mb-2">
+                    <CategoryBadge category={project.category} size="sm" />
+                    <div className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                      project.status === "Live"
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                        : project.status === "Idle"
+                        ? "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                        : "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                    }`}>
+                      {project.status}
                     </div>
                   </div>
-                  <div className="flex text-sm">
-                    <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
-                      Source:
+                  
+                  {/* Title and Stats */}
+                  <div className="mb-2">
+                    <h3 className="text-base font-semibold text-theme-title dark:text-theme-title-dark">{project.title}</h3>
+                    <p className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 mt-1 line-clamp-2">{project.description}</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {project.github_stars !== undefined && (
+                      <div className="flex items-center text-xs text-theme-text/70 dark:text-theme-text-dark/70">
+                        <FiStar className="mr-1 text-amber-500 flex-shrink-0 w-3 h-3" />
+                        <span>{project.github_stars.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {project.downloads !== undefined && (
+                      <div className="flex items-center text-xs text-theme-text/70 dark:text-theme-text-dark/70">
+                        <FiDownload className="mr-1 text-blue-500 flex-shrink-0 w-3 h-3" />
+                        <span>{project.downloads.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {project.last_activity && (
+                      <div className="flex items-center text-xs text-theme-text/70 dark:text-theme-text-dark/70">
+                        <FiClock className="mr-1 text-green-500 flex-shrink-0 w-3 h-3" />
+                        <span>{new Date(project.last_activity).toLocaleDateString()}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-3">
+                    <div className="col-span-2">
+                      <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                        Team:
+                      </span>
+                      <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                        {project.team}
+                      </span>
                     </div>
-                    <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                      {item.open_source}
+                    <div className="col-span-2">
+                      <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                        Source:
+                      </span>
+                      <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                        {project.open_source}
+                      </span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                        Assignees:
+                      </span>
+                      <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                        {project.matchedDeveloper ? (
+                          <a
+                            href={project.matchedDeveloper.profileUrl}
+                            className="text-primary dark:text-primary-dark hover:underline"
+                          >
+                            {project.matchedDeveloper.name}
+                          </a>
+                        ) : (
+                          project.assignees || "None"
+                        )}
+                      </span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                        Est. Completion:
+                      </span>
+                      <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                        {project.estimated_completion}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex text-sm">
-                    <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
-                      Assignees:
-                    </div>
-                    <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                      {item.matchedDeveloper ? (
+                  
+                  {/* Links and Actions */}
+                  <div className="flex justify-between items-center">
+                    <div className="flex space-x-2">
+                      {project.link && (
                         <a
-                          href={item.matchedDeveloper.profileUrl}
-                          className="text-primary hover:text-primary-dark dark:text-primary-dark dark:hover:text-primary transition-colors duration-200"
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center text-xs"
                         >
-                          {item.matchedDeveloper.name}
+                          <FaLink className="mr-1 w-3 h-3" />
+                          Website
                         </a>
-                      ) : (
-                        item.assignees || "None"
+                      )}
+                      {project.documentation_url && (
+                        <a
+                          href={project.documentation_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center text-xs"
+                        >
+                          <FiBook className="mr-1 w-3 h-3" />
+                          Docs
+                        </a>
                       )}
                     </div>
-                  </div>
-                  <div className="flex text-sm">
-                    <div className="mr-1 text-theme-text/60 dark:text-theme-text-dark/60">
-                      Est. Completion:
-                    </div>
-                    <div className="font-medium text-theme-text dark:text-theme-text-dark">
-                      {item.estimated_completion}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center mt-4 z-30">
-                  <div className="flex items-center space-x-2">
+                    
                     <button
-                      onClick={() =>
-                        handleStarClick(item.id, item.stars, item.star_votes)
-                      }
-                      className={`flex items-center space-x-1 px-3 py-2 rounded-full transition-colors duration-200 ${
-                        item.star_votes.includes(userIP || "")
-                          ? "text-yellow-500"
-                          : "text-gray-500 hover:text-yellow-500"
+                      onClick={() => handleStarClick(project.id, project.stars, project.star_votes)}
+                      className={`flex items-center text-xs rounded-full px-2 py-1 ${
+                        userIP && project.star_votes.includes(userIP)
+                          ? "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                          : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
                       }`}
                     >
-                      <FiStar className="w-5 h-5" />
-                      <span className="text-sm font-medium">{item.stars}</span>
+                      <FiStar className={`mr-1 w-3 h-3 ${userIP && project.star_votes.includes(userIP) ? "text-amber-500" : ""}`} />
+                      {project.stars}
                     </button>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      label="Contribute"
-                      href="https://github.com/multiversx"
-                    />
-                    {item.documentation_url && (
-                      <a
-                        href={item.documentation_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-2 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                        title="View documentation"
+                  
+                  {project.status === "Idle" && (
+                    <div className="mt-3 text-center">
+                      <button
+                        onClick={() => setSelectedProject(project)}
+                        className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
                       >
-                        <FiBook className="w-4 h-4" />
-                      </a>
-                    )}
-                    {item.link && (
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-3 rounded-full bg-gray-100 hover:bg-primary/10 dark:bg-gray-800 dark:hover:bg-primary-dark/20 text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark transition-colors duration-200"
-                        title="Visit project"
-                      >
-                        <FaLink className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-center space-x-2 pt-4 z-30">
-                  {item.status === "Idle" && (
-                    <button
-                      onClick={() => setSelectedProject(item)}
-                      className="px-3 py-2 rounded-full bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 transition-colors duration-200 text-sm font-medium flex items-center"
-                      title="Request project update"
-                    >
-                      Request Update
-                    </button>
+                        Request Update
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="text-center col-span-full text-theme-text dark:text-theme-text-dark">
-              No projects found at this time.
-            </p>
-          )}
-        </div>
-        <div className="text-center mt-12">
-          <p className="text-theme-text dark:text-theme-text-dark mb-4">
-            Want to contribute? Submit your project to the MultiversX DeCenter
-            open-source community!
-          </p>
-          <button
-            onClick={() => setShowSubmitForm(true)}
-            className="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
-          >
-            Submit Project <FiLink className="inline-block ml-2" />
-          </button>
-        </div>
-      </section>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-3 mb-8">
+            {filteredProjects.map((project) => (
+              <div 
+                key={project.id}
+                className="bg-white dark:bg-secondary-dark rounded-lg border border-theme-border dark:border-theme-border-dark shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 p-4"
+              >
+                <div className="flex items-start gap-4">
+                  {/* Title and Category */}
+                  <div className="flex-grow">
+                    <div className="flex flex-wrap justify-between items-start mb-2">
+                      <div>
+                        <h3 className="text-base font-semibold text-theme-title dark:text-theme-title-dark">{project.title}</h3>
+                        <div className="flex items-center mt-1">
+                          <CategoryBadge category={project.category} size="sm" />
+                          <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                            project.status === "Live"
+                              ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                              : project.status === "Idle"
+                              ? "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                              : "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                          }`}>
+                            {project.status}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {project.github_stars !== undefined && (
+                          <div className="flex items-center text-xs text-theme-text/70 dark:text-theme-text-dark/70">
+                            <FiStar className="mr-1 text-amber-500 flex-shrink-0 w-3 h-3" />
+                            <span>{project.github_stars.toLocaleString()}</span>
+                          </div>
+                        )}
+                        {project.downloads !== undefined && (
+                          <div className="flex items-center text-xs text-theme-text/70 dark:text-theme-text-dark/70 ml-3">
+                            <FiDownload className="mr-1 text-blue-500 flex-shrink-0 w-3 h-3" />
+                            <span>{project.downloads.toLocaleString()}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <p className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 mb-2 line-clamp-2">{project.description}</p>
+                    
+                    <div className="flex flex-wrap gap-x-6 gap-y-1 mb-2">
+                      <div className="flex items-center">
+                        <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                          Team:
+                        </span>
+                        <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                          {project.team}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                          Source:
+                        </span>
+                        <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                          {project.open_source}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                          Assignees:
+                        </span>
+                        <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                          {project.matchedDeveloper ? (
+                            <a
+                              href={project.matchedDeveloper.profileUrl}
+                              className="text-primary dark:text-primary-dark hover:underline"
+                            >
+                              {project.matchedDeveloper.name}
+                            </a>
+                          ) : (
+                            project.assignees || "None"
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                          Est. Completion:
+                        </span>
+                        <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                          {project.estimated_completion}
+                        </span>
+                      </div>
+                      {project.last_activity && (
+                        <div className="flex items-center">
+                          <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                            Last Activity:
+                          </span>
+                          <span className="text-xs ml-1 text-theme-text dark:text-theme-text-dark">
+                            {new Date(project.last_activity).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Actions column */}
+                  <div className="flex-shrink-0 flex flex-col gap-2 items-end">
+                    <button
+                      onClick={() => handleStarClick(project.id, project.stars, project.star_votes)}
+                      className={`flex items-center text-xs rounded-full px-2 py-1 ${
+                        userIP && project.star_votes.includes(userIP)
+                          ? "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                          : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      <FiStar className={`mr-1 w-3 h-3 ${userIP && project.star_votes.includes(userIP) ? "text-amber-500" : ""}`} />
+                      {project.stars}
+                    </button>
+                    
+                    <div className="flex gap-2 mt-1">
+                      {project.link && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center text-xs"
+                        >
+                          <FaLink className="mr-1 w-3 h-3" />
+                          Website
+                        </a>
+                      )}
+                      {project.documentation_url && (
+                        <a
+                          href={project.documentation_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center text-xs"
+                        >
+                          <FiBook className="mr-1 w-3 h-3" />
+                          Docs
+                        </a>
+                      )}
+                    </div>
+                    
+                    {project.status === "Idle" && (
+                      <button
+                        onClick={() => setSelectedProject(project)}
+                        className="mt-1 text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                      >
+                        Request Update
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {showSubmitForm && (
         <SubmitDecenter onClose={() => setShowSubmitForm(false)} />

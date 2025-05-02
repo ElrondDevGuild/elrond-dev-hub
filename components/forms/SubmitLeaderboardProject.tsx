@@ -5,7 +5,7 @@ import Input from "../shared/form/Input";
 import Select from "../shared/form/Select";
 import Textarea from "../shared/form/Textarea";
 import Button from "../shared/Button";
-import { FiX, FiSend } from "react-icons/fi";
+import { FiX, FiSend, FiInfo } from "react-icons/fi";
 import { AnimatePresence, motion } from "framer-motion";
 
 const supabase = createClient(
@@ -51,6 +51,11 @@ const DEVELOPMENT_STATUS = [
   "Live",
   "Completed",
 ];
+
+// Helper component to display field description text
+const HelperText = ({ text }: { text: string }) => (
+  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{text}</p>
+);
 
 export default function SubmitProject({ onClose }: SubmitProjectProps) {
   const formMethods = useForm<ILeaderboardProjectForm>();
@@ -129,6 +134,14 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
           </button>
         </div>
 
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6 text-sm text-blue-800 dark:text-blue-300 flex items-start">
+          <FiInfo className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="mb-1"><strong>Who can participate?</strong> Everyone!</p>
+            <p>Whether you're an individual developer or a large team, as long as you're building on MultiversX, you're eligible to earn 15 EGLD. Just submit your public GitHub repository and keep committing code throughout the month.</p>
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
           {submitStatus === "success" ? (
             <motion.div
@@ -159,76 +172,103 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
               Fields marked with <span className="text-red-500">*</span> are required
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                label="GitHub URL"
-                name="github_url"
-                type="url"
-                placeholder="https://github.com/username/project"
-                options={{ required: true }}
-              />
-              <Input
-                label="Project Name"
-                name="project_name"
-                type="text"
-                placeholder="My Awesome Project"
-                options={{ required: true }}
-              />
+              <div>
+                <Input
+                  label="GitHub URL"
+                  name="github_url"
+                  type="url"
+                  placeholder="https://github.com/username/project"
+                  options={{ required: true }}
+                />
+                <HelperText text="Your public repository URL" />
+              </div>
+              <div>
+                <Input
+                  label="Project Name"
+                  name="project_name"
+                  type="text"
+                  placeholder="My Awesome Project"
+                  options={{ required: true }}
+                />
+                <HelperText text="The name of your MultiversX project" />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                label="Team Name"
-                name="team_name"
-                type="text"
-                placeholder="My Team"
-                options={{ required: true }}
-              />
-              <Select
-                label="Category"
-                name="category"
-                options={{ required: true }}
-                selectOptions={[{ id: "", name: "Select category" }, ...PROJECT_CATEGORIES.map(cat => ({ id: cat, name: cat }))]}
-              />
+              <div>
+                <Input
+                  label="Developer/Team Name"
+                  name="team_name"
+                  type="text"
+                  placeholder="John Doe or Team Awesome"
+                  options={{ required: true }}
+                />
+                <HelperText text="Your name or your team's name" />
+              </div>
+              <div>
+                <Select
+                  label="Category"
+                  name="category"
+                  options={{ required: true }}
+                  selectOptions={[{ id: "", name: "Select category" }, ...PROJECT_CATEGORIES.map(cat => ({ id: cat, name: cat }))]}
+                />
+                <HelperText text="Select the most relevant category" />
+              </div>
             </div>
 
-            <Textarea
-              label="Project Description"
-              name="description"
-              placeholder="Describe your project and its main features..."
-              options={{ required: true }}
-            />
+            <div>
+              <Textarea
+                label="Project Description"
+                name="description"
+                placeholder="Describe your project and its main features..."
+                options={{ required: true }}
+              />
+              <HelperText text="A brief description of what your project does and its key features" />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select
-                label="Development Status"
-                name="development_status"
-                options={{ required: true }}
-                selectOptions={[{ id: "", name: "Select status" }, ...DEVELOPMENT_STATUS.map(status => ({ id: status, name: status }))]}
-              />
-              <Input
-                label="Website URL"
-                name="website_url"
-                type="url"
-                placeholder="https://my-project.com"
-                options={{}}
-              />
+              <div>
+                <Select
+                  label="Development Status"
+                  name="development_status"
+                  options={{ required: true }}
+                  selectOptions={[{ id: "", name: "Select status" }, ...DEVELOPMENT_STATUS.map(status => ({ id: status, name: status }))]}
+                />
+                <HelperText text="Current stage of your project" />
+              </div>
+              <div>
+                <Input
+                  label="Website URL"
+                  name="website_url"
+                  type="url"
+                  placeholder="https://my-project.com"
+                  options={{}}
+                />
+                <HelperText text="Optional: Your project's website" />
+              </div>
             </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                label="Demo URL"
-                name="demo_url"
-                type="url"
-                placeholder="https://demo.my-project.com"
-                options={{}}
-              />
-               <Input
-                label="Thumbnail URL"
-                name="thumbnail_url"
-                type="url"
-                placeholder="https://example.com/thumbnail.png"
-                options={{}}
-               />
+              <div>
+                <Input
+                  label="Demo URL"
+                  name="demo_url"
+                  type="url"
+                  placeholder="https://demo.my-project.com"
+                  options={{}}
+                />
+                <HelperText text="Optional: Link to a live demo" />
+              </div>
+              <div>
+                <Input
+                  label="Thumbnail URL"
+                  name="thumbnail_url"
+                  type="url"
+                  placeholder="https://example.com/thumbnail.png"
+                  options={{}}
+                />
+                <HelperText text="Optional: Image URL for your project" />
+              </div>
              </div>
 
             <h3 className="text-lg font-medium text-theme-text dark:text-theme-text-dark pt-2 border-t border-theme-border/30 dark:border-theme-border-dark/30">
@@ -236,32 +276,41 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
             </h3>
 
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Input
-                label="Contact Email"
-                name="contact_email"
-                type="email"
-                placeholder="contact@example.com"
-                options={{
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address"
-                    }
-                }}
-              />
-              <Input
-                label="Telegram Handle"
-                name="telegram_handle"
-                type="text"
-                placeholder="@your_handle"
-                options={{}}
-              />
-              <Input
-                label="Twitter Handle"
-                name="twitter_handle"
-                type="text"
-                placeholder="@your_handle"
-                options={{}}
-              />
+              <div>
+                <Input
+                  label="Contact Email"
+                  name="contact_email"
+                  type="email"
+                  placeholder="contact@example.com"
+                  options={{
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email address"
+                      }
+                  }}
+                />
+                <HelperText text="For updates about your submission" />
+              </div>
+              <div>
+                <Input
+                  label="Telegram Handle"
+                  name="telegram_handle"
+                  type="text"
+                  placeholder="@your_handle"
+                  options={{}}
+                />
+                <HelperText text="Optional contact method" />
+              </div>
+              <div>
+                <Input
+                  label="Twitter Handle"
+                  name="twitter_handle"
+                  type="text"
+                  placeholder="@your_handle"
+                  options={{}}
+                />
+                <HelperText text="Optional contact method" />
+              </div>
             </div>
 
             <div className="flex justify-end space-x-4 pt-4">

@@ -36,6 +36,11 @@ import {
 } from "../../utils/routes";
 import Button from "../shared/Button";
 import LinksGroup, { ILinksGroupProps } from "../shared/LinksGroup";
+import NewsletterPopup from "../shared/NewsletterPopup";
+
+// State moved outside component to avoid closure issues in link definition
+let _isNewsletterPopupOpen = false;
+let _setIsNewsletterPopupOpen: React.Dispatch<React.SetStateAction<boolean>> | null = null;
 
 const menuSection: ILinksGroupProps = {
   links: [
@@ -121,11 +126,10 @@ const menuSection: ILinksGroupProps = {
       customComponent: true,
     },
     {
-      label: "Newsletter ↗️",
-      url: "https://newsletter.statescu.net/",
+      label: "Newsletter",
+      url: "#",
       icon: FiMail,
-      openInNewTab: true,
-      disabled: true,
+      onClick: () => _setIsNewsletterPopupOpen?.(true),
     },
     {
       label: "Jobs",
@@ -222,6 +226,17 @@ const gettingStartedSection: ILinksGroupProps = {
 export default function Leftbar() {
   const [categoriesSection, setCategoriesSection] =
     useState<ILinksGroupProps | null>(null);
+  // Use state within the component instance
+  const [isNewsletterPopupOpen, setIsNewsletterPopupOpen] = useState(false);
+
+  // Update the setter function available to the static menuSection definition
+  useEffect(() => {
+    _setIsNewsletterPopupOpen = setIsNewsletterPopupOpen;
+    // Cleanup function to prevent memory leaks
+    return () => {
+      _setIsNewsletterPopupOpen = null;
+    };
+  }, [setIsNewsletterPopupOpen]);
 
   // Map of category titles to icons
   const categoryIconMap: Record<string, React.ElementType> = {
@@ -258,6 +273,7 @@ export default function Leftbar() {
             icon: icon,
           };
         });
+
         setCategoriesSection({
           title: "Categories",
           links,
@@ -266,6 +282,9 @@ export default function Leftbar() {
       }
     })();
   }, []);
+
+  // Update the state reference for the popup rendering
+  _isNewsletterPopupOpen = isNewsletterPopupOpen;
 
   return (
     <>
@@ -289,6 +308,11 @@ export default function Leftbar() {
       <div className="mb-8">
         <LinksGroup {...sourceCode} />
       </div>
+
+      {/* Conditionally render the popup based on the component's state */}
+      {isNewsletterPopupOpen && (
+        <NewsletterPopup onClose={() => setIsNewsletterPopupOpen(false)} />
+      )}
     </>
   );
 }

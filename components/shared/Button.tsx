@@ -10,6 +10,7 @@ interface IButtonProps {
   disabled?: boolean;
   theme?: BtnTheme;
   class?: string;
+  onClick?: () => void;
 }
 
 const ButtonComponent = (btnProps: IButtonProps) => {
@@ -23,6 +24,7 @@ const ButtonComponent = (btnProps: IButtonProps) => {
   return (
     <button
       disabled={btnProps?.disabled}
+      onClick={btnProps.onClick}
       className={`${btnClasses} ${btnProps.class} border font-medium text-xs sm:text-sm py-2 px-4 rounded-md transition-opacity ease-in-out hover:opacity-80 flex items-center disabled:opacity-80 disabled:cursor-not-allowed`}
     >
       {btnProps.icon && (

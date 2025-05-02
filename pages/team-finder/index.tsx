@@ -1,6 +1,6 @@
 import { NextSeo } from "next-seo";
 import Layout from "../../components/Layout";
-import { FiLink, FiGithub } from "react-icons/fi";
+import { FiLink, FiGithub, FiUser, FiGrid, FiList } from "react-icons/fi";
 import { FaXTwitter, FaTelegram, FaGlobe } from "react-icons/fa6";
 import Button from "../../components/shared/Button";
 import CategoryBadge from "../../components/shared/CategoryBadge";
@@ -107,6 +107,7 @@ export default function TeamFinderPage() {
   const [developers, setDevelopers] = useState<DeveloperProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Static developer data as fallback
   const staticDeveloperData: DeveloperProfile[] = [
@@ -429,16 +430,8 @@ export default function TeamFinderPage() {
   return (
     <Layout hideRightBar>
       <NextSeo
-        title={
-          developer
-            ? `${developer} - MultiversX Developer Profile`
-            : "Team Finder - Connect with MultiversX Developers"
-        }
-        description={
-          developer
-            ? `View the developer profile of ${developer} in the MultiversX ecosystem.`
-            : "Find collaborators for your MultiversX project. Connect with developers who share your vision and accelerate your development journey."
-        }
+        title="MultiversX Team Finder | Connect with Developers"
+        description="Find developers to collaborate with on your MultiversX projects. Connect with experienced blockchain developers specializing in smart contracts, DeFi, and more."
         openGraph={{
           images: [
             {
@@ -450,99 +443,340 @@ export default function TeamFinderPage() {
           ],
         }}
       />
-      <section className="container mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4">
-            {developer ? developer : "Team Finder"}
-          </h1>
-          <p className="text-md md:text-lg text-theme-text dark:text-theme-text-dark max-w-2xl mx-auto pb-4">
-            {developer
-              ? `View the developer profile of ${developer} in the MultiversX ecosystem.`
-              : "Great ideas need great teams. Connect with developers who share your vision. Whether you're building tools, dApps, or blockchain infrastructure, find collaborators to accelerate your progress."}
-          </p>
-          {developer && (
-            <Link
-              href="/team-finder"
-              className="inline-block mt-4 px-4 py-2 text-sm font-medium text-primary hover:text-primary-dark dark:text-primary-dark dark:hover:text-primary transition-colors duration-200"
-            >
-              ← View All Developers
+      <div className="container mx-auto px-4">
+        {/* Header section with slightly reduced padding */}
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/10 dark:to-primary-dark/20 rounded-2xl p-6 mb-8">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4 relative">
+              MultiversX Team Finder
+              <div className="absolute w-14 h-0.5 bg-primary dark:bg-primary-dark left-1/2 transform -translate-x-1/2 bottom-0"></div>
+            </h1>
+            <p className="text-sm md:text-base text-theme-text dark:text-theme-text-dark max-w-3xl mx-auto">
+              Connect with talented developers specializing in MultiversX blockchain development.
+              Find collaborators for your next project or showcase your own skills to the community.
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-3 mt-4">
+            <div onClick={() => setShowForm(true)}>
+              <Button
+                label="Join as Developer"
+                icon={FiUser}
+                class="text-sm py-2 px-4"
+              />
+            </div>
+            
+            <Link href="#developers">
+              <a>
+                <Button
+                  label="Find a Developer"
+                  icon={FiLink}
+                  theme="secondary"
+                  class="text-sm py-2 px-4"
+                />
+              </a>
             </Link>
-          )}
+          </div>
         </div>
 
-        {/* Only show category filters if no specific developer is selected */}
-        {!developer && (
-          <div className="mb-8">
-            <div className="flex flex-wrap justify-center gap-3 mb-6">
-              <button
-                onClick={() => setActiveCategory("all")}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
-                  activeCategory === "all"
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
-                }`}
-              >
-                All Developers
-              </button>
-              {developers.length > 0 &&
-                Array.from(
-                  new Set(developers.map((item) => item.mainExpertise))
-                ).map((expertise) => (
-                  <button
-                    key={expertise}
-                    onClick={() => setActiveCategory(expertise)}
-                    className={`px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 ${
-                      activeCategory === expertise
-                        ? "bg-primary text-white"
-                        : "bg-gray-200 dark:bg-gray-700 text-theme-text dark:text-theme-text-dark hover:bg-gray-300 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    {expertise}
-                  </button>
-                ))}
+        {/* Compact filters section */}
+        <div id="developers" className="mb-5 bg-white dark:bg-secondary-dark rounded-xl shadow-lg p-3 border border-theme-border dark:border-theme-border-dark">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-3">
+            <div>
+              <h2 className="text-base font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
+                <span className="mr-2">Developers</span>
+                {filteredDevelopers.length > 0 && (
+                  <span className="text-xs font-normal text-theme-text/60 dark:text-theme-text-dark/60">
+                    ({filteredDevelopers.length} available)
+                  </span>
+                )}
+              </h2>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-0">
+              {/* View mode toggle */}
+              <div className="flex items-center text-xs font-medium mr-3">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`flex items-center gap-1 px-2 py-1.5 rounded-l-md ${
+                    viewMode === "grid"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <FiGrid size={12} /> Grid
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`flex items-center gap-1 px-2 py-1.5 rounded-r-md ${
+                    viewMode === "list"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <FiList size={12} /> List
+                </button>
+              </div>
+            
+              <label className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 mr-1">
+                Expertise:
+              </label>
+              <div className="flex flex-wrap gap-1">
+                <button
+                  onClick={() => setActiveCategory("all")}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    activeCategory === "all"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setActiveCategory("Frontend")}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    activeCategory === "Frontend"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  Frontend
+                </button>
+                <button
+                  onClick={() => setActiveCategory("Backend")}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    activeCategory === "Backend"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  Backend
+                </button>
+                <button
+                  onClick={() => setActiveCategory("Smart Contracts")}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    activeCategory === "Smart Contracts"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  Smart Contracts
+                </button>
+                <button
+                  onClick={() => setActiveCategory("Full Stack")}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    activeCategory === "Full Stack"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  Full Stack
+                </button>
+              </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDevelopers.length > 0 ? (
-              filteredDevelopers.map((dev, index) => (
-                <DeveloperCard key={index} dev={dev} />
-              ))
+        {/* Developer list */}
+        <div className="mb-10">
+          {loading ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary dark:border-primary-dark"></div>
+            </div>
+          ) : filteredDevelopers.length === 0 ? (
+            <div className="text-center text-gray-500 dark:text-gray-400 p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700/50 max-w-3xl mx-auto mb-8">
+              <p className="font-semibold text-sm mb-2">No developers match your criteria</p>
+              <p className="text-xs mb-4">Try selecting a different expertise or check back later.</p>
+              <div onClick={() => setShowForm(true)}>
+                <Button
+                  label="Join as Developer"
+                  icon={FiUser}
+                  theme="secondary"
+                  class="text-xs py-1.5 px-3 mx-auto"
+                />
+              </div>
+            </div>
+          ) : (
+            viewMode === "grid" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <AnimatePresence>
+                  {filteredDevelopers.map((dev) => (
+                    <motion.div
+                      key={dev.name}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <DeveloperCard dev={dev} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
             ) : (
-              <p className="text-center col-span-full text-theme-text dark:text-theme-text-dark">
-                {developer
-                  ? `Developer "${developer}" not found.`
-                  : "No developers found matching the selected criteria."}
-              </p>
-            )}
-          </div>
-        )}
+              <div className="space-y-3">
+                {filteredDevelopers.map((dev) => (
+                  <div 
+                    key={dev.name}
+                    className="bg-white dark:bg-secondary-dark rounded-xl overflow-hidden shadow-sm border border-theme-border dark:border-theme-border-dark p-4"
+                  >
+                    <div className="flex items-start gap-4">
+                      {/* Profile Image */}
+                      <div className="flex-shrink-0">
+                        <div className="w-16 h-16 rounded-full overflow-hidden">
+                          <img
+                            src={dev.profileImageUrl}
+                            alt={`${dev.name}'s profile`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Developer Info */}
+                      <div className="flex-grow">
+                        <div className="flex flex-wrap justify-between items-center mb-2">
+                          <h3 className="text-lg font-bold text-theme-title dark:text-theme-title-dark">
+                            {dev.name}
+                          </h3>
+                          <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${
+                            dev.mainExpertise === "Frontend" 
+                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                              : dev.mainExpertise === "Backend" 
+                              ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400"
+                              : dev.mainExpertise === "Smart Contracts"
+                              ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400"
+                              : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                          }`}>
+                            {dev.mainExpertise}
+                          </span>
+                        </div>
+                        
+                        <p className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 mb-2 line-clamp-2">
+                          {dev.description}
+                        </p>
+                        
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {dev.skills.slice(0, 5).map((skill, index) => (
+                            <span
+                              key={index}
+                              className="bg-gray-100 dark:bg-gray-800 text-xs px-2 py-0.5 rounded-full text-theme-text dark:text-theme-text-dark"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {dev.skills.length > 5 && (
+                            <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
+                              +{dev.skills.length - 5}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                          <div>
+                            <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                              Experience:
+                            </span>
+                            <span className="ml-1 text-theme-text dark:text-theme-text-dark">
+                              {dev.experience}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                              Availability:
+                            </span>
+                            <span className="ml-1 text-theme-text dark:text-theme-text-dark">
+                              {dev.availability}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                              Interests:
+                            </span>
+                            <span className="ml-1 text-theme-text dark:text-theme-text-dark line-clamp-1">
+                              {dev.interests}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Social links */}
+                      <div className="flex-shrink-0 flex flex-col gap-2">
+                        <div className="flex gap-2 justify-end">
+                          {dev.socials.github && (
+                            <a
+                              href={dev.socials.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                            >
+                              <FiGithub size={15} />
+                            </a>
+                          )}
+                          {dev.socials.twitter && (
+                            <a
+                              href={dev.socials.twitter}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                            >
+                              <FaXTwitter size={15} />
+                            </a>
+                          )}
+                          {dev.socials.telegram && (
+                            <a
+                              href={dev.socials.telegram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                            >
+                              <FaTelegram size={15} />
+                            </a>
+                          )}
+                          {dev.socials.website && (
+                            <a
+                              href={dev.socials.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                            >
+                              <FaGlobe size={15} />
+                            </a>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap justify-end gap-1">
+                          {dev.badges.length > 0 && (
+                            <div
+                              key={dev.badges[0].id}
+                              className="flex items-center bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-800/30 rounded-full px-2 py-1"
+                            >
+                              <img
+                                src={dev.badges[0].imageUrl}
+                                alt={dev.badges[0].name}
+                                className="w-3 h-3 mr-1"
+                              />
+                              <span className="text-xs text-yellow-800 dark:text-yellow-300 font-medium">
+                                {dev.badges[0].name}
+                              </span>
+                            </div>
+                          )}
+                          {dev.badges.length > 1 && (
+                            <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
+                              +{dev.badges.length - 1}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+        </div>
+      </div>
 
-        {/* Only show the "Join as a Builder" section if no specific developer is selected */}
-        {!developer && (
-          <div className="text-center mt-12">
-            <p className="text-theme-text dark:text-theme-text-dark mb-4">
-              Are you a developer looking to join exciting MultiversX projects?
-            </p>
-            <a
-              onClick={() => setShowForm(true)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:cursor-pointer inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary transition-colors duration-200"
-            >
-              Join as a Builder
-            </a>
-          </div>
-        )}
-
-        {showForm && <SubmitTeamFinder onClose={() => setShowForm(false)} />}
-      </section>
+      {/* Developer submission form */}
+      {showForm && <SubmitTeamFinder onClose={() => setShowForm(false)} />}
     </Layout>
   );
 }

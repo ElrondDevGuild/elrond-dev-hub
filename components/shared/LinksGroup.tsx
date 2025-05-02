@@ -8,6 +8,7 @@ export interface ILink {
   openInNewTab?: boolean;
   disabled?: boolean;
   customComponent?: boolean;
+  onClick?: () => void;
 }
 
 export interface ILinksGroupProps {
@@ -16,17 +17,24 @@ export interface ILinksGroupProps {
 }
 
 const LinkWrapper = ({ link, children }: { link: ILink; children: any }) => {
+  // Handle onClick first
+  if (link.onClick) {
+    return <span onClick={link.onClick} className={link.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}>{children}</span>;
+  }
+  // Original disabled logic
   if (link?.disabled) {
     return <span className="opacity-50 cursor-not-allowed">{children}</span>;
   }
+  // Original openInNewTab logic
   if (link.openInNewTab) {
     return (
-      <a href={link.url} target="_blank" rel="noreferrer">
+      <a href={link.url} target="_blank" rel="noreferrer" className="cursor-pointer">
         {children}
       </a>
     );
   }
-  return <Link href={link.url}>{children}</Link>;
+  // Original Next.js Link logic
+  return <Link href={link.url} className="cursor-pointer">{children}</Link>;
 };
 
 export default function LinksGroup({ title, links }: ILinksGroupProps) {
@@ -44,14 +52,15 @@ export default function LinksGroup({ title, links }: ILinksGroupProps) {
           if (link.customComponent && link.icon) {
             return <li key={index}>{link.icon()}</li>;
           }
+          // Regular item rendering using LinkWrapper
           return (
             <LinkWrapper link={link} key={index}>
-              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark cursor-pointer relative hover:!text-theme-text">
+              <li className="flex items-center font-medium text-sm text-theme-text dark:text-theme-text-dark relative hover:!text-theme-text cursor-pointer">
                 <span className="pr-2">
                   <link.icon className="text-lg" />
                 </span>
                 {link.label}
-                <BiChevronRight className="absolute right-0 sm:hidden" />
+                {!link.onClick && <BiChevronRight className="absolute right-0 sm:hidden " />} {/* Hide arrow if it's an action */}
               </li>
             </LinkWrapper>
           );

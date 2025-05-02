@@ -5,6 +5,8 @@ import Leftbar from "./Navbar/LeftBar";
 import SearchBar from "./Navbar/SearchBar";
 import PostItemGrid from "./PostItemGrid";
 import MonthlyCodingLeaderboard from "./leaderboard/MonthlyLeaderboard";
+import PlatformStats from "./stats/PlatformStats";
+import ActivityStats from "./stats/ActivityStats";
 
 interface IColumnClasses {
   leftColumn: string;
@@ -69,7 +71,9 @@ export default function Layout({ hideRightBar = false, children }: any) {
             </div> */}
 
             <div className="flex flex-col gap-10">
-              <MonthlyCodingLeaderboard></MonthlyCodingLeaderboard>
+              <MonthlyCodingLeaderboard />
+              <PlatformStats />
+              <ActivityStats />
               {/* <PostItemGrid
                 post={{
                   title: mainBanner.title,
