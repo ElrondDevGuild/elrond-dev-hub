@@ -88,7 +88,7 @@ export default function BountyDetailPage({ bounty }: BountyDetailPageProps) {
   if (!bounty) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-12 text-center">
+        <div className="container mx-auto py-12 text-center">
           <h1 className="text-3xl font-bold text-theme-title dark:text-theme-title-dark mb-4">
             Bounty not found
           </h1>
@@ -176,7 +176,7 @@ export default function BountyDetailPage({ bounty }: BountyDetailPageProps) {
         }}
       />
       
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto py-6">
         <Link href="/bounties">
           <a className="inline-flex items-center text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark mb-6">
             <FiArrowLeft className="mr-2" />

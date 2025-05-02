@@ -265,7 +265,7 @@ export default function MonthlyLeaderboardPage() {
           ],
         }}
       />
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto">
         {/* Header section with slightly reduced padding */}
         <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/10 dark:to-primary-dark/20 rounded-2xl p-6 mb-8">
           <div className="text-center mb-6">

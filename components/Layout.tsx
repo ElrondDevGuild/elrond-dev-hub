@@ -135,7 +135,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
         </div>
       </div>
 
-      <div className="sm:hidden fixed bottom-0 left-0 w-full px-8 py-4 bg-secondary dark:bg-secondary-dark shadow-sm">
+      <div className="sm:hidden fixed bottom-0 left-0 w-full px-8 py-4 bg-secondary dark:bg-secondary-dark shadow-sm z-50">
         <SearchBar />
       </div>
     </div>
