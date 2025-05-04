@@ -45,7 +45,7 @@ const matchDeveloper = async (
 ): Promise<{ name: string; profileUrl: string } | null> => {
   try {
     const { data, error } = await supabase
-      .from("tf_developers")
+      .from("x_developers")
       .select("name, github_url")
       .ilike("name", `%${assignee}%`)
       .limit(1);
@@ -98,7 +98,7 @@ export default function DecenterPage() {
       const today = new Date().toISOString();
 
       const { data, error } = await supabase
-        .from("decenter")
+        .from("x_decenter")
         .select("*")
         .lte("publish_date", today)
         .not("publish_date", "is", null)
@@ -174,7 +174,7 @@ export default function DecenterPage() {
     const newStars = hasVoted ? currentStars - 1 : currentStars + 1;
 
     const { error } = await supabase
-      .from("decenter")
+      .from("x_decenter")
       .update({
         stars: newStars,
         star_votes: newVotes,

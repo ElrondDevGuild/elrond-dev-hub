@@ -59,7 +59,7 @@ const fetchDevelopers = async (): Promise<DeveloperProfile[]> => {
 
     // Fetch developers from Supabase where publish_date is not null and <= today
     const { data, error } = await supabase
-      .from("tf_developers")
+      .from("x_developers")
       .select("*")
       .lte("publish_date", today)
       .not("publish_date", "is", null)

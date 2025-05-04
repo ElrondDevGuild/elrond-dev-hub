@@ -56,7 +56,7 @@ const menuSection: ILinksGroupProps = {
     // },
 
     {
-      label: "ToolIndex [🆕]",
+      label: "Tool Index [🆕]",
       url: "/toolindex",
       icon: FiAlignCenter,
     },

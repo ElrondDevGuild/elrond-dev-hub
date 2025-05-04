@@ -32,7 +32,7 @@ export default function RequestUpdate({ projectId, projectTitle, onClose }: Requ
     setSubmitStatus("idle");
     try {
       const { error } = await supabase
-        .from("decenter")
+        .from("x_decenter")
         .update({
           last_log: data.message,
           updated_at: new Date().toISOString(),

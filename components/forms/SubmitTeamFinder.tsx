@@ -34,30 +34,30 @@ interface ITeamFinderForm {
 }
 
 const EXPERTISE_OPTIONS = [
-  "Smart Contract Development",
-  "Frontend Development",
-  "Backend Development",
-  "Full Stack Development",
+  "Smart Contract",
+  "Frontend",
+  "Backend",
+  "Full Stack",
   "DevOps & Infrastructure",
   "Security & Auditing",
   "Testing & QA",
-  "Mobile Development",
+  "Mobile",
   "UI/UX Design",
   "Graphic Design",
   "Product Design",
   "Community Management",
   "Marketing & Growth",
-  "Business Development",
+  "Business",
   "Project Management",
   "Technical Writing",
   "Documentation",
   "Blockchain Architecture",
   "Token Economics",
-  "DeFi Development",
-  "NFT Development",
-  "GameFi Development",
+  "DeFi",
+  "NFT",
+  "GameFi",
   "Cross-chain Integration",
-  "Research & Development",
+  "Research &",
   "Technical Support",
   "Other",
 ].map(opt => ({ id: opt, name: opt }));
@@ -86,7 +86,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
     setIsSubmitting(true);
     setSubmitStatus("idle");
     try {
-      const { error } = await supabase.from("tf_developers").insert([
+      const { error } = await supabase.from("x_developers").insert([
         {
           ...data,
           skills: data.skills.split(",").map(skill => skill.trim()),

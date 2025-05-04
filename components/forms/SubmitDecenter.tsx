@@ -65,7 +65,7 @@ export default function SubmitDecenter({ onClose }: SubmitDecenterProps) {
     setIsSubmitting(true);
     setSubmitStatus("idle");
     try {
-      const { error } = await supabase.from("decenter").insert([
+      const { error } = await supabase.from("x_decenter").insert([
         {
           title: formData.title,
           description: formData.description,
