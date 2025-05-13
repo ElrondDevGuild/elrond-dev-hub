@@ -139,7 +139,7 @@ const BountyProcessExplainer = () => {
                 Benefits for Companies (using PeerMe)
               </h4>
               <ul className="list-disc pl-5 space-y-1 text-sm text-theme-text dark:text-theme-text-dark">
-                <li>Leverage PeerMe's established platform for bounty management and payments.</li>
+                <li>Leverage PeerMe&apos;s established platform for bounty management and payments.</li>
                 <li>Access a community of developers familiar with the PeerMe ecosystem.</li>
                 <li>Utilize team features like Vault funding and proposal mechanisms.</li>
                 <li>Streamlined process for creating, managing, and rewarding bounties.</li>
@@ -229,7 +229,7 @@ const BountyProcessExplainer = () => {
                 <li>Access bounties from various teams and projects using the PeerMe platform.</li>
                 <li>Clear process for submissions and transparent reward structures on PeerMe.</li>
                 <li>Build your reputation within the PeerMe community and potentially find more work.</li>
-                <li>Secure payments often handled through PeerMe's Vault system.</li>
+                <li>Secure payments often handled through PeerMe&apos;s Vault system.</li>
               </ul>
             </div>
           </Tab.Panel>
@@ -240,7 +240,7 @@ const BountyProcessExplainer = () => {
             </h3>
             <div className="space-y-4 text-sm text-theme-text dark:text-theme-text-dark">
               <p>
-                The PeerMe platform offers a flexible bounty system. Here's how it generally works:
+                The PeerMe platform offers a flexible bounty system. Here&apos;s how it generally works:
               </p>
               <ul className="list-disc pl-5 space-y-2">
                 <li>
@@ -256,11 +256,11 @@ const BountyProcessExplainer = () => {
                   <strong>Direct User Bounties (Future):</strong> The platform is designed to support direct user bounties in the future, allowing individuals to create bounties without needing to form a team first.
                 </li>
                 <li>
-                  <strong>Consideration for Direct Creation Now:</strong> It's worth exploring if users can directly create bounties even with the current team-focused setup, potentially by treating an individual as a "team of one."
+                  <strong>Consideration for Direct Creation Now:</strong> It&apos;s worth exploring if users can directly create bounties even with the current team-focused setup, potentially by treating an individual as a &quot;team of one.&quot;
                 </li>
               </ul>
               <p className="mt-4">
-                This integration aims to leverage PeerMe's capabilities to manage and display bounties within our ecosystem.
+                This integration aims to leverage PeerMe&apos;s capabilities to manage and display bounties within our ecosystem.
               </p>
             </div>
           </Tab.Panel>

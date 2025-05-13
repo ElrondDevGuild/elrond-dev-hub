@@ -329,10 +329,12 @@ export default function BountyDetailPage({ bounty, error }: BountyDetailPageProp
                   <div className="flex items-center">
                     {typeof payment !== 'string' && payment.tokenLogo && (
                       <div className="w-5 h-5 mr-2 relative rounded-full overflow-hidden bg-white dark:bg-gray-800 flex-shrink-0 border border-gray-200 dark:border-gray-700">
-                        <img 
+                        <Image 
                           src={payment.tokenLogo} 
                           alt={payment.tokenName || "Token"}
-                          className="w-full h-full object-contain"
+                          width={20}
+                          height={20}
+                          className="object-contain"
                         />
                       </div>
                     )}
@@ -356,10 +358,12 @@ export default function BountyDetailPage({ bounty, error }: BountyDetailPageProp
                     <div className="text-theme-text dark:text-theme-text-dark flex items-center">
                       {creatorLogo ? (
                         <div className="w-4 h-4 mr-1.5 relative rounded-full overflow-hidden bg-white dark:bg-gray-800 flex-shrink-0 border border-gray-200 dark:border-gray-700">
-                          <img 
+                          <Image 
                             src={creatorLogo} 
                             alt={creatorName}
-                            className="w-full h-full object-cover"
+                            width={16}
+                            height={16}
+                            className="object-cover rounded-full bg-center"
                           />
                         </div>
                       ) : null}

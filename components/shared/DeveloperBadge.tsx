@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Badge {
@@ -15,6 +16,8 @@ interface DeveloperBadgeProps {
 
 export default function DeveloperBadge({ badge }: DeveloperBadgeProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [badgeImgError, setBadgeImgError] = useState(false);
+  const badgeImageSrc = badgeImgError ? "/badges/xdev-member.svg" : badge.imageUrl;
 
   return (
     <div className="relative">
@@ -26,14 +29,15 @@ export default function DeveloperBadge({ badge }: DeveloperBadgeProps) {
         transition={{ type: "spring", stiffness: 300, damping: 10 }}
       >
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-blue-400/20 p-0.5">
-          <div className="w-full h-full rounded-full bg-white dark:bg-secondary-dark p-0.5">
-            <img
-              src={badge.imageUrl}
+          <div className="w-full h-full rounded-full bg-white dark:bg-secondary-dark p-0.5 relative">
+            <Image
+              src={badgeImageSrc}
               alt={badge.name}
-              className="w-full h-full rounded-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "/badges/xdev-member.svg";
-              }}
+              width={32}
+              height={32}
+              className="rounded-full"
+              objectFit="cover"
+              onError={() => setBadgeImgError(true)}
             />
           </div>
         </div>
@@ -49,11 +53,16 @@ export default function DeveloperBadge({ badge }: DeveloperBadgeProps) {
             className="absolute z-50 left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-48 bg-white dark:bg-secondary-dark rounded-lg shadow-xl p-3 border border-theme-border/30 dark:border-theme-border-dark/30"
           >
             <div className="flex items-center space-x-2 mb-2">
-              <img
-                src={badge.imageUrl}
-                alt={badge.name}
-                className="w-6 h-6 rounded-full object-cover"
-              />
+              <div className="relative w-6 h-6 rounded-full overflow-hidden">
+                <Image
+                  src={badgeImageSrc}
+                  alt={badge.name}
+                  width={24}
+                  height={24}
+                  objectFit="cover"
+                  className="rounded-full"
+                />
+              </div>
               <span className="font-semibold text-sm text-theme-title dark:text-theme-title-dark">
                 {badge.name}
               </span>

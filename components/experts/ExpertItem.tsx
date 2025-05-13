@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import {
   AiFillGithub,
   AiFillLinkedin,
@@ -31,17 +32,24 @@ export default function ExpertItem({
   imageHeight = "h-44",
   showLinks = true,
 }: IExpertItemProps) {
+  const [imgError, setImgError] = useState(false);
+  const imageSrc = imgError 
+    ? "/default/default-avatar.png" 
+    : (expert.image_url || "/default/avatar-default.png");
+    
   return (
     <article className="xdev-expert flex flex-col w-full border-0.5 border-theme-border dark:border-theme-border-dark rounded-md bg-white dark:bg-secondary-dark-lighter shadow-sm overflow-hidden">
       <div className="w-full max-w-44 mx-auto mt-6">
-        <img
-          src={expert.image_url || "/default/avatar-default.png"}
-          alt={expert.name}
-          onError={(e) => {
-            e.currentTarget.src = "/default/default-avatar.png";
-          }}
-          className={`object-square object-cover ${imageHeight} mx-auto w-36 max-w-36 max-h-36 rounded-full shadow-lg overflow-hidden bg-gray-200 dark:bg-gray-700 border-2 border-primary/20`}
-        />
+        <div className={`mx-auto w-36 h-36 rounded-full shadow-lg overflow-hidden bg-gray-200 dark:bg-gray-700 border-2 border-primary/20 relative`}>
+          <Image
+            src={imageSrc}
+            alt={expert.name}
+            width={144}
+            height={144}
+            objectFit="cover"
+            onError={() => setImgError(true)}
+          />
+        </div>
       </div>
       <div className="p-4 md:px-8 md:py-6 flex-grow">
         <div className="font-semibold text-theme-title dark:text-theme-title-dark text-base  sm:text-xl text-center">
