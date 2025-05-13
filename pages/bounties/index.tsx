@@ -1,8 +1,7 @@
 import { NextSeo } from "next-seo";
 import Layout from "../../components/Layout";
-import { FiLink, FiGift, FiCode, FiFilter, FiArrowUp, FiSearch, FiGrid, FiList, FiX, FiRefreshCw } from "react-icons/fi";
+import { FiLink, FiGift, FiCode, FiFilter, FiArrowUp, FiSearch, FiGrid, FiList, FiX, FiRefreshCw, FiBriefcase, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
 import Button from "../../components/shared/Button";
-import CategoryBadge from "../../components/shared/CategoryBadge";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
@@ -12,30 +11,52 @@ import BountyCard from "../../components/bounties/BountyCard";
 import BountyProcessExplainer from "../../components/bounties/BountyProcessExplainer";
 import Link from "next/link";
 
-// Interface for the bounty data structure
-interface BountyItem {
+// Interface for the PeerMe bounty data structure
+interface PeerMeBounty {
   id: string;
+  chainId: number;
+  entity: {
+    id: string;
+    name: string;
+    slug: string;
+    address: string;
+    avatarUrl: string;
+    description: string;
+    verified: boolean;
+  };
   title: string;
   description: string;
+  deadlineAt: string | null;
+  hasDeadlineEnded: boolean;
+  competition: boolean;
+  payments: Array<{
+    tokenId: string;
+    tokenNonce: string;
+    tokenDecimals: number;
+    tokenLogo: string;
+    tokenName: string;
+    amount: string;
+  }>;
+  target: {
+    tokenId: string;
+    tokenNonce: string;
+    tokenDecimals: number;
+    tokenLogo: string;
+    tokenName: string;
+    amount: string;
+  };
   status: string;
-  bounty_amount: string | null;
-  token_type?: string;
-  estimated_duration: string;
-  category: string;
-  difficulty_level: string;
-  link: string | null;
-  company_name: string;
-  company_website: string;
-  requirements: string[];
-  skills_needed: string[];
-  deadline: string | null;
-  published_at: string | null;
-  created_at: string;
-  updated_at: string;
+  evaluating: boolean;
+  private: boolean;
+  createdAt: string;
+  url: string;
+  tags?: string[]; // Will need to be added or derived from the API response
 }
 
 interface BountyPageProps {
-  bountyData: BountyItem[];
+  bountyData: PeerMeBounty[];
+  error?: string | null; // Allow null for no error
+  apiStatus?: number | null; // To pass API status code if needed
 }
 
 // Create a Supabase client
@@ -47,192 +68,187 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
-  { value: "highest_amount", label: "Highest Amount" },
-  { value: "lowest_amount", label: "Lowest Amount" },
+  { value: "highest_amount", label: "Highest Reward" },
+  { value: "lowest_amount", label: "Lowest Reward" },
 ];
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    // Fetch only published bounties
-    const { data, error } = await supabase
-      .from("x_bounties")
-      .select("*")
-      .not("published_at", "is", null)
-      .order("published_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching data from Supabase:", error);
+    const apiKey = process.env.PEERME_API_KEY;
+    if (!apiKey) {
+      console.error("PeerMe API key is not configured.");
       return {
         props: {
           bountyData: [],
+          error: "Configuration error: PeerMe API key is not set.",
+          apiStatus: null,
         },
       };
     }
 
+    const peerMeOrgId = "xalliance";
+    const response = await fetch(
+      `https://api.peerme.io/v1/entities/${peerMeOrgId}/bounties`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error fetching data from PeerMe API:", response.status, errorText);
+      // If entity not found (404) or other client/server error, pass this info to the page
+      return {
+        props: {
+          bountyData: [],
+          error: `Failed to fetch bounties. PeerMe API returned: ${response.status}. ${errorText}`,
+          apiStatus: response.status,
+        },
+      };
+    }
+
+    const data = await response.json();
+    // The PeerMe API returns a data array containing the bounties
+    const bounties = data.data || [];
+
     return {
       props: {
-        bountyData: data || [],
+        bountyData: bounties,
+        error: null,
+        apiStatus: response.status,
       },
     };
-  } catch (err) {
-    console.error("Error in getServerSideProps:", err);
+  } catch (err: any) {
+    console.error("Network or other error in getServerSideProps (PeerMe):", err);
     return {
       props: {
         bountyData: [],
+        error: `An unexpected error occurred: ${err.message}`,
+        apiStatus: null,
       },
     };
   }
 };
 
-export default function BountyPage({ bountyData }: BountyPageProps) {
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [activeDifficulty, setActiveDifficulty] = useState("all");
-  const [showSubmitForm, setShowSubmitForm] = useState(false);
+export default function BountyPage({ bountyData, error, apiStatus }: BountyPageProps) {
+  const [activeTags, setActiveTags] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("newest");
-  const [isLoading, setIsLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeStatuses, setActiveStatuses] = useState<string[]>([]);
+  const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
 
-  // Ensure bountyData is defined
   const validBountyData = bountyData || [];
 
-  // Get unique categories, difficulty levels, and statuses
-  const categories = Array.from(
-    new Set(validBountyData.map((item) => item.category))
-  );
-  const difficultyLevels = Array.from(
-    new Set(validBountyData.map((item) => item.difficulty_level))
-  );
-  const statuses = Array.from(
-    new Set(validBountyData.map((item) => item.status))
-  );
+  // Filter out completed bounties older than 1 month
+  const filteredByDate = validBountyData.filter(bounty => {
+    // Filter out completed bounties older than 1 month
+    if (bounty.status === "completed") {
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      const bountyCreatedAt = new Date(bounty.createdAt);
+      return bountyCreatedAt >= oneMonthAgo;
+    }
+    return true;
+  });
 
-  // Filter bounties based on all criteria
-  const filteredBounties = [...validBountyData]
-    .filter(
-      (item) => activeCategory === "all" || item.category === activeCategory
-    )
-    .filter(
-      (item) =>
-        activeDifficulty === "all" || item.difficulty_level === activeDifficulty
-    )
-    .filter(item => 
-      activeStatuses.length === 0 || activeStatuses.includes(item.status)
-    )
+  const allTags = Array.from(new Set(filteredByDate.flatMap((item) => item.tags || [])));
+  const statuses = Array.from(new Set(filteredByDate.map((item) => item.status))) as PeerMeBounty['status'][];
+
+  const filteredBounties = [...filteredByDate]
+    .filter(item => activeTags.length === 0 || (item.tags && item.tags.some(tag => activeTags.includes(tag))))
+    .filter(item => activeStatuses.length === 0 || activeStatuses.includes(item.status))
     .filter(item => 
       !searchTerm || 
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.company_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+      (item.entity && item.entity.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (item.tags && item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+    )
+    .filter(item => !showOnlyAvailable || (item.status === "open" && !item.hasDeadlineEnded));
 
-  // Sort bounties based on selected option
   const sortedBounties = [...filteredBounties].sort((a, b) => {
     switch (sortBy) {
-      case "newest":
-        return (
-          new Date(b.published_at!).getTime() -
-          new Date(a.published_at!).getTime()
-        );
-      case "oldest":
-        return (
-          new Date(a.published_at!).getTime() -
-          new Date(b.published_at!).getTime()
-        );
-      case "highest_amount":
-        return (
-          parseFloat(b.bounty_amount || "0") -
-          parseFloat(a.bounty_amount || "0")
-        );
-      case "lowest_amount":
-        return (
-          parseFloat(a.bounty_amount || "0") -
-          parseFloat(b.bounty_amount || "0")
-        );
-      default:
-        return 0;
+      case "newest": return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      case "oldest": return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      case "highest_amount": {
+        const getAmount = (bounty: PeerMeBounty) => {
+          if (!bounty.payments || bounty.payments.length === 0) return 0;
+          const payment = bounty.payments[0];
+          return parseInt(payment.amount) / Math.pow(10, payment.tokenDecimals);
+        };
+        return getAmount(b) - getAmount(a);
+      }
+      case "lowest_amount": {
+        const getAmount = (bounty: PeerMeBounty) => {
+          if (!bounty.payments || bounty.payments.length === 0) return 0;
+          const payment = bounty.payments[0];
+          return parseInt(payment.amount) / Math.pow(10, payment.tokenDecimals);
+        };
+        return getAmount(a) - getAmount(b);
+      }
+      default: return 0;
     }
   });
 
-  // Handle sorting change
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortBy(e.target.value);
-  };
-
-  // Toggle status filter
-  const toggleStatus = (status: string) => {
-    setActiveStatuses(prev => 
-      prev.includes(status)
-        ? prev.filter(s => s !== status)
-        : [...prev, status]
-    );
-  };
-
-  // Reset all filters
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value);
+  const toggleStatus = (status: PeerMeBounty['status']) => setActiveStatuses(prev => prev.includes(status) ? prev.filter(s => s !== status) : [...prev, status]);
+  const toggleTag = (tag: string) => setActiveTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
   const resetFilters = () => {
-    setActiveCategory("all");
-    setActiveDifficulty("all");
+    setActiveTags([]);
     setActiveStatuses([]);
     setSearchTerm("");
     setSortBy("newest");
+    setShowOnlyAvailable(false);
+    setShowFilters(false);
   };
 
-  // Get status color class
-  const getStatusClass = (status: string) => {
-    switch(status) {
-      case "Open": return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
-      case "Pending": return "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300";
-      case "Closed": return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
-      default: return "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300";
+  const getStatusClass = (status: PeerMeBounty['status']) => {
+    // Simplified from previous for brevity, can be expanded
+    if (activeStatuses.includes(status)) {
+        switch(status) {
+            case "open": return "bg-green-500 text-white";
+            case "in_progress": return "bg-blue-500 text-white";
+            case "closed": return "bg-red-500 text-white";
+            case "completed": return "bg-purple-500 text-white";
+            default: return "bg-gray-500 text-white";
+        }
     }
+    return "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-theme-text dark:text-theme-text-dark";
   };
+  
+  const peerMeSubmitUrl = "https://peerme.io/quests/create?source=xdevhub"; // Placeholder - UPDATE THIS URL
 
   return (
     <Layout hideRightBar={true}>
       <NextSeo
-        title="MultiversX Bounty Board - Find Development Opportunities"
-        description="Browse and apply for development bounties from MultiversX ecosystem projects. Connect with companies and earn rewards for your skills."
-        openGraph={{
-          images: [
-            {
-              url: `https://xdevhub.com/og-image.png`,
-              width: 1200,
-              height: 675,
-              type: "image/png",
-            },
-          ],
-        }}
+        title="Bounties (with PeerMe) on MultiversX Dev Hub"
+        description="Browse development bounties from PeerMe. Submissions handled on the PeerMe platform."
       />
 
       <section className="container mx-auto">
-        {/* Page Header - more compact */}
         <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/10 dark:to-primary-dark/20 rounded-2xl p-6 mb-8">
           <div className="text-center mb-6">
             <h1 className="text-2xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4 relative">
-              MultiversX Bounty Board
+              Bounties (with PeerMe)
               <div className="absolute w-14 h-0.5 bg-primary dark:bg-primary-dark left-1/2 transform -translate-x-1/2 bottom-0"></div>
             </h1>
             <p className="text-sm md:text-base text-theme-text dark:text-theme-text-dark max-w-3xl mx-auto">
-              Find development opportunities, solve technical challenges, and earn rewards by 
-              working on bounties posted by companies in the MultiversX ecosystem.
+              Explore bounties sourced from the PeerMe platform. 
+              Note: Applications and submissions are managed directly on PeerMe.
             </p>
           </div>
-          
           <div className="flex flex-wrap justify-center gap-3 mt-4">
-            <div onClick={() => setShowSubmitForm(true)}>
-              <Button
-                label="Submit a Bounty"
-                icon={FiGift}
-                class="text-sm py-2 px-4"
-              />
-            </div>
-            <Link href="#process">
+            <Link href="#process-explainer">
               <a>
                 <Button
                   label="How It Works"
-                  icon={FiLink}
+                  icon={FiBriefcase}
                   theme="secondary"
                   class="text-sm py-2 px-4"
                 />
@@ -240,22 +256,35 @@ export default function BountyPage({ bountyData }: BountyPageProps) {
             </Link>
           </div>
         </div>
-
-        {/* Compact Filters Section */}
+        
+        {/* Filters Bar - aligned with toolindex style */}
         <div className="mb-5 bg-white dark:bg-secondary-dark rounded-xl shadow-lg p-3 border border-theme-border dark:border-theme-border-dark">
           <div className="flex flex-col md:flex-row justify-between items-center mb-3">
             <div className="mb-3 md:mb-0">
               <h2 className="text-base font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
-                <span className="mr-2">Bounties</span>
-                {filteredBounties.length > 0 && (
+                <span className="mr-2">Bounties Directory</span>
+                {sortedBounties.length > 0 && (
                   <span className="text-xs font-normal text-theme-text/60 dark:text-theme-text-dark/60">
-                    ({filteredBounties.length} found)
+                    ({sortedBounties.length} found)
                   </span>
                 )}
               </h2>
             </div>
             
             <div className="flex flex-wrap items-center gap-2">
+              {/* Available bounties toggle */}
+              <button
+                onClick={() => setShowOnlyAvailable(!showOnlyAvailable)}
+                className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-200 ${
+                  showOnlyAvailable 
+                    ? "bg-green-500 text-white" 
+                    : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}
+              >
+                <FiCheckCircle className="w-3 h-3" />
+                {showOnlyAvailable ? "Available Only" : "Show All"}
+              </button>
+
               {/* Search box */}
               <div className="relative w-full md:w-auto">
                 <input
@@ -275,19 +304,6 @@ export default function BountyPage({ bountyData }: BountyPageProps) {
                   </button>
                 )}
               </div>
-
-              {/* Sort selector */}
-              <select
-                value={sortBy}
-                onChange={handleSortChange}
-                className="py-1.5 px-2 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark"
-              >
-                {SORT_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
 
               {/* View mode toggle */}
               <div className="flex items-center text-xs font-medium">
@@ -313,6 +329,19 @@ export default function BountyPage({ bountyData }: BountyPageProps) {
                 </button>
               </div>
 
+              {/* Sort selector */}
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="py-1.5 px-2 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
               {/* Filter toggle */}
               <button 
                 onClick={() => setShowFilters(!showFilters)}
@@ -323,7 +352,7 @@ export default function BountyPage({ bountyData }: BountyPageProps) {
                 }`}
               >
                 <FiFilter className={`w-3 h-3 ${showFilters ? "text-primary dark:text-primary-dark" : ""}`} />
-                {showFilters ? "Hide Filters" : "Filters"}
+                {showFilters ? "Hide Filters" : "More Filters"}
               </button>
             </div>
           </div>
@@ -331,131 +360,113 @@ export default function BountyPage({ bountyData }: BountyPageProps) {
           {/* Advanced filters panel */}
           {showFilters && (
             <div className="pt-2 border-t border-theme-border/30 dark:border-theme-border-dark/30">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-2 mb-2">
-                {/* Category filter */}
-                <div className="md:col-span-4">
-                  <label className="block text-xs font-medium text-theme-text dark:text-theme-text-dark mb-1">Category</label>
-                  <div className="flex flex-wrap gap-1">
-                    <button
-                      onClick={() => setActiveCategory("all")}
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
-                        activeCategory === "all"
-                          ? "bg-primary text-white"
-                          : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                      }`}
-                    >
-                      All
-                    </button>
-                    {categories.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setActiveCategory(category)}
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
-                          activeCategory === category
-                            ? "bg-primary text-white"
-                            : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Status filter */}
-                <div className="md:col-span-4">
-                  <label className="block text-xs font-medium text-theme-text dark:text-theme-text-dark mb-1">Status</label>
-                  <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-2 mb-2">
+                {/* Status filters */}
+                {statuses.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1 mr-4">
+                    <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70 mr-1 mt-0.5">Status:</span>
                     {statuses.map((status) => (
                       <button
                         key={status}
                         onClick={() => toggleStatus(status)}
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors ${
-                          activeStatuses.includes(status)
-                            ? getStatusClass(status)
-                            : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        {status}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Difficulty level filter */}
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-medium text-theme-text dark:text-theme-text-dark mb-1">Difficulty</label>
-                  <div className="flex flex-wrap gap-1">
-                    <button
-                      onClick={() => setActiveDifficulty("all")}
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
-                        activeDifficulty === "all"
-                          ? "bg-primary text-white"
-                          : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                      }`}
-                    >
-                      All
-                    </button>
-                    {difficultyLevels.map((level) => (
-                      <button
-                        key={level}
-                        onClick={() => setActiveDifficulty(level)}
                         className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
-                          activeDifficulty === level
+                          activeStatuses.includes(status)
                             ? "bg-primary text-white"
                             : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
                         }`}
                       >
-                        {level}
+                        {status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
                       </button>
                     ))}
                   </div>
-                </div>
+                )}
+                
+                {/* Tags filters */}
+                {allTags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70 mr-1 mt-0.5">Tags:</span>
+                    {allTags.map((tag) => (
+                      <button
+                        key={tag}
+                        onClick={() => toggleTag(tag)}
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                          activeTags.includes(tag)
+                            ? "bg-blue-500 text-white"
+                            : "bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800/40 text-blue-700 dark:text-blue-300"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* Reset filters button */}
-                <div className="md:col-span-2 flex items-end">
+                {(activeStatuses.length > 0 || activeTags.length > 0 || searchTerm) && (
                   <button
                     onClick={resetFilters}
-                    className="flex items-center gap-1 py-1.5 px-2 text-xs bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 w-full justify-center"
+                    className="flex items-center gap-1 py-1 px-2 text-xs bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ml-auto mt-1"
                   >
                     <FiRefreshCw size={10} />
                     Reset Filters
                   </button>
-                </div>
+                )}
               </div>
             </div>
           )}
         </div>
 
-        {/* Bounties list - better spacing */}
-        {sortedBounties.length === 0 ? (
-          <div className="text-center text-gray-500 dark:text-gray-400 p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700/50 max-w-3xl mx-auto mb-8">
-            <p className="font-semibold text-sm mb-2">No bounties match your search criteria.</p>
-            <p className="text-xs">Try adjusting your filters or checking back later for new opportunities.</p>
+        {/* Bounties Grid/List or No Bounties Message */}
+        {error || sortedBounties.length === 0 ? (
+          <div className="text-center py-12 bg-white dark:bg-secondary-dark rounded-xl shadow border border-theme-border dark:border-theme-border-dark p-8">
+            <FiBriefcase size={52} className="mx-auto text-theme-text/30 dark:text-theme-text-dark/30 mb-4" />
+            <h2 className="text-xl font-semibold text-theme-title dark:text-theme-title-dark mb-2">
+              {showOnlyAvailable 
+                ? "No live bounties available right now." 
+                : "No bounties available right now."}
+            </h2>
+            <p className="text-theme-text dark:text-theme-text-dark mb-4 max-w-md mx-auto">
+              {showOnlyAvailable 
+                ? "There are currently no open bounties available. You can disable the 'Available Only' filter to see all bounties including closed ones."
+                : "If you're a company or team, you can post a new bounty directly on the PeerMe platform. Bounties will then be listed here."}
+            </p>
+            
+            {showOnlyAvailable && filteredByDate.length > 0 ? (
+              <Button
+                label="Show All Bounties"
+                icon={FiRefreshCw}
+                theme="secondary"
+                class="text-sm m-auto"
+                onClick={() => setShowOnlyAvailable(false)}
+              />
+            ) : (
+              <a href={peerMeSubmitUrl} target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button
+                  label="Submit a Bounty on PeerMe"
+                  icon={FiLink}
+                  theme="primary"
+                  class="text-sm m-auto"
+                />
+              </a>
+            )}
+            <p className="text-xs text-theme-text/70 dark:text-theme-text-dark/70 mt-6">
+              All bounty applications and submissions are handled through the PeerMe platform.
+            </p>
           </div>
         ) : (
-          <div className={`grid gap-4 mb-8 ${
-            viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
-          }`}>
+          <div className={`grid gap-4 sm:gap-5 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
             {sortedBounties.map((bounty) => (
-              <BountyCard 
-                key={bounty.id} 
-                bounty={bounty} 
-                viewMode={viewMode}
-              />
+              <BountyCard key={bounty.id} bounty={bounty} viewMode={viewMode} />
             ))}
           </div>
         )}
-
-        {/* How it works section */}
-        <div id="process" className="max-w-5xl mx-auto mb-8 scroll-mt-8">
-          <BountyProcessExplainer />
-        </div>
       </section>
 
-      {showSubmitForm && (
-        <SubmitBounty onClose={() => setShowSubmitForm(false)} />
-      )}
+      <section id="process-explainer" className="py-10 md:py-16">
+        <div className="container mx-auto">
+            <BountyProcessExplainer />
+        </div>
+      </section>
     </Layout>
   );
 }

@@ -79,6 +79,7 @@ const menuSection: ILinksGroupProps = {
       label: "Monthly L..Board [🆕]",
       url: monthlyLeaderboardPath,
       icon: FiList,
+      disabled: true,
     },
     {
       label: "",

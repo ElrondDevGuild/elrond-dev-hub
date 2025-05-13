@@ -1,90 +1,143 @@
 import { GetServerSideProps } from 'next';
 import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js'; // Replaced with PeerMe API fetch
 import { NextSeo } from 'next-seo';
 import Layout from '../../components/Layout';
-import CategoryBadge from '../../components/shared/CategoryBadge';
+// import CategoryBadge from '../../components/shared/CategoryBadge'; // Replaced by tags
 import Button from '../../components/shared/Button';
-import ApplyForBounty from '../../components/forms/ApplyForBounty';
+// import ApplyForBounty from '../../components/forms/ApplyForBounty'; // Application is on PeerMe
 import BountyProcessExplainer from '../../components/bounties/BountyProcessExplainer';
-import { FiArrowLeft, FiCalendar, FiClock, FiDollarSign, FiExternalLink, FiUser } from 'react-icons/fi';
-import { BsCheck2Circle, BsExclamationTriangle, BsLightningCharge } from 'react-icons/bs';
+import { FiArrowLeft, FiCalendar, FiClock, FiDollarSign, FiShield, FiExternalLink, FiUser, FiUsers, FiTag, FiLayers, FiGlobe, FiCheckCircle } from 'react-icons/fi'; // Added icons
+import { BsCheck2Circle, BsExclamationTriangle, BsLightningCharge, BsClock, BsShield, BsBriefcase } from 'react-icons/bs';
 import Link from 'next/link';
+import { marked } from 'marked'; // For rendering markdown description
+import Image from 'next/image';
 
-// Create a Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
+// const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+// const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Interface for the bounty data structure
-interface BountyItem {
+// Interface for the PeerMe bounty data structure based on actual API response
+interface PeerMeBounty {
   id: string;
+  chainId: number;
+  entity: {
+    id: string;
+    name: string;
+    slug: string;
+    address: string;
+    avatarUrl: string;
+    description: string;
+    verified: boolean;
+  };
   title: string;
   description: string;
+  deadlineAt: string | null;
+  hasDeadlineEnded: boolean;
+  competition: boolean;
+  payments: Array<{
+    tokenId: string;
+    tokenNonce: string;
+    tokenDecimals: number;
+    tokenLogo: string;
+    tokenName: string;
+    amount: string;
+  }>;
+  target: {
+    tokenId: string;
+    tokenNonce: string;
+    tokenDecimals: number;
+    tokenLogo: string;
+    tokenName: string;
+    amount: string;
+  };
   status: string;
-  bounty_amount: string;
-  token_type?: string;
-  estimated_duration: string;
-  category: string;
-  difficulty_level: string;
-  company_name: string;
-  company_website: string;
-  company_email: string;
-  link: string | null;
-  skills_needed: string[];
-  deadline: string | null;
-  requirements?: string[];
-  published_at: string | null;
-  created_at: string;
-  updated_at: string;
+  evaluating: boolean;
+  private: boolean;
+  createdAt: string;
+  url: string;
+  tags?: string[]; // Keeping this for compatibility, though not in API directly
 }
 
-// Props for the BountyDetailPage component
 interface BountyDetailPageProps {
-  bounty: BountyItem | null;
+  bounty: PeerMeBounty | null;
+  error?: string; // To pass potential fetch errors
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.params || {};
+  if (!id || typeof id !== 'string') {
+    return { notFound: true };
+  }
+
   try {
-    const { id } = context.params || {};
-    
-    if (!id) {
-      return {
-        notFound: true,
-      };
+    const apiKey = process.env.PEERME_API_KEY;
+    if (!apiKey) {
+      console.error("PeerMe API key is not configured.");
+      return { props: { bounty: null, error: "API key not configured." } }; 
     }
-    
-    // Fetch the bounty data from Supabase
-    const { data, error } = await supabase
-      .from('x_bounties')
-      .select('*')
-      .eq('id', id)
-      .single();
-    
-    if (error || !data) {
-      console.error('Error fetching bounty data:', error);
-      return {
-        notFound: true,
-      };
+
+    const peerMeOrgId = "xalliance"; 
+    const response = await fetch(
+      `https://api.peerme.io/v1/entities/${peerMeOrgId}/bounties`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error fetching bounties from PeerMe API:", response.status, errorText);
+      return { notFound: true }; 
     }
+
+    const responseData = await response.json();
+    // Handle the nested data structure in the API response
+    const allBounties = responseData.data || [];
     
+    const singleBounty = allBounties.find((b: any) => b.id === id);
+
+    if (!singleBounty) {
+      return { notFound: true };
+    }
+
     return {
       props: {
-        bounty: data,
+        bounty: singleBounty,
       },
     };
-  } catch (err) {
-    console.error('Error in getServerSideProps:', err);
-    return {
-      notFound: true,
-    };
+  } catch (err: any) {
+    console.error(`Error in getServerSideProps for bounty ID ${id}:`, err);
+    return { notFound: true }; 
   }
 };
 
-export default function BountyDetailPage({ bounty }: BountyDetailPageProps) {
-  const [showApplyForm, setShowApplyForm] = useState(false);
-  
-  // Handle case where bounty is null
+export default function BountyDetailPage({ bounty, error }: BountyDetailPageProps) {  
+  if (error && !bounty) {
+    return (
+      <Layout>
+        <div className="container mx-auto py-12 text-center">
+          <h1 className="text-3xl font-bold text-theme-title dark:text-theme-title-dark mb-4">
+            Error Loading Bounty
+          </h1>
+          <p className="text-theme-text dark:text-theme-text-dark mb-2">
+            There was an issue fetching the bounty details: {error}
+          </p>
+          <p className="text-theme-text dark:text-theme-text-dark mb-6">
+            Please try again later or check the main bounties page.
+          </p>
+          <Link href="/bounties">
+            <Button label="Back to Bounties" icon={FiArrowLeft} />
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
+
   if (!bounty) {
     return (
       <Layout>
@@ -103,9 +156,9 @@ export default function BountyDetailPage({ bounty }: BountyDetailPageProps) {
     );
   }
   
-  // Format deadline for display
-  const formatDeadline = (dateStr: string | null) => {
-    if (!dateStr) return "No deadline";
+  // Format date for display (e.g., "January 15, 2023")
+  const formatDisplayDate = (dateStr: string | null | undefined) => {
+    if (!dateStr) return "Not specified";
     const date = new Date(dateStr);
     return date.toLocaleDateString(undefined, {
       year: "numeric",
@@ -113,61 +166,102 @@ export default function BountyDetailPage({ bounty }: BountyDetailPageProps) {
       day: "numeric",
     });
   };
-  
-  // Format date for display
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-  
-  // Get status
-  const getStatusInfo = () => {
-    if (bounty.status === "Open") {
-      return {
-        label: "Open for Applications",
-        icon: BsCheck2Circle,
-        className: "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300",
-      };
-    } else if (bounty.status === "Pending") {
-      return {
-        label: "Pending Review",
-        icon: BsExclamationTriangle,
-        className: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300",
-      };
-    } else if (bounty.status === "Closed") {
-      return {
-        label: "Closed",
-        icon: BsExclamationTriangle,
-        className: "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300",
-      };
-    }
+
+  // Format time remaining until deadline
+  const formatTimeRemaining = (dateStr: string | null | undefined) => {
+    if (!dateStr || bounty.hasDeadlineEnded) return null;
     
-    return {
-      label: "Status: " + bounty.status,
-      icon: BsExclamationTriangle,
-      className: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300",
-    };
+    const deadline = new Date(dateStr);
+    const now = new Date();
+    
+    if (deadline <= now) return null;
+    
+    const diffTime = Math.abs(deadline.getTime() - now.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return { text: "Ends today!", urgent: true };
+    if (diffDays === 1) return { text: "Ends tomorrow", urgent: true };
+    if (diffDays <= 3) return { text: `${diffDays} days left`, urgent: true };
+    if (diffDays <= 7) return { text: `${diffDays} days left`, urgent: false };
+    
+    const weeks = Math.floor(diffDays / 7);
+    return { text: `${weeks} ${weeks === 1 ? 'week' : 'weeks'} left`, urgent: false };
+  };
+  
+  // Get status information with appropriate styling
+  const getStatusInfo = () => {
+    let icon, text, colorClasses;
+    switch (bounty.status) {
+      case "open":
+        icon = BsCheck2Circle;
+        text = "Open for Applications";
+        colorClasses = "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800";
+        break;
+      case "in_progress":
+        icon = BsLightningCharge;
+        text = "In Progress";
+        colorClasses = "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800";
+        break;
+      case "evaluating":
+        icon = BsClock;
+        text = "Evaluating";
+        colorClasses = "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800";
+        break;
+      case "closed":
+        icon = BsExclamationTriangle;
+        text = "Closed";
+        colorClasses = "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800";
+        break;
+      case "completed":
+        icon = BsCheck2Circle; 
+        text = "Completed";
+        colorClasses = "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800";
+        break;
+      default:
+        icon = BsExclamationTriangle;
+        text = `Status: ${bounty.status}`;
+        colorClasses = "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700";
+    }
+    return { label: text, icon: icon, className: colorClasses };
   };
   
   const statusInfo = getStatusInfo();
-  const isApplicable = bounty.status === "Open";
+  const creatorName = bounty.entity?.name || "Unknown";
+  const creatorLogo = bounty.entity?.avatarUrl;
+  const timeRemaining = formatTimeRemaining(bounty.deadlineAt);
   
+  // Parse markdown content for description
+  const renderedDescription = bounty.description 
+    ? marked.parse(bounty.description) as string 
+    : '<p>No description provided.</p>';
+
+  // Format payment amount
+  const formatPaymentAmount = () => {
+    if (!bounty.payments || bounty.payments.length === 0) return "Not specified";
+    
+    const payment = bounty.payments[0]; // Get first payment
+    const amount = parseInt(payment.amount) / Math.pow(10, payment.tokenDecimals);
+    
+    return { 
+      amount: amount.toLocaleString(undefined, { maximumFractionDigits: 2 }), 
+      tokenName: payment.tokenName,
+      tokenLogo: payment.tokenLogo 
+    };
+  };
+
+  const payment = formatPaymentAmount();
+
   return (
     <Layout hideRightBar={true}>
       <NextSeo
-        title={`${bounty.title} | MultiversX Bounty`}
-        description={`${bounty.description.substring(0, 160)}...`}
+        title={`${bounty.title} | PeerMe Bounty`}
+        description={bounty.description ? bounty.description.substring(0, 160).replace(/\*\*|\*/g, '').replace(/<[^>]*>?/gm, '') + '...' : 'View this bounty from PeerMe.'}
         openGraph={{
-          title: `${bounty.title} | MultiversX Bounty`,
-          description: bounty.description.substring(0, 160),
+          title: `${bounty.title} | PeerMe Bounty`,
+          description: bounty.description ? bounty.description.substring(0, 160).replace(/\*\*|\*/g, '').replace(/<[^>]*>?/gm, '') + '...' : 'View this bounty from PeerMe.',
           images: [
             {
-              url: 'https://xdevhub.com/og-image.png',
+              url: 'https://xdevhub.com/og-image.png', // Consider a dynamic or PeerMe specific OG image
               width: 1200,
               height: 675,
               type: 'image/png',
@@ -176,195 +270,226 @@ export default function BountyDetailPage({ bounty }: BountyDetailPageProps) {
         }}
       />
       
-      <div className="container mx-auto py-6">
-        <Link href="/bounties">
-          <a className="inline-flex items-center text-theme-text dark:text-theme-text-dark hover:text-primary dark:hover:text-primary-dark mb-6">
-            <FiArrowLeft className="mr-2" />
-            Back to Bounties
+      {error && (
+        <div className="container mx-auto my-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-lg border border-yellow-200 dark:border-yellow-700">
+          <p className="text-sm font-medium">Note: {error}</p>
+        </div>
+      )}
+
+      <div className="container mx-auto py-8">
+        <div className="flex justify-between items-center mb-6">
+          <Link href="/bounties">
+            <a className="inline-flex items-center text-sm text-theme-text/70 dark:text-theme-text-dark/70 hover:text-theme-text dark:hover:text-theme-text-dark transition-colors">
+              <FiArrowLeft className="mr-2" /> Back to All Bounties
+            </a>
+          </Link>
+          
+          <a 
+            href={bounty.url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-sm font-medium text-primary dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary inline-flex items-center"
+          >
+            <FiExternalLink className="mr-1.5" /> View on PeerMe
           </a>
-        </Link>
+        </div>
         
-        <div className="bg-white dark:bg-secondary-dark rounded-xl overflow-hidden shadow-sm border border-theme-border dark:border-theme-border-dark mb-8">
-          <div className="p-6">
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <CategoryBadge category={bounty.category} />
-              
-              <span className={`px-3 py-1 rounded-md text-xs font-medium ${
-                bounty.difficulty_level === "Easy" 
-                  ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
-                  : bounty.difficulty_level === "Medium" 
-                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                  : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300"
-              }`}>
-                {bounty.difficulty_level}
+        <div className="bg-white dark:bg-secondary-dark rounded-xl overflow-hidden shadow-md border border-theme-border dark:border-theme-border-dark mb-8">
+          {/* Remove the gradient header and keep only single content section */}
+          <div className="p-6 sm:p-8">
+            {/* Status badges at top */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className={`inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium ${statusInfo.className}`}>
+                <statusInfo.icon className="mr-1.5" /> {statusInfo.label}
               </span>
               
-              <span className={`flex items-center px-3 py-1 rounded-md text-xs font-medium ${statusInfo.className}`}>
-                <statusInfo.icon className="mr-1" />
-                {statusInfo.label}
-              </span>
+              {bounty.competition && (
+                <span className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium bg-indigo-100 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+                  <FiUsers className="mr-1.5" /> Competition
+                </span>
+              )}
             </div>
             
-            <h1 className="text-2xl md:text-3xl font-bold text-theme-title dark:text-theme-title-dark mb-4">
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl font-bold text-theme-title dark:text-theme-title-dark mb-6">
               {bounty.title}
             </h1>
             
-            <div className="flex flex-wrap gap-4 mb-6 text-sm text-theme-text dark:text-theme-text-dark">
-              <span className="flex items-center">
-                <FiDollarSign className="mr-1" />
-                {bounty.bounty_amount} {bounty.token_type || "EGLD"}
-              </span>
-              
-              <span className="flex items-center">
-                <FiClock className="mr-1" />
-                {bounty.estimated_duration}
-              </span>
-              
-              {bounty.deadline && (
-                <span className="flex items-center">
-                  <FiCalendar className="mr-1" />
-                  Deadline: {formatDeadline(bounty.deadline)}
-                </span>
-              )}
-              
-              {bounty.published_at && (
-                <span className="flex items-center">
-                  <FiCalendar className="mr-1" />
-                  Posted: {formatDate(bounty.published_at)}
-                </span>
-              )}
-            </div>
-
-            {/* Company Info - Moved from sidebar */}
-            <div className="flex items-center p-4 mb-6 bg-gray-50 dark:bg-gray-800/30 rounded-lg">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mr-4">
-                <FiUser className="text-primary dark:text-primary-dark" />
-              </div>
-              <div className="flex-grow">
-                <h3 className="font-medium text-theme-title dark:text-theme-title-dark">
-                  {bounty.company_name}
+            {/* Detailed information panel */}
+            <div className="mb-8 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800 p-5">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
+                  <BsBriefcase className="mr-2 text-theme-text/70 dark:text-theme-text-dark/70" /> 
+                  Bounty Details
                 </h3>
-                <div className="flex flex-wrap items-center gap-4 text-sm">
-                  <a 
-                    href={bounty.company_website} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="text-blue-600 dark:text-blue-400 hover:underline flex items-center"
-                  >
-                    Visit Website
-                    <FiExternalLink className="ml-1 w-3 h-3" />
-                  </a>
-                  <span className="text-theme-text/70 dark:text-theme-text-dark/70">
-                    Contact: <a 
-                      href={`mailto:${bounty.company_email}`}
-                      className="text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      {bounty.company_email}
-                    </a>
-                  </span>
+                
+                {/* Reward amount on the right */}
+                <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/10 dark:to-primary-dark/20 p-3 rounded-lg border border-primary/10 dark:border-primary-dark/10">
+                  <div className="text-xs font-medium text-theme-text/80 dark:text-theme-text-dark/80 mb-1">Reward</div>
+                  <div className="flex items-center">
+                    {typeof payment !== 'string' && payment.tokenLogo && (
+                      <div className="w-5 h-5 mr-2 relative rounded-full overflow-hidden bg-white dark:bg-gray-800 flex-shrink-0 border border-gray-200 dark:border-gray-700">
+                        <img 
+                          src={payment.tokenLogo} 
+                          alt={payment.tokenName || "Token"}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="text-lg font-bold text-primary dark:text-primary-dark flex items-center">
+                      {typeof payment === 'string' ? payment : (
+                        <>
+                          {payment.amount} <span className="ml-1">{payment.tokenName}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark mb-3">
-                Description
-              </h2>
-              <div className="prose dark:prose-dark max-w-none">
-                <p className="text-theme-text dark:text-theme-text-dark whitespace-pre-line">
-                  {bounty.description}
-                </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {/* Entity/Organization with logo */}
+                <div className="flex items-start">
+                  <FiUsers className="mt-0.5 mr-3 text-theme-text/70 dark:text-theme-text-dark/70" />
+                  <div>
+                    <div className="font-medium text-theme-title dark:text-theme-title-dark">Posted By</div>
+                    <div className="text-theme-text dark:text-theme-text-dark flex items-center">
+                      {creatorLogo ? (
+                        <div className="w-4 h-4 mr-1.5 relative rounded-full overflow-hidden bg-white dark:bg-gray-800 flex-shrink-0 border border-gray-200 dark:border-gray-700">
+                          <img 
+                            src={creatorLogo} 
+                            alt={creatorName}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : null}
+                      {creatorName}
+                      {bounty.entity?.verified && (
+                        <FiCheckCircle className="ml-1.5 text-green-500 dark:text-green-400" />
+                      )}
+                    </div>
+                    {bounty.entity?.slug && (
+                      <div className="text-xs text-theme-text/60 dark:text-theme-text-dark/60 mt-0.5">
+                        Slug: {bounty.entity.slug}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Deadline */}
+                <div className="flex items-start">
+                  <FiCalendar className="mt-0.5 mr-3 text-theme-text/70 dark:text-theme-text-dark/70" />
+                  <div>
+                    <div className="font-medium text-theme-title dark:text-theme-title-dark">Deadline</div>
+                    <div className={`text-theme-text dark:text-theme-text-dark flex items-center ${bounty.hasDeadlineEnded ? "text-red-500 dark:text-red-400" : ""}`}>
+                      {formatDisplayDate(bounty.deadlineAt)}
+                      {bounty.hasDeadlineEnded && (
+                        <span className="ml-2 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-1.5 py-0.5 text-xs rounded-md">Ended</span>
+                      )}
+                    </div>
+                    {timeRemaining && (
+                      <div className={`text-xs mt-1 font-medium ${timeRemaining.urgent ? "text-yellow-600 dark:text-yellow-400" : "text-blue-600 dark:text-blue-400"}`}>
+                        {timeRemaining.text}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Created date */}
+                <div className="flex items-start">
+                  <FiClock className="mt-0.5 mr-3 text-theme-text/70 dark:text-theme-text-dark/70" />
+                  <div>
+                    <div className="font-medium text-theme-title dark:text-theme-title-dark">Created</div>
+                    <div className="text-theme-text dark:text-theme-text-dark">
+                      {formatDisplayDate(bounty.createdAt)}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Chain ID */}
+                {bounty.chainId && (
+                  <div className="flex items-start">
+                    <FiLayers className="mt-0.5 mr-3 text-theme-text/70 dark:text-theme-text-dark/70" />
+                    <div>
+                      <div className="font-medium text-theme-title dark:text-theme-title-dark">Chain ID</div>
+                      <div className="text-theme-text dark:text-theme-text-dark">{bounty.chainId}</div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Competition type - only shown if it's a competition */}
+                {bounty.competition && (
+                  <div className="flex items-start">
+                    <FiShield className="mt-0.5 mr-3 text-theme-text/70 dark:text-theme-text-dark/70" />
+                    <div>
+                      <div className="font-medium text-theme-title dark:text-theme-title-dark">Type</div>
+                      <div className="text-theme-text dark:text-theme-text-dark">
+                        Competition Bounty
+                      </div>
+                      <div className="text-xs text-theme-text/60 dark:text-theme-text-dark/60 mt-0.5">
+                        Multiple developers can apply and compete
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-            
-            {bounty.requirements && bounty.requirements.length > 0 && (
-              <div className="mb-8">
-                <h2 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark mb-3">
-                  Requirements
-                </h2>
-                <ul className="list-disc pl-5 space-y-2 text-theme-text dark:text-theme-text-dark">
-                  {bounty.requirements.map((req, index) => (
-                    <li key={index}>{req}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark mb-3">
-                Required Skills
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {bounty.skills_needed.map((skill, index) => (
-                  <span 
-                    key={index} 
-                    className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm text-theme-text dark:text-theme-text-dark"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-            
-            {bounty.link && (
-              <div className="mb-8">
-                <h2 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark mb-3">
-                  Additional Resources
-                </h2>
+              
+              {/* PeerMe Link */}
+              <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <a 
-                  href={bounty.link} 
+                  href={bounty.url} 
                   target="_blank" 
-                  rel="noreferrer"
-                  className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center px-4 py-2 bg-primary dark:bg-primary-dark text-white rounded-md font-medium hover:bg-primary-dark dark:hover:bg-primary transition-colors"
                 >
-                  View Additional Details
-                  <FiExternalLink className="ml-1" />
+                  <FiExternalLink className="mr-1.5" /> View on PeerMe
                 </a>
+                {bounty.status === "open" && (
+                  <a 
+                    href={bounty.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center px-4 py-2 ml-3 bg-green-600 dark:bg-green-700 text-white rounded-md font-medium hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
+                  >
+                    <FiExternalLink className="mr-1.5" /> Apply Now
+                  </a>
+                )}
               </div>
-            )}
+            </div>
             
-            <div className="mt-10">
-              {isApplicable ? (
-                <div>
-                  <Button
-                    label="Apply for this Bounty"
-                    icon={BsLightningCharge}
-                    onClick={() => setShowApplyForm(true)}
-                  />
+            {/* Description section */}
+            <div>
+              <h3 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark mb-4">Description</h3>
+              <div className="prose prose-sm sm:prose dark:prose-invert max-w-none text-theme-text dark:text-theme-text-dark">
+                <div dangerouslySetInnerHTML={{ __html: renderedDescription }} />
+              </div>
+              
+              {/* Tags section - if present */}
+              {bounty.tags && bounty.tags.length > 0 && (
+                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+                  <h3 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark mb-3 flex items-center">
+                    <FiTag className="mr-2 text-theme-text/70 dark:text-theme-text-dark/70" /> Tags
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {bounty.tags.map((tag, idx) => (
+                      <span 
+                        key={idx} 
+                        className="px-3 py-1.5 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              ) : (
-                <button
-                  disabled
-                  className="py-3 px-8 text-base bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-medium rounded-md flex items-center justify-center cursor-not-allowed"
-                >
-                  Not Available
-                </button>
               )}
             </div>
           </div>
         </div>
         
-        {/* Bounty Process - Made more compact */}
-        <div className="mb-8">
-          <details className="bg-white dark:bg-secondary-dark rounded-xl overflow-hidden shadow-sm border border-theme-border dark:border-theme-border-dark">
-            <summary className="p-4 cursor-pointer font-medium text-theme-title dark:text-theme-title-dark">
-              How the Bounty Process Works
-            </summary>
-            <div className="p-4 pt-0">
-              <BountyProcessExplainer />
-            </div>
-          </details>
+        <div className="mt-12 mb-8">
+          <BountyProcessExplainer />
         </div>
       </div>
-      
-      {showApplyForm && (
-        <ApplyForBounty
-          bountyId={bounty.id}
-          bountyTitle={bounty.title}
-          companyName={bounty.company_name}
-          onClose={() => setShowApplyForm(false)}
-        />
-      )}
     </Layout>
   );
 } 
