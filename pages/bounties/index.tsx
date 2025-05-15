@@ -145,12 +145,12 @@ export default function BountyPage({ bountyData, error, apiStatus }: BountyPageP
 
   const validBountyData = bountyData || [];
 
-  // Filter out completed bounties older than 1 month
+  // Filter out completed bounties older than 2 months
   const filteredByDate = validBountyData.filter(bounty => {
-    // Filter out completed bounties older than 1 month
+    // Filter out completed bounties older than 2 months
     if (bounty.status === "completed") {
       const oneMonthAgo = new Date();
-      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 2);
       const bountyCreatedAt = new Date(bounty.createdAt);
       return bountyCreatedAt >= oneMonthAgo;
     }

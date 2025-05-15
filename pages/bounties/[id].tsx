@@ -102,7 +102,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const response = await fetch(
-      `https://api.peerme.io/v1/bounties?page=1&source=xdevhub`,
+      `https://api.peerme.io/v1/bounties`,
       {
         headers: {
           Authorization: `Bearer ${apiKey}`,
@@ -238,10 +238,23 @@ export default function BountyDetailPage({
   // Get status information with appropriate styling
   const getStatusInfo = () => {
     let icon, text, colorClasses;
-    switch (bounty.status) {
+    const isEffectivelyEnded = bounty.hasDeadlineEnded && ['open', 'active', 'in_progress'].includes(bounty.status);
+    let displayStatus = bounty.status;
+
+    if (isEffectivelyEnded) {
+      displayStatus = 'ended_by_deadline';
+    }
+
+    switch (displayStatus) {
       case "open":
         icon = BsCheck2Circle;
         text = "Open for Applications";
+        colorClasses =
+          "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800";
+        break;
+      case "active": // Added active case
+        icon = BsCheck2Circle;
+        text = "Active";
         colorClasses =
           "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800";
         break;
@@ -257,11 +270,11 @@ export default function BountyDetailPage({
         colorClasses =
           "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800";
         break;
-      case "closed":
-        icon = BsExclamationTriangle;
-        text = "Closed";
+      case "pending": // Added pending case with grey styling
+        icon = BsClock;
+        text = "Pending";
         colorClasses =
-          "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800";
+          "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700";
         break;
       case "completed":
         icon = BsCheck2Circle;
@@ -269,7 +282,25 @@ export default function BountyDetailPage({
         colorClasses =
           "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800";
         break;
-      default:
+      case "canceled": // Added canceled case with grey styling
+        icon = BsExclamationTriangle;
+        text = "Canceled";
+        colorClasses =
+          "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700";
+        break;
+      case "ended_by_deadline": // Added ended_by_deadline case with grey styling
+        icon = BsExclamationTriangle;
+        text = "Ended";
+        colorClasses =
+          "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700";
+        break;
+      case "closed": // Updated closed to use grey styling
+        icon = BsExclamationTriangle;
+        text = "Closed";
+        colorClasses =
+          "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700";
+        break;
+      default: // Default also uses grey styling for unknown statuses
         icon = BsExclamationTriangle;
         text = `Status: ${bounty.status}`;
         colorClasses =
