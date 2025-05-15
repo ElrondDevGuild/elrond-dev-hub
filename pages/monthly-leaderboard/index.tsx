@@ -93,7 +93,7 @@ export default function MonthlyLeaderboardPage() {
         const { data: supabaseProjects, error: supabaseError } = await supabase
         .from("leaderboard_projects")
         .select("url, project_name, team_name, category")
-        .not("publish_date", "is", null)
+        .not("published_at", "is", null)
           .order("project_name", { ascending: true })
           .limit(100); // We'll implement client-side pagination after filtering
 

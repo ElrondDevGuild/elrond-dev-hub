@@ -84,6 +84,7 @@ export default function DecenterPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Get user's IP address
@@ -95,13 +96,14 @@ export default function DecenterPage() {
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setLoading(true);
       const today = new Date().toISOString();
 
       const { data, error } = await supabase
         .from("x_decenter")
         .select("*")
-        .lte("publish_date", today)
-        .not("publish_date", "is", null)
+        .lte("published_at", today)
+        .not("published_at", "is", null)
         .order("status", { ascending: true });
 
       if (error) {
@@ -155,6 +157,7 @@ export default function DecenterPage() {
 
         setProjectData(sortedData);
       }
+      setLoading(false);
     };
     fetchProjects();
   }, []);
@@ -730,6 +733,19 @@ export default function DecenterPage() {
 
       {showSubmitForm && (
         <SubmitDecenter onClose={() => setShowSubmitForm(false)} />
+      )}
+
+      {loading ? (
+        <div className="flex justify-center items-center py-10">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary dark:border-primary-dark"></div>
+        </div>
+      ) : (
+        <>
+          {/* Filters and Search Section */}
+          <div className="px-4 md:px-6 py-4 bg-white dark:bg-secondary-dark border-b border-theme-border dark:border-theme-border-dark flex flex-col lg:flex-row justify-between items-center gap-4">
+            {/* Rest of the existing code */}
+          </div>
+        </>
       )}
     </Layout>
   );

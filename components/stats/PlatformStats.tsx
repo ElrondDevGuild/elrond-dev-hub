@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import {
-  FiUsers,
-  FiFileText,
-  FiPackage,
-  FiTrendingUp,
-} from "react-icons/fi";
+import { FiUsers, FiFileText, FiPackage, FiTrendingUp } from "react-icons/fi";
 
 // Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -40,17 +35,16 @@ const PlatformStats = () => {
 
         // Fetch published articles count
         const { count: articlesCount, error: articlesError } = await supabase
-          .from("x_articles")
-          .select("*", { count: "exact", head: true })
-          .not("published_at", "is", null);
+          .from("resources")
+          .select("*", { count: "exact", head: true });
 
         if (articlesError) throw articlesError;
 
         // Fetch active experts count (users with expert flag or contributions)
         const { count: expertsCount, error: expertsError } = await supabase
-          .from("users")
+          .from("x_developers")
           .select("*", { count: "exact", head: true })
-          .eq("is_expert", true);
+          .not("published_at", "is", null);
 
         if (expertsError) throw expertsError;
 
@@ -116,7 +110,9 @@ const PlatformStats = () => {
             {statItems.map((item, index) => (
               <li key={index} className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className={`p-2 rounded-md ${item.bgColor} mr-3 flex-shrink-0`}>
+                  <div
+                    className={`p-2 rounded-md ${item.bgColor} mr-3 flex-shrink-0`}
+                  >
                     <item.icon className={`w-4 h-4 ${item.color}`} />
                   </div>
                   <div>
@@ -137,4 +133,4 @@ const PlatformStats = () => {
   );
 };
 
-export default PlatformStats; 
+export default PlatformStats;

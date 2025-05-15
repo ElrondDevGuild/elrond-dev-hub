@@ -57,12 +57,12 @@ const fetchDevelopers = async (): Promise<DeveloperProfile[]> => {
   try {
     const today = new Date().toISOString();
 
-    // Fetch developers from Supabase where publish_date is not null and <= today
+    // Fetch developers from Supabase where published_at is not null and <= today
     const { data, error } = await supabase
       .from("x_developers")
       .select("*")
-      .lte("publish_date", today)
-      .not("publish_date", "is", null)
+      .lte("published_at", today)
+      .not("published_at", "is", null)
       .order("name");
 
     if (error) {
@@ -452,11 +452,12 @@ export default function TeamFinderPage() {
               <div className="absolute w-14 h-0.5 bg-primary dark:bg-primary-dark left-1/2 transform -translate-x-1/2 bottom-0"></div>
             </h1>
             <p className="text-sm md:text-base text-theme-text dark:text-theme-text-dark max-w-3xl mx-auto">
-              Connect with talented developers specializing in MultiversX blockchain development.
-              Find collaborators for your next project or showcase your own skills to the community.
+              Connect with talented developers specializing in MultiversX
+              blockchain development. Find collaborators for your next project
+              or showcase your own skills to the community.
             </p>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-3 mt-4">
             <div onClick={() => setShowForm(true)}>
               <Button
@@ -465,7 +466,7 @@ export default function TeamFinderPage() {
                 class="text-sm py-2 px-4"
               />
             </div>
-            
+
             <Link href="#developers">
               <a>
                 <Button
@@ -480,7 +481,10 @@ export default function TeamFinderPage() {
         </div>
 
         {/* Compact filters section */}
-        <div id="developers" className="mb-5 bg-white dark:bg-secondary-dark rounded-xl shadow-lg p-3 border border-theme-border dark:border-theme-border-dark">
+        <div
+          id="developers"
+          className="mb-5 bg-white dark:bg-secondary-dark rounded-xl shadow-lg p-3 border border-theme-border dark:border-theme-border-dark"
+        >
           <div className="flex flex-col md:flex-row justify-between items-center mb-3">
             <div>
               <h2 className="text-base font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
@@ -517,7 +521,7 @@ export default function TeamFinderPage() {
                   <FiList size={12} /> List
                 </button>
               </div>
-            
+
               <label className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 mr-1">
                 Expertise:
               </label>
@@ -580,197 +584,205 @@ export default function TeamFinderPage() {
         {/* Developer list */}
         <div className="mb-10">
           {loading ? (
-            <div className="flex justify-center items-center h-40">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary dark:border-primary-dark"></div>
-            </div>
-          ) : filteredDevelopers.length === 0 ? (
-            <div className="text-center text-gray-500 dark:text-gray-400 p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700/50 max-w-3xl mx-auto mb-8">
-              <p className="font-semibold text-sm mb-2">No developers match your criteria</p>
-              <p className="text-xs mb-4">Try selecting a different expertise or check back later.</p>
-              <div onClick={() => setShowForm(true)}>
-                <Button
-                  label="Join as Developer"
-                  icon={FiUser}
-                  theme="secondary"
-                  class="text-xs py-1.5 px-3 mx-auto"
-                />
-              </div>
+            <div className="flex justify-center items-center py-10">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary dark:border-primary-dark"></div>
             </div>
           ) : (
-            viewMode === "grid" ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <AnimatePresence>
+            <>
+              {filteredDevelopers.length === 0 ? (
+                <div className="text-center text-gray-500 dark:text-gray-400 p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700/50 max-w-3xl mx-auto mb-8">
+                  <p className="font-semibold text-sm mb-2">
+                    No developers match your criteria
+                  </p>
+                  <p className="text-xs mb-4">
+                    Try selecting a different expertise or check back later.
+                  </p>
+                  <div onClick={() => setShowForm(true)}>
+                    <Button
+                      label="Join as Developer"
+                      icon={FiUser}
+                      theme="secondary"
+                      class="text-xs py-1.5 px-3 mx-auto"
+                    />
+                  </div>
+                </div>
+              ) : viewMode === "grid" ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <AnimatePresence>
+                    {filteredDevelopers.map((dev) => (
+                      <motion.div
+                        key={dev.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <DeveloperCard dev={dev} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <div className="space-y-3">
                   {filteredDevelopers.map((dev) => (
-                    <motion.div
+                    <div
                       key={dev.name}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
+                      className="bg-white dark:bg-secondary-dark rounded-xl overflow-hidden shadow-sm border border-theme-border dark:border-theme-border-dark p-4"
                     >
-                      <DeveloperCard dev={dev} />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {filteredDevelopers.map((dev) => (
-                  <div 
-                    key={dev.name}
-                    className="bg-white dark:bg-secondary-dark rounded-xl overflow-hidden shadow-sm border border-theme-border dark:border-theme-border-dark p-4"
-                  >
-                    <div className="flex items-start gap-4">
-                      {/* Profile Image */}
-                      <div className="flex-shrink-0">
-                        <div className="w-16 h-16 rounded-full overflow-hidden">
-                          <img
-                            src={dev.profileImageUrl}
-                            alt={`${dev.name}&apos;s profile`}
-                            className="w-full h-full object-cover"
-                          />
+                      <div className="flex items-start gap-4">
+                        {/* Profile Image */}
+                        <div className="flex-shrink-0">
+                          <div className="w-16 h-16 rounded-full overflow-hidden">
+                            <img
+                              src={dev.profileImageUrl}
+                              alt={`${dev.name}&apos;s profile`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
                         </div>
-                      </div>
-                      
-                      {/* Developer Info */}
-                      <div className="flex-grow">
-                        <div className="flex flex-wrap justify-between items-center mb-2">
-                          <h3 className="text-lg font-bold text-theme-title dark:text-theme-title-dark">
-                            {dev.name}
-                          </h3>
-                          <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${
-                            dev.mainExpertise === "Frontend" 
-                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                              : dev.mainExpertise === "Backend" 
-                              ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400"
-                              : dev.mainExpertise === "Smart Contracts"
-                              ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400"
-                              : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                          }`}>
-                            {dev.mainExpertise}
-                          </span>
-                        </div>
-                        
-                        <p className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 mb-2 line-clamp-2">
-                          {dev.description}
-                        </p>
-                        
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {dev.skills.slice(0, 5).map((skill, index) => (
+
+                        {/* Developer Info */}
+                        <div className="flex-grow">
+                          <div className="flex flex-wrap justify-between items-center mb-2">
+                            <h3 className="text-lg font-bold text-theme-title dark:text-theme-title-dark">
+                              {dev.name}
+                            </h3>
                             <span
-                              key={index}
-                              className="bg-gray-100 dark:bg-gray-800 text-xs px-2 py-0.5 rounded-full text-theme-text dark:text-theme-text-dark"
+                              className={`px-2 py-0.5 rounded-md text-xs font-medium ${
+                                dev.mainExpertise === "Frontend"
+                                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                                  : dev.mainExpertise === "Backend"
+                                  ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400"
+                                  : dev.mainExpertise === "Smart Contracts"
+                                  ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400"
+                                  : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                              }`}
                             >
-                              {skill}
-                            </span>
-                          ))}
-                          {dev.skills.length > 5 && (
-                            <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
-                              +{dev.skills.length - 5}
-                            </span>
-                          )}
-                        </div>
-                        
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-                          <div>
-                            <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
-                              Experience:
-                            </span>
-                            <span className="ml-1 text-theme-text dark:text-theme-text-dark">
-                              {dev.experience}
+                              {dev.mainExpertise}
                             </span>
                           </div>
-                          <div>
-                            <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
-                              Availability:
-                            </span>
-                            <span className="ml-1 text-theme-text dark:text-theme-text-dark">
-                              {dev.availability}
-                            </span>
+
+                          <p className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 mb-2 line-clamp-2">
+                            {dev.description}
+                          </p>
+
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {dev.skills.slice(0, 5).map((skill, index) => (
+                              <span
+                                key={index}
+                                className="bg-gray-100 dark:bg-gray-800 text-xs px-2 py-0.5 rounded-full text-theme-text dark:text-theme-text-dark"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                            {dev.skills.length > 5 && (
+                              <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
+                                +{dev.skills.length - 5}
+                              </span>
+                            )}
                           </div>
-                          <div>
-                            <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
-                              Interests:
-                            </span>
-                            <span className="ml-1 text-theme-text dark:text-theme-text-dark line-clamp-1">
-                              {dev.interests}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Social links */}
-                      <div className="flex-shrink-0 flex flex-col gap-2">
-                        <div className="flex gap-2 justify-end">
-                          {dev.socials.github && (
-                            <a
-                              href={dev.socials.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
-                            >
-                              <FiGithub size={15} />
-                            </a>
-                          )}
-                          {dev.socials.twitter && (
-                            <a
-                              href={dev.socials.twitter}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
-                            >
-                              <FaXTwitter size={15} />
-                            </a>
-                          )}
-                          {dev.socials.telegram && (
-                            <a
-                              href={dev.socials.telegram}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
-                            >
-                              <FaTelegram size={15} />
-                            </a>
-                          )}
-                          {dev.socials.website && (
-                            <a
-                              href={dev.socials.website}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
-                            >
-                              <FaGlobe size={15} />
-                            </a>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap justify-end gap-1">
-                          {dev.badges.length > 0 && (
-                            <div
-                              key={dev.badges[0].id}
-                              className="flex items-center bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-800/30 rounded-full px-2 py-1"
-                            >
-                              <img
-                                src={dev.badges[0].imageUrl}
-                                alt={dev.badges[0].name}
-                                className="w-3 h-3 mr-1"
-                              />
-                              <span className="text-xs text-yellow-800 dark:text-yellow-300 font-medium">
-                                {dev.badges[0].name}
+
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                            <div>
+                              <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                                Experience:
+                              </span>
+                              <span className="ml-1 text-theme-text dark:text-theme-text-dark">
+                                {dev.experience}
                               </span>
                             </div>
-                          )}
-                          {dev.badges.length > 1 && (
-                            <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
-                              +{dev.badges.length - 1}
-                            </span>
-                          )}
+                            <div>
+                              <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                                Availability:
+                              </span>
+                              <span className="ml-1 text-theme-text dark:text-theme-text-dark">
+                                {dev.availability}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="font-medium text-theme-text/70 dark:text-theme-text-dark/70">
+                                Interests:
+                              </span>
+                              <span className="ml-1 text-theme-text dark:text-theme-text-dark line-clamp-1">
+                                {dev.interests}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Social links */}
+                        <div className="flex-shrink-0 flex flex-col gap-2">
+                          <div className="flex gap-2 justify-end">
+                            {dev.socials.github && (
+                              <a
+                                href={dev.socials.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                              >
+                                <FiGithub size={15} />
+                              </a>
+                            )}
+                            {dev.socials.twitter && (
+                              <a
+                                href={dev.socials.twitter}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                              >
+                                <FaXTwitter size={15} />
+                              </a>
+                            )}
+                            {dev.socials.telegram && (
+                              <a
+                                href={dev.socials.telegram}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                              >
+                                <FaTelegram size={15} />
+                              </a>
+                            )}
+                            {dev.socials.website && (
+                              <a
+                                href={dev.socials.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-dark"
+                              >
+                                <FaGlobe size={15} />
+                              </a>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap justify-end gap-1">
+                            {dev.badges.length > 0 && (
+                              <div
+                                key={dev.badges[0].id}
+                                className="flex items-center bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-800/30 rounded-full px-2 py-1"
+                              >
+                                <img
+                                  src={dev.badges[0].imageUrl}
+                                  alt={dev.badges[0].name}
+                                  className="w-3 h-3 mr-1"
+                                />
+                                <span className="text-xs text-yellow-800 dark:text-yellow-300 font-medium">
+                                  {dev.badges[0].name}
+                                </span>
+                              </div>
+                            )}
+                            {dev.badges.length > 1 && (
+                              <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
+                                +{dev.badges.length - 1}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

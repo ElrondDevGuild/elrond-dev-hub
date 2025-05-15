@@ -36,7 +36,7 @@ const LeaderboardOverview = () => {
         const { data: supabaseProjects, error: supabaseError } = await supabase
           .from("leaderboard_projects")
           .select("url, project_name, team_name")
-          .not("publish_date", "is", null)
+          .not("published_at", "is", null)
           .limit(15); // Fetch a bit more initially to ensure we get enough for sorting
 
         if (supabaseError) throw supabaseError;

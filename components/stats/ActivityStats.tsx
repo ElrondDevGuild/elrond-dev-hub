@@ -41,7 +41,7 @@ const ActivityStats = () => {
         const { count: activeRepos, error: reposError } = await supabase
           .from("leaderboard_projects")
           .select("*", { count: "exact", head: true })
-          .not("publish_date", "is", null);
+          .not("published_at", "is", null);
 
         if (reposError) throw reposError;
 
@@ -101,7 +101,7 @@ const ActivityStats = () => {
       <div className="px-4 py-3 border-b border-theme-border dark:border-theme-border-dark flex items-center justify-between">
         <h3 className="text-base font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
           <FiActivity className="w-4 h-4 mr-2 text-red-500" />
-          Developer Activity
+          Developer Activity (in progress)
         </h3>
       </div>
 

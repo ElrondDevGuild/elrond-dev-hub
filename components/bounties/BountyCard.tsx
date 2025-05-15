@@ -12,9 +12,10 @@ interface PeerMeBounty {
     name: string;
     slug: string;
     address: string;
-    avatarUrl: string;
-    description: string;
+    avatarUrl?: string;
+    description?: string;
     verified: boolean;
+    tags: string[];
   };
   title: string;
   description: string;
@@ -36,13 +37,12 @@ interface PeerMeBounty {
     tokenLogo: string;
     tokenName: string;
     amount: string;
-  };
+  } | null;
   status: string;
   evaluating: boolean;
   private: boolean;
   createdAt: string;
   url: string;
-  tags?: string[]; // Keeping this for compatibility, though not in API directly
 }
 
 interface BountyCardProps {
@@ -229,11 +229,11 @@ const BountyCard: React.FC<BountyCardProps> = ({ bounty, viewMode = "grid" }) =>
                 </span>
               </div>
               
-              {bounty.tags && bounty.tags.length > 0 && (
+              {bounty.entity.tags && bounty.entity.tags.length > 0 && (
                 <div className="flex items-center">
                   <BsTag className="mr-1.5 text-theme-text/70 dark:text-theme-text-dark/70" />
                   <div className="flex flex-wrap gap-1">
-                    {bounty.tags.slice(0, 3).map((tag, idx) => (
+                    {bounty.entity.tags.slice(0, 3).map((tag, idx) => (
                       <span 
                         key={idx} 
                         className="bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-700"
@@ -241,9 +241,9 @@ const BountyCard: React.FC<BountyCardProps> = ({ bounty, viewMode = "grid" }) =>
                         {tag}
                       </span>
                     ))}
-                    {bounty.tags.length > 3 && (
+                    {bounty.entity.tags.length > 3 && (
                       <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
-                        +{bounty.tags.length - 3}
+                        +{bounty.entity.tags.length - 3}
                       </span>
                     )}
                   </div>
@@ -347,11 +347,11 @@ const BountyCard: React.FC<BountyCardProps> = ({ bounty, viewMode = "grid" }) =>
             </span>
           </div>
           
-          {bounty.tags && bounty.tags.length > 0 && (
+          {bounty.entity.tags && bounty.entity.tags.length > 0 && (
              <div className="flex items-start">
               <BsTag className="mr-2 mt-0.5 text-sm text-theme-text/70 dark:text-theme-text-dark/70 flex-shrink-0" />
               <div className="flex flex-wrap gap-1.5">
-                {bounty.tags.slice(0, 4).map((tag, idx) => (
+                {bounty.entity.tags.slice(0, 4).map((tag, idx) => (
                   <span 
                     key={idx} 
                     className="bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-md text-xs border border-gray-200 dark:border-gray-700"
@@ -359,9 +359,9 @@ const BountyCard: React.FC<BountyCardProps> = ({ bounty, viewMode = "grid" }) =>
                     {tag}
                   </span>
                 ))}
-                {bounty.tags.length > 4 && (
+                {bounty.entity.tags.length > 4 && (
                   <span className="text-xs text-theme-text/60 dark:text-theme-text-dark/60">
-                    +{bounty.tags.length - 4}
+                    +{bounty.entity.tags.length - 4}
                   </span>
                 )}
               </div>

@@ -20,9 +20,10 @@ interface PeerMeBounty {
     name: string;
     slug: string;
     address: string;
-    avatarUrl: string;
-    description: string;
+    avatarUrl?: string;
+    description?: string;
     verified: boolean;
+    tags: string[];
   };
   title: string;
   description: string;
@@ -44,13 +45,12 @@ interface PeerMeBounty {
     tokenLogo: string;
     tokenName: string;
     amount: string;
-  };
+  } | null;
   status: string;
   evaluating: boolean;
   private: boolean;
   createdAt: string;
   url: string;
-  tags?: string[]; // Will need to be added or derived from the API response
 }
 
 interface BountyPageProps {
@@ -86,14 +86,13 @@ export const getServerSideProps: GetServerSideProps = async () => {
       };
     }
 
-    const peerMeOrgId = "xalliance";
     const response = await fetch(
-      `https://api.peerme.io/v1/entities/${peerMeOrgId}/bounties`,
+      `https://api.peerme.io/v1/bounties?page=1`,
       {
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          Accept: "application/json",
+          Accept: "application/json", 
         },
       }
     );
@@ -142,6 +141,7 @@ export default function BountyPage({ bountyData, error, apiStatus }: BountyPageP
   const [searchTerm, setSearchTerm] = useState("");
   const [activeStatuses, setActiveStatuses] = useState<string[]>([]);
   const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validBountyData = bountyData || [];
 
@@ -157,18 +157,18 @@ export default function BountyPage({ bountyData, error, apiStatus }: BountyPageP
     return true;
   });
 
-  const allTags = Array.from(new Set(filteredByDate.flatMap((item) => item.tags || [])));
+  const allTags = Array.from(new Set(filteredByDate.flatMap((item) => item.entity.tags || [])));
   const statuses = Array.from(new Set(filteredByDate.map((item) => item.status))) as PeerMeBounty['status'][];
 
   const filteredBounties = [...filteredByDate]
-    .filter(item => activeTags.length === 0 || (item.tags && item.tags.some(tag => activeTags.includes(tag))))
+    .filter(item => activeTags.length === 0 || (item.entity.tags && item.entity.tags.some(tag => activeTags.includes(tag))))
     .filter(item => activeStatuses.length === 0 || activeStatuses.includes(item.status))
     .filter(item => 
       !searchTerm || 
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (item.entity && item.entity.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (item.tags && item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+      (item.entity.tags && item.entity.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
     )
     .filter(item => !showOnlyAvailable || (item.status === "open" && !item.hasDeadlineEnded));
 
@@ -231,236 +231,251 @@ export default function BountyPage({ bountyData, error, apiStatus }: BountyPageP
         description="Browse development bounties from PeerMe. Submissions handled on the PeerMe platform."
       />
 
-      <section className="container mx-auto">
-        <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/10 dark:to-primary-dark/20 rounded-2xl p-6 mb-8">
-          <div className="text-center mb-6">
-            <h1 className="text-2xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4 relative">
-              Bounties (with PeerMe)
-              <div className="absolute w-14 h-0.5 bg-primary dark:bg-primary-dark left-1/2 transform -translate-x-1/2 bottom-0"></div>
-            </h1>
-            <p className="text-sm md:text-base text-theme-text dark:text-theme-text-dark max-w-3xl mx-auto">
-              Explore bounties sourced from the PeerMe platform. 
-              Note: Applications and submissions are managed directly on PeerMe.
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3 mt-4">
-            <Link href="#process-explainer">
-              <a>
-                <Button
-                  label="How It Works"
-                  icon={FiBriefcase}
-                  theme="secondary"
-                  class="text-sm py-2 px-4"
-                />
-              </a>
-            </Link>
+      {loading ? (
+        <div className="flex justify-center items-center py-10 min-h-[300px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary dark:border-primary-dark"></div>
+        </div>
+      ) : error ? (
+        <div className="container mx-auto px-4 py-8">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/30 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-center">
+            <FiAlertCircle className="inline-block w-5 h-5 mr-2 align-middle" />
+            <strong className="font-semibold">Failed to load bounties.</strong>
+            <p className="text-sm">{error}</p>
+            {apiStatus && <p className="text-xs mt-1">API Status: {apiStatus}</p>}
           </div>
         </div>
-        
-        {/* Filters Bar - aligned with toolindex style */}
-        <div className="mb-5 bg-white dark:bg-secondary-dark rounded-xl shadow-lg p-3 border border-theme-border dark:border-theme-border-dark">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-3">
-            <div className="mb-3 md:mb-0">
-              <h2 className="text-base font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
-                <span className="mr-2">Bounties Directory</span>
-                {sortedBounties.length > 0 && (
-                  <span className="text-xs font-normal text-theme-text/60 dark:text-theme-text-dark/60">
-                    ({sortedBounties.length} found)
-                  </span>
-                )}
-              </h2>
+      ) : (
+        <section className="container mx-auto">
+          <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/10 dark:to-primary-dark/20 rounded-2xl p-6 mb-8">
+            <div className="text-center mb-6">
+              <h1 className="text-2xl md:text-4xl font-bold text-theme-title dark:text-theme-title-dark mb-4 relative">
+                Bounties (with PeerMe)
+                <div className="absolute w-14 h-0.5 bg-primary dark:bg-primary-dark left-1/2 transform -translate-x-1/2 bottom-0"></div>
+              </h1>
+              <p className="text-sm md:text-base text-theme-text dark:text-theme-text-dark max-w-3xl mx-auto">
+                Explore bounties sourced from the PeerMe platform. 
+                Note: Applications and submissions are managed directly on PeerMe.
+              </p>
             </div>
-            
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Available bounties toggle */}
-              <button
-                onClick={() => setShowOnlyAvailable(!showOnlyAvailable)}
-                className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-200 ${
-                  showOnlyAvailable 
-                    ? "bg-green-500 text-white" 
-                    : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                }`}
-              >
-                <FiCheckCircle className="w-3 h-3" />
-                {showOnlyAvailable ? "Available Only" : "Show All"}
-              </button>
-
-              {/* Search box */}
-              <div className="relative w-full md:w-auto">
-                <input
-                  type="text"
-                  placeholder="Search bounties..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-7 pr-7 py-1.5 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark w-full md:w-auto"
-                />
-                <FiSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-theme-text/50 dark:text-theme-text-dark/50 w-3 h-3" />
-                {searchTerm && (
-                  <button 
-                    onClick={() => setSearchTerm("")}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-text/50 dark:text-theme-text-dark/50 hover:text-theme-text dark:hover:text-theme-text-dark"
-                  >
-                    <FiX size={12} />
-                  </button>
-                )}
-              </div>
-
-              {/* View mode toggle */}
-              <div className="flex items-center text-xs font-medium">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`flex items-center gap-1 px-2 py-1.5 rounded-l-md ${
-                    viewMode === "grid"
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  <FiGrid size={12} /> Grid
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`flex items-center gap-1 px-2 py-1.5 rounded-r-md ${
-                    viewMode === "list"
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  <FiList size={12} /> List
-                </button>
-              </div>
-
-              {/* Sort selector */}
-              <select
-                value={sortBy}
-                onChange={handleSortChange}
-                className="py-1.5 px-2 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark"
-              >
-                {SORT_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-
-              {/* Filter toggle */}
-              <button 
-                onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-200 ${
-                  showFilters 
-                    ? "bg-primary/10 text-primary dark:bg-primary-dark/10 dark:text-primary-dark" 
-                    : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                }`}
-              >
-                <FiFilter className={`w-3 h-3 ${showFilters ? "text-primary dark:text-primary-dark" : ""}`} />
-                {showFilters ? "Hide Filters" : "More Filters"}
-              </button>
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              <Link href="#process-explainer">
+                <a>
+                  <Button
+                    label="How It Works"
+                    icon={FiBriefcase}
+                    theme="secondary"
+                    class="text-sm py-2 px-4"
+                  />
+                </a>
+              </Link>
             </div>
           </div>
-
-          {/* Advanced filters panel */}
-          {showFilters && (
-            <div className="pt-2 border-t border-theme-border/30 dark:border-theme-border-dark/30">
-              <div className="flex flex-wrap gap-2 mb-2">
-                {/* Status filters */}
-                {statuses.length > 0 && (
-                  <div className="flex flex-wrap gap-1 pt-1 mr-4">
-                    <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70 mr-1 mt-0.5">Status:</span>
-                    {statuses.map((status) => (
-                      <button
-                        key={status}
-                        onClick={() => toggleStatus(status)}
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
-                          activeStatuses.includes(status)
-                            ? "bg-primary text-white"
-                            : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        {status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                
-                {/* Tags filters */}
-                {allTags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 pt-1">
-                    <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70 mr-1 mt-0.5">Tags:</span>
-                    {allTags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => toggleTag(tag)}
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
-                          activeTags.includes(tag)
-                            ? "bg-blue-500 text-white"
-                            : "bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800/40 text-blue-700 dark:text-blue-300"
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Reset filters button */}
-                {(activeStatuses.length > 0 || activeTags.length > 0 || searchTerm) && (
-                  <button
-                    onClick={resetFilters}
-                    className="flex items-center gap-1 py-1 px-2 text-xs bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ml-auto mt-1"
-                  >
-                    <FiRefreshCw size={10} />
-                    Reset Filters
-                  </button>
-                )}
+          
+          {/* Filters Bar - aligned with toolindex style */}
+          <div className="mb-5 bg-white dark:bg-secondary-dark rounded-xl shadow-lg p-3 border border-theme-border dark:border-theme-border-dark">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-3">
+              <div className="mb-3 md:mb-0">
+                <h2 className="text-base font-semibold text-theme-title dark:text-theme-title-dark flex items-center">
+                  <span className="mr-2">Bounties Directory</span>
+                  {sortedBounties.length > 0 && (
+                    <span className="text-xs font-normal text-theme-text/60 dark:text-theme-text-dark/60">
+                      ({sortedBounties.length} found)
+                    </span>
+                  )}
+                </h2>
               </div>
+              
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Available bounties toggle */}
+                <button
+                  onClick={() => setShowOnlyAvailable(!showOnlyAvailable)}
+                  className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-200 ${
+                    showOnlyAvailable 
+                      ? "bg-green-500 text-white" 
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <FiCheckCircle className="w-3 h-3" />
+                  {showOnlyAvailable ? "Available Only" : "Show All"}
+                </button>
+
+                {/* Search box */}
+                <div className="relative w-full md:w-auto">
+                  <input
+                    type="text"
+                    placeholder="Search bounties..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-7 pr-7 py-1.5 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark w-full md:w-auto"
+                  />
+                  <FiSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-theme-text/50 dark:text-theme-text-dark/50 w-3 h-3" />
+                  {searchTerm && (
+                    <button 
+                      onClick={() => setSearchTerm("")}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-text/50 dark:text-theme-text-dark/50 hover:text-theme-text dark:hover:text-theme-text-dark"
+                    >
+                      <FiX size={12} />
+                    </button>
+                  )}
+                </div>
+
+                {/* View mode toggle */}
+                <div className="flex items-center text-xs font-medium">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`flex items-center gap-1 px-2 py-1.5 rounded-l-md ${
+                      viewMode === "grid"
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    <FiGrid size={12} /> Grid
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`flex items-center gap-1 px-2 py-1.5 rounded-r-md ${
+                      viewMode === "list"
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    <FiList size={12} /> List
+                  </button>
+                </div>
+
+                {/* Sort selector */}
+                <select
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  className="py-1.5 px-2 text-xs rounded-md border border-theme-border dark:border-theme-border-dark bg-gray-50 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary-dark"
+                >
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Filter toggle */}
+                <button 
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-200 ${
+                    showFilters 
+                      ? "bg-primary/10 text-primary dark:bg-primary-dark/10 dark:text-primary-dark" 
+                      : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <FiFilter className={`w-3 h-3 ${showFilters ? "text-primary dark:text-primary-dark" : ""}`} />
+                  {showFilters ? "Hide Filters" : "More Filters"}
+                </button>
+              </div>
+            </div>
+
+            {/* Advanced filters panel */}
+            {showFilters && (
+              <div className="pt-2 border-t border-theme-border/30 dark:border-theme-border-dark/30">
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {/* Status filters */}
+                  {statuses.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1 mr-4">
+                      <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70 mr-1 mt-0.5">Status:</span>
+                      {statuses.map((status) => (
+                        <button
+                          key={status}
+                          onClick={() => toggleStatus(status)}
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                            activeStatuses.includes(status)
+                              ? "bg-primary text-white"
+                              : "bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark hover:bg-gray-200 dark:hover:bg-gray-700"
+                          }`}
+                        >
+                          {status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Tags filters */}
+                  {allTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1">
+                      <span className="text-xs font-medium text-theme-text/70 dark:text-theme-text-dark/70 mr-1 mt-0.5">Tags:</span>
+                      {allTags.map((tag) => (
+                        <button
+                          key={tag}
+                          onClick={() => toggleTag(tag)}
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
+                            activeTags.includes(tag)
+                              ? "bg-blue-500 text-white"
+                              : "bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800/40 text-blue-700 dark:text-blue-300"
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Reset filters button */}
+                  {(activeStatuses.length > 0 || activeTags.length > 0 || searchTerm) && (
+                    <button
+                      onClick={resetFilters}
+                      className="flex items-center gap-1 py-1 px-2 text-xs bg-gray-100 dark:bg-gray-800 text-theme-text dark:text-theme-text-dark rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ml-auto mt-1"
+                    >
+                      <FiRefreshCw size={10} />
+                      Reset Filters
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Bounties Grid/List or No Bounties Message */}
+          {sortedBounties.length === 0 ? (
+            <div className="text-center py-12 bg-white dark:bg-secondary-dark rounded-xl shadow border border-theme-border dark:border-theme-border-dark p-8">
+              <FiBriefcase size={52} className="mx-auto text-theme-text/30 dark:text-theme-text-dark/30 mb-4" />
+              <h2 className="text-xl font-semibold text-theme-title dark:text-theme-title-dark mb-2">
+                {showOnlyAvailable 
+                  ? "No live bounties available right now." 
+                  : "No bounties available right now."}
+              </h2>
+              <p className="text-theme-text dark:text-theme-text-dark mb-4 max-w-md mx-auto">
+                {showOnlyAvailable 
+                  ? "There are currently no open bounties available. You can disable the 'Available Only' filter to see all bounties including closed ones."
+                  : "If you're a company or team, you can post a new bounty directly on the PeerMe platform. Bounties will then be listed here."}
+              </p>
+              
+              {showOnlyAvailable && filteredByDate.length > 0 ? (
+                <Button
+                  label="Show All Bounties"
+                  icon={FiRefreshCw}
+                  theme="secondary"
+                  class="text-sm m-auto"
+                  onClick={() => setShowOnlyAvailable(false)}
+                />
+              ) : (
+                <a href={peerMeSubmitUrl} target="_blank" rel="noopener noreferrer" className="w-full">
+                  <Button
+                    label="Submit a Bounty on PeerMe"
+                    icon={FiLink}
+                    theme="primary"
+                    class="text-sm m-auto"
+                  />
+                </a>
+              )}
+              <p className="text-xs text-theme-text/70 dark:text-theme-text-dark/70 mt-6">
+                All bounty applications and submissions are handled through the PeerMe platform.
+              </p>
+            </div>
+          ) : (
+            <div className={`grid gap-4 sm:gap-5 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+              {sortedBounties.map((bounty) => (
+                <BountyCard key={bounty.id} bounty={bounty} viewMode={viewMode} />
+              ))}
             </div>
           )}
-        </div>
-
-        {/* Bounties Grid/List or No Bounties Message */}
-        {error || sortedBounties.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-secondary-dark rounded-xl shadow border border-theme-border dark:border-theme-border-dark p-8">
-            <FiBriefcase size={52} className="mx-auto text-theme-text/30 dark:text-theme-text-dark/30 mb-4" />
-            <h2 className="text-xl font-semibold text-theme-title dark:text-theme-title-dark mb-2">
-              {showOnlyAvailable 
-                ? "No live bounties available right now." 
-                : "No bounties available right now."}
-            </h2>
-            <p className="text-theme-text dark:text-theme-text-dark mb-4 max-w-md mx-auto">
-              {showOnlyAvailable 
-                ? "There are currently no open bounties available. You can disable the 'Available Only' filter to see all bounties including closed ones."
-                : "If you're a company or team, you can post a new bounty directly on the PeerMe platform. Bounties will then be listed here."}
-            </p>
-            
-            {showOnlyAvailable && filteredByDate.length > 0 ? (
-              <Button
-                label="Show All Bounties"
-                icon={FiRefreshCw}
-                theme="secondary"
-                class="text-sm m-auto"
-                onClick={() => setShowOnlyAvailable(false)}
-              />
-            ) : (
-              <a href={peerMeSubmitUrl} target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button
-                  label="Submit a Bounty on PeerMe"
-                  icon={FiLink}
-                  theme="primary"
-                  class="text-sm m-auto"
-                />
-              </a>
-            )}
-            <p className="text-xs text-theme-text/70 dark:text-theme-text-dark/70 mt-6">
-              All bounty applications and submissions are handled through the PeerMe platform.
-            </p>
-          </div>
-        ) : (
-          <div className={`grid gap-4 sm:gap-5 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
-            {sortedBounties.map((bounty) => (
-              <BountyCard key={bounty.id} bounty={bounty} viewMode={viewMode} />
-            ))}
-          </div>
-        )}
-      </section>
+        </section>
+      )}
 
       <section id="process-explainer" className="py-10 md:py-16">
         <div className="container mx-auto">

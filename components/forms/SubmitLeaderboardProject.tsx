@@ -75,7 +75,7 @@ export default function SubmitProject({ onClose }: SubmitProjectProps) {
         project_name: data.project_name,
         team_name: data.team_name,
         category: data.category,
-        publish_date: null,
+        published_at: null,
       };
 
       const optionalFields = {

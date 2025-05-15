@@ -90,7 +90,7 @@ export default function SubmitTeamFinder({ onClose }: SubmitTeamFinderProps) {
         {
           ...data,
           skills: data.skills.split(",").map(skill => skill.trim()),
-          publish_date: null,
+          published_at: null,
           created_at: new Date().toISOString(),
         },
       ]);

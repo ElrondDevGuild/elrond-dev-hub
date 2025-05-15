@@ -71,7 +71,7 @@ export default function Layout({ hideRightBar = false, children }: any) {
             </div> */}
 
             <div className="flex flex-col gap-10">
-              <MonthlyCodingLeaderboard />
+              {/* <MonthlyCodingLeaderboard /> */}
               <PlatformStats />
               <ActivityStats />
               {/* <PostItemGrid

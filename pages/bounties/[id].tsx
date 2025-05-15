@@ -32,6 +32,7 @@ import {
 import Link from "next/link";
 import { marked } from "marked"; // For rendering markdown description
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 // const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -46,9 +47,10 @@ interface PeerMeBounty {
     name: string;
     slug: string;
     address: string;
-    avatarUrl: string;
-    description: string;
+    avatarUrl?: string;
+    description?: string;
     verified: boolean;
+    tags: string[];
   };
   title: string;
   description: string;
@@ -76,12 +78,14 @@ interface PeerMeBounty {
   private: boolean;
   createdAt: string;
   url: string;
-  tags?: string[]; // Keeping this for compatibility, though not in API directly
+  contentHash?: string;
+  tx?: string;
 }
 
 interface BountyDetailPageProps {
   bounty: PeerMeBounty | null;
   error?: string; // To pass potential fetch errors
+  loading?: boolean; // Added loading prop
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -97,9 +101,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return { props: { bounty: null, error: "API key not configured." } };
     }
 
-    const peerMeOrgId = "xalliance";
     const response = await fetch(
-      `https://api.peerme.io/v1/entities/${peerMeOrgId}/bounties`,
+      `https://api.peerme.io/v1/bounties?page=1&source=xdevhub`,
       {
         headers: {
           Authorization: `Bearer ${apiKey}`,
@@ -143,7 +146,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function BountyDetailPage({
   bounty,
   error,
+  loading
 }: BountyDetailPageProps) {
+  const router = useRouter();
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary dark:border-primary-dark"></div>
+        </div>
+      </Layout>
+    );
+  }
+
   if (error && !bounty) {
     return (
       <Layout>
@@ -383,7 +399,7 @@ export default function BountyDetailPage({
             {/* Detailed information panel - Refactored for better UI/UX */}
             <div className="mb-8 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800 p-6">
               <h3 className="text-xl font-bold text-theme-title dark:text-theme-title-dark flex items-center mb-6">
-                <BsBriefcase className="mr-3 text-theme-text/70 dark:text-theme-text-dark/70 text-2xl" /> 
+                <BsBriefcase className="mr-3 text-theme-text/70 dark:text-theme-text-dark/70 text-2xl" />
                 Bounty Details
               </h3>
 
@@ -392,12 +408,14 @@ export default function BountyDetailPage({
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                   {/* Main Reward */}
                   <div className="mb-4 md:mb-0 md:pr-6 flex-1">
-                    <div className="text-xs font-semibold uppercase tracking-wider text-theme-text/70 dark:text-theme-text-dark/70 mb-1.5">Reward Amount</div>
+                    <div className="text-xs font-semibold uppercase tracking-wider text-theme-text/70 dark:text-theme-text-dark/70 mb-1.5">
+                      Reward Amount
+                    </div>
                     <div className="flex items-center">
-                      {typeof payment !== 'string' && payment.tokenLogo && (
+                      {typeof payment !== "string" && payment.tokenLogo && (
                         <div className="w-8 h-8 mr-3 relative rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex-shrink-0">
-                          <Image 
-                            src={payment.tokenLogo} 
+                          <Image
+                            src={payment.tokenLogo}
                             alt={`${payment.tokenName || "Token"} logo`}
                             layout="fill"
                             objectFit="contain"
@@ -411,7 +429,9 @@ export default function BountyDetailPage({
                         ) : (
                           <>
                             {payment.amount}{" "}
-                            <span className="text-xl ml-1 font-semibold">{payment.tokenName}</span>
+                            <span className="text-xl ml-1 font-semibold">
+                              {payment.tokenName}
+                            </span>
                           </>
                         )}
                       </div>
@@ -419,31 +439,43 @@ export default function BountyDetailPage({
                   </div>
 
                   {/* Target Token Info (if applicable) */}
-                  {targetToken && targetToken.tokenName !== (typeof payment === "string" ? "" : payment.tokenName) && (
-                    <div className="mt-4 md:mt-0 md:pl-6 md:border-l md:border-gray-200 md:dark:border-gray-700 flex-1">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-theme-text/70 dark:text-theme-text-dark/70 mb-1.5">Payout Token</div>
-                      <div className="flex items-center mb-2">
-                        {targetToken.tokenLogo && (
-                          <div className="w-7 h-7 mr-2.5 relative rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex-shrink-0">
-                            <Image 
-                              src={targetToken.tokenLogo} 
-                              alt={`${targetToken.tokenName || "Target Token"} logo`}
-                              layout="fill"
-                              objectFit="contain"
-                              className="p-0.5"
-                            />
-                          </div>
-                        )}
-                        <span className="text-xl font-semibold text-theme-title dark:text-theme-title-dark">{targetToken.tokenName}</span>
+                  {targetToken &&
+                    targetToken.tokenName !==
+                      (typeof payment === "string"
+                        ? ""
+                        : payment.tokenName) && (
+                      <div className="mt-4 md:mt-0 md:pl-6 md:border-l md:border-gray-200 md:dark:border-gray-700 flex-1">
+                        <div className="text-xs font-semibold uppercase tracking-wider text-theme-text/70 dark:text-theme-text-dark/70 mb-1.5">
+                          Payout Token
+                        </div>
+                        <div className="flex items-center mb-2">
+                          {targetToken.tokenLogo && (
+                            <div className="w-7 h-7 mr-2.5 relative rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex-shrink-0">
+                              <Image
+                                src={targetToken.tokenLogo}
+                                alt={`${
+                                  targetToken.tokenName || "Target Token"
+                                } logo`}
+                                layout="fill"
+                                objectFit="contain"
+                                className="p-0.5"
+                              />
+                            </div>
+                          )}
+                          <span className="text-xl font-semibold text-theme-title dark:text-theme-title-dark">
+                            {targetToken.tokenName}
+                          </span>
+                        </div>
+                        <p className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 leading-relaxed">
+                          The final payout will be in {targetToken.tokenName},
+                          swapped from the reward amount at the current market
+                          rate upon bounty completion.
+                        </p>
                       </div>
-                      <p className="text-xs text-theme-text/80 dark:text-theme-text-dark/80 leading-relaxed">
-                        The final payout will be in {targetToken.tokenName}, swapped from the reward amount at the current market rate upon bounty completion.
-                      </p>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
                 {/* Entity/Organization with logo */}
                 <div className="flex items-start">
@@ -594,16 +626,16 @@ export default function BountyDetailPage({
               </div>
 
               {/* Tags section - if present */}
-              {bounty.tags && bounty.tags.length > 0 && (
+              {bounty.entity.tags && bounty.entity.tags.length > 0 && (
                 <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
                   <h3 className="text-lg font-semibold text-theme-title dark:text-theme-title-dark mb-3 flex items-center">
                     <FiTag className="mr-2 text-theme-text/70 dark:text-theme-text-dark/70" />{" "}
                     Tags
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {bounty.tags.map((tag, idx) => (
+                    {bounty.entity.tags.map((tag) => (
                       <span
-                        key={idx}
+                        key={tag}
                         className="px-3 py-1.5 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
                       >
                         {tag}
