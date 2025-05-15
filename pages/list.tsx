@@ -1,14 +1,16 @@
-import { NextSeo } from 'next-seo';
-import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { NextSeo } from "next-seo";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
 
-import Layout from '../components/Layout';
-import PostItemGrid, { IPostItemGrid } from '../components/PostItemGrid';
-import Loader from '../components/shared/Loader';
-import Pagination from '../components/shared/Pagination';
-import { Category } from '../types/supabase';
-import { api } from '../utils/api';
-import { categoryPath } from '../utils/routes';
+import Layout from "../components/Layout";
+import PostItemGrid, { IPostItemGrid } from "../components/PostItemGrid";
+import Loader from "../components/shared/Loader";
+import Pagination from "../components/shared/Pagination";
+import { Category } from "../types/supabase";
+import { api } from "../utils/api";
+import { categoryPath } from "../utils/routes";
+
+const SINGLE_COLUMN_CATEGORIES = [28]; // Add category IDs that should use single column
 
 const pageSize = 12;
 
@@ -22,6 +24,7 @@ const fetchItems = async (page: number, category: string) => {
       category,
     },
   });
+  console.log(resources);
   return { resources, count };
 };
 
@@ -38,7 +41,7 @@ export default function List() {
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
@@ -51,7 +54,8 @@ export default function List() {
   const categoryLabel = useMemo(() => {
     if (categories?.length && category) {
       // @ts-ignore
-      return categories.find((e: Category) => e.id === parseInt(category))?.title;
+      return categories.find((e: Category) => e.id === parseInt(category))
+        ?.title;
     }
     return "";
   }, [category, categories]);
@@ -83,12 +87,20 @@ export default function List() {
 
   const onPrevious = async () => {
     setCurrentPage(currentPage - 1);
-    router.push(categoryPath(), { query: { page: currentPage - 1 + 1, category } }, { shallow: true });
+    router.push(
+      categoryPath(),
+      { query: { page: currentPage - 1 + 1, category } },
+      { shallow: true }
+    );
   };
 
   const onNext = async () => {
     setCurrentPage(currentPage + 1);
-    router.push(categoryPath(), { query: { page: currentPage + 1 + 1, category } }, { shallow: true });
+    router.push(
+      categoryPath(),
+      { query: { page: currentPage + 1 + 1, category } },
+      { shallow: true }
+    );
   };
 
   const hasPrevious = useMemo(() => {
@@ -143,7 +155,11 @@ export default function List() {
       <p className="font-semibold text-2xl text-theme-text dark:text-theme-text-dark mb-10">
         Search results for category: {categoryLabel}
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+      <div className={`grid gap-8 ${
+        category && SINGLE_COLUMN_CATEGORIES.includes(parseInt(category))
+          ? 'grid-cols-1'
+          : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2'
+      }`}>
         {posts.map((post: IPostItemGrid, index) => {
           return <PostItemGrid post={post} key={index} />;
         })}

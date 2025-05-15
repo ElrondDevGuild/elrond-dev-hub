@@ -1,15 +1,15 @@
-import Joi from 'joi';
-import { NextApiRequest } from 'next';
+import Joi from "joi";
+import { NextApiRequest } from "next";
 
-import { CategoryRepository } from '../repositories/CategoryRepository';
-import { ResourceRepository } from '../repositories/ResourceRepository';
-import { ResourceTagRepository } from '../repositories/ResourceTagRepository';
-import { TagRepository } from '../repositories/TagRepository';
-import { MediaResource } from '../types/supabase';
-import { serverApi } from '../utils/api';
-import { createSlug } from '../utils/slugify';
-import ApiResponse from './_base/ApiResponse';
-import BaseAction from './_base/BaseAction';
+import { CategoryRepository } from "../repositories/CategoryRepository";
+import { ResourceRepository } from "../repositories/ResourceRepository";
+import { ResourceTagRepository } from "../repositories/ResourceTagRepository";
+import { TagRepository } from "../repositories/TagRepository";
+import { MediaResource } from "../types/supabase";
+import { serverApi } from "../utils/api";
+import { createSlug } from "../utils/slugify";
+import ApiResponse from "./_base/ApiResponse";
+import BaseAction from "./_base/BaseAction";
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -49,7 +49,9 @@ export default class CreateResourceAction extends BaseAction {
     }).required();
   }
 
-  private async createResource(resource: Omit<MediaResource, "id">): Promise<MediaResource> {
+  private async createResource(
+    resource: Omit<MediaResource, "id">
+  ): Promise<MediaResource> {
     const resourceRepo = new ResourceRepository();
     const { data, error } = await resourceRepo.create(resource);
     if (error) {
@@ -59,7 +61,10 @@ export default class CreateResourceAction extends BaseAction {
     return data;
   }
 
-  private async setResourceTags(resource: MediaResource, tags: string[]): Promise<MediaResource> {
+  private async setResourceTags(
+    resource: MediaResource,
+    tags: string[]
+  ): Promise<MediaResource> {
     const tagsRepo = new TagRepository();
     const resourceTagsRepo = new ResourceTagRepository();
     const allTags = await tagsRepo.createNotExisting(tags);

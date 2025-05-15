@@ -1,10 +1,10 @@
-import Joi from 'joi';
-import { NextApiRequest } from 'next';
+import Joi from "joi";
+import { NextApiRequest } from "next";
 
-import { CategoryRepository } from '../repositories/CategoryRepository';
-import { ResourceRepository } from '../repositories/ResourceRepository';
-import ApiResponse from './_base/ApiResponse';
-import BaseAction from './_base/BaseAction';
+import { CategoryRepository } from "../repositories/CategoryRepository";
+import { ResourceRepository } from "../repositories/ResourceRepository";
+import ApiResponse from "./_base/ApiResponse";
+import BaseAction from "./_base/BaseAction";
 
 export default class PaginateResourcesAction extends BaseAction {
   async handle(req: NextApiRequest): Promise<ApiResponse> {
@@ -14,7 +14,8 @@ export default class PaginateResourcesAction extends BaseAction {
       // @ts-ignore
       .paginate({ page, size, categories, category, tags, published: true });
 
-    return new ApiResponse({ body: { resources, count } }).cache(900, 1800);
+    //return new ApiResponse({ body: { resources, count } }).cache(900, 1800);
+    return new ApiResponse({ body: { resources, count } });
   }
 
   async rules(): Promise<Joi.Schema> {

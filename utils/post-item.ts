@@ -1,7 +1,7 @@
-import { IPostItem } from '../components/PostItem';
-import { IPostItemGrid } from '../components/PostItemGrid';
-import { MediaResource } from '../types/supabase';
-import { RESOURCE_BASE_URL } from './storage_buckets';
+import { IPostItem } from "../components/PostItem";
+import { IPostItemGrid } from "../components/PostItemGrid";
+import { MediaResource } from "../types/supabase";
+import { RESOURCE_BASE_URL } from "./storage_buckets";
 
 const WEBSITE_NAME = "xdevhub.com";
 
@@ -14,18 +14,35 @@ export const getRefUrl = (url: string): string => {
 };
 
 const getSharePostUrl = (post: IPostItem | IPostItemGrid | MediaResource) => {
-  if (post?.slug) return `${appOrigin}/post/${post.slug}`;
-  return getRefUrl(post.resource_url);
+  if (post?.resource_url) {
+    return getRefUrl(post.resource_url);
+  }
+  return "";
 };
 
-export const copyLinkToClipboard = (post: IPostItem | IPostItemGrid | MediaResource) => {
-  if (navigator?.clipboard?.writeText) navigator.clipboard.writeText(getSharePostUrl(post));
+export const copyLinkToClipboard = (
+  post: IPostItem | IPostItemGrid | MediaResource
+) => {
+  const url = getSharePostUrl(post);
+  if (url && navigator?.clipboard?.writeText) {
+    navigator.clipboard.writeText(url);
+  }
 };
 
-export const getShareOnTwitterUrl = (post: IPostItemGrid | IPostItem | MediaResource) => {
-  const url = encodeURIComponent(getSharePostUrl(post) + "\n\n");
-  const text = `${post.title}\n`;
-  return `https://twitter.com/intent/tweet?url=${url}&hashtags=MultiversX,MultiversXNetwork,ElrondDevGuild,xDevHub,MultiversXDevs&text=${encodeURIComponent(
+export const getShareOnTwitterUrl = (
+  post: IPostItemGrid | IPostItem | MediaResource,
+  customMessage?: string,
+  customTags?: string
+) => {
+  const url = encodeURIComponent(post.resource_url + "\n\n");
+  const text = customMessage
+    ? customMessage
+    : `Check out what I found on xDevHub.io ~ ${post.title}\n`;
+  const hashtags = customTags
+    ? customTags.replace(/#/g, "").split(" ").join(",")
+    : "MultiversX,xDevHub,MultiversXDevs";
+
+  return `https://twitter.com/intent/tweet?url=${url}&hashtags=${hashtags}&text=${encodeURIComponent(
     text
   )}`;
 };

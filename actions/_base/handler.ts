@@ -1,7 +1,7 @@
-import Joi, { ValidationError } from 'joi';
-import { NextApiRequest, NextApiResponse } from 'next';
+import Joi, { ValidationError } from "joi";
+import { NextApiRequest, NextApiResponse } from "next";
 
-import BaseAction from './BaseAction';
+import BaseAction from "./BaseAction";
 
 type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
@@ -16,10 +16,15 @@ export const handler = (handler: ApiMethodHandler) => {
     const method: HttpMethod = <HttpMethod>req.method?.toLowerCase();
     if (!handler[method]) {
       const allowedMethods = Object.keys(handler)
-        .filter((method) => ["get", "post", "put", "patch", "delete"].includes(method))
+        .filter((method) =>
+          ["get", "post", "put", "patch", "delete"].includes(method)
+        )
         .map((method) => method.toUpperCase());
 
-      return res.setHeader("Allow", allowedMethods).status(405).end(`Method ${method} Not Allowed`);
+      return res
+        .setHeader("Allow", allowedMethods)
+        .status(405)
+        .end(`Method ${method} Not Allowed`);
     }
 
     // @ts-ignore
@@ -40,7 +45,10 @@ export const handler = (handler: ApiMethodHandler) => {
       const cacheHeader = result.getCache();
 
       if (cacheHeader) {
-        return res.setHeader("Cache-Control", cacheHeader).status(result.getStatus()).json(result.getBody());
+        return res
+          .setHeader("Cache-Control", cacheHeader)
+          .status(result.getStatus())
+          .json(result.getBody());
       }
 
       return res.status(result.getStatus()).json(result.getBody());
